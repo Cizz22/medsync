@@ -3,8 +3,6 @@
 from models import User
 
 
-
-
 class UserRepository:
     """ The repository for the user model """
 
