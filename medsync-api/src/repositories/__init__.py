@@ -1,1 +1,2 @@
 from .user import UserRepository
+from .connector_definition import ConnectorDefinitionRepository

@@ -18,6 +18,8 @@ class Connector(db.Model, BaseModel, metaclass=MetaBaseModel):
     configuration = db.Column(JSON, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
+    
+    connector_definition = db.relationship("ConnectorDefinition", backref="connectors")
 
     def __init__(self, user_id, actor_definition_id, name, configuration, actor_type, default_version_id):
         """ Create a new Connector """

@@ -39,6 +39,8 @@ class ConnectorDefinition(db.Model, BaseModel, metaclass=MetaBaseModel):
     resource_requirements = db.Column(JSON, nullable=True)
     public = db.Column(db.Boolean, nullable=False, default=False)
     icon_url = db.Column(db.String(256), nullable=True)
+    
+    connectors = db.relationship("Connector", backref="connector_definition")
 
     def __init__(self, name, icon, connector_type, source_type, spec, resource_requirements, public, custom, max_seconds_between_messages, default_version_id, icon_url):
         """ Create a new Connector Definition """
