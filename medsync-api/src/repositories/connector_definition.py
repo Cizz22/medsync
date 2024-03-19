@@ -34,3 +34,7 @@ class ConnectorDefinitionRepository:
 
         return connector_definition
     
+    def get_all():
+        """Get all connector definitions"""
+        return ConnectorDefinition.query.all()
+    

@@ -6,13 +6,12 @@ class ConnectorRepository:
     def __init__(self):
         pass
     
-    @staticmethod
-    def get(id):
-        return Connector.query.get(id)
+    def get_all():
+        return Connector.query.all()
 
     @staticmethod
     def create(user_id, actor_definition_id, name, configuration, actor_type, default_version_id):
-        connector = Connector(user_id, actor_definition_id, name, configuration, actor_type, default_version_id)
+        connector = Connector(user_id, connector_definition_id, name, configuration, actor_type, default_version_id)
         connector.save()
         return connector
 
@@ -37,6 +36,6 @@ class ConnectorRepository:
     
     @staticmethod
     def delete(id):
-        connector = Connector.query.get(id)
+        connector = ConnectorRepository.get_by_id(id)
         connector.delete()
         return connector

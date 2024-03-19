@@ -1,2 +1,4 @@
 from .user import UserRepository
 from .connector_definition import ConnectorDefinitionRepository
+from .connector import ConnectorRepository
+from .connector_specification import ConnectorSpecificationRepository

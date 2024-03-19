@@ -6,31 +6,6 @@ from . import db
 from .abc import BaseModel, MetaBaseModel
 from sqlalchemy.dialects.postgresql import JSON
 
-# create table "public"."connection" (
-#   "id" uuid not null,
-#   "namespace_definition" "public"."namespace_definition_type" not null,
-#   "namespace_format" varchar(256),
-#   "prefix" varchar(256),
-#   "source_id" uuid not null,
-#   "destination_id" uuid not null,
-#   "name" varchar(256) not null,
-#   "catalog" jsonb not null,
-#   "status" "public"."status_type",
-#   "schedule" jsonb,
-#   "manual" boolean,
-#   "resource_requirements" jsonb,
-#   "created_at" timestamp(6) with time zone not null default current_timestamp,
-#   "updated_at" timestamp(6) with time zone not null default current_timestamp,
-#   "source_catalog_id" uuid,
-#   "schedule_type" "public"."schedule_type",
-#   "schedule_data" jsonb,
-#   "geography" "public"."geography_type" not null default cast('AUTO' as geography_type),
-#   "non_breaking_change_preference" "non_breaking_change_preference_type" not null default cast('ignore' as non_breaking_change_preference_type),
-#   "breaking_change" boolean not null default false,
-#   "field_selection_data" jsonb,
-#   constraint "connection_pkey" primary key ("id")
-# );
-
 class Connection(db.Model, BaseModel, metaclass=MetaBaseModel):
     """ The Connection model """
 
