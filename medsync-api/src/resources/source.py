@@ -3,7 +3,7 @@ from flask_restful.reqparse import Argument
 from utils import parse_params, response, create_token, token_required
 from repositories import ConnectorRepository
 
-class SourceResource(Resource):
+class SourceResources(Resource):
     """ Source resource """
 
     @token_required
@@ -12,36 +12,36 @@ class SourceResource(Resource):
         Argument("name", location="json", required=True, help="Name cannot be blank."),
         Argument("configuration", location="json", required=True, help="Configuration cannot be blank."),
     )
-    def post(self, name, type, configuration, default_version_id):
+    def post(self, user_id, connector_definition_id, name, configuration):
         """ Create a new source """
+        
+        ###Add Job To Check Connection
 
-        source = ConnectorRepository.create(
-            name = name,
-            connector_definition_id = connector_definition_id,
-            configuration = configuration,
-            user_id=user_id
-            
-        )
+        source = ConnectorRepository.create(user_id, connector_definition_id, name, configuration, "source")
 
         return response({
-            "id": source.id,
-            "name": source.name,
-            "type": source.type,
-            "configuration": source.configuration,
-            "default_version_id": source.default_version_id
+            "message": "Source created successfully",
+            "source": {
+                "id": source.id,
+                "name": source.name,
+                "icon": source.connector_definition.icon,
+                "configuration": source.configuration,
+            }
         }, 201)
 
-    def get(self):
+    @token_required
+    def get(self, user_id):
         """ Get all sources """
 
-        sources = ConnectorRepository.get_all()
+        sources = ConnectorRepository.get_by(connector_type="source",user_id=user_id).all()
 
         return response({
             "sources": [
                 {
                     "id": source.id,
-                    "name": source.name,
-                    "type": source.type,
+                    "name": source.source_definition.name,
+                    "sourceName": source.name,
+                    "icon": source.source_definition.icon,
                     "configuration": source.configuration,
                     "default_version_id": source.default_version_id
                 } for source in sources

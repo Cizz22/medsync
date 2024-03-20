@@ -21,16 +21,19 @@ POSTGRES = {
     "db": os.getenv("POSTGRES_DB", "db"),
 }
 
-if DEBUG == 'DEV':
-    DB_URI = "sqlite:///database.db"
-else :
-    DB_URI = "sqlite+pysqlcipher://:{password}@/{database}" % SQLITE
+DB_URI = "postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}".format(
+        user=POSTGRES["user"],
+        pw=POSTGRES["pw"],
+        host=POSTGRES["host"],
+        port=POSTGRES["port"],
+        db=POSTGRES["db"],
+    )
 
 
-logging.basicConfig(
-    filename=os.getenv("SERVICE_LOG", "server.log"),
-    level=logging.DEBUG,
-    format="%(levelname)s: %(asctime)s \
-        pid:%(process)s module:%(module)s %(message)s",
-    datefmt="%d/%m/%y %H:%M:%S",
-)
+# logging.basicConfig(
+#     filename=os.getenv("SERVICE_LOG", "server.log"),
+#     level=logging.DEBUG,
+#     format="%(levelname)s: %(asctime)s \
+#         pid:%(process)s module:%(module)s %(message)s",
+#     datefmt="%d/%m/%y %H:%M:%S",
+# )

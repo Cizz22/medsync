@@ -42,13 +42,12 @@ class ConnectorDefinition(db.Model, BaseModel, metaclass=MetaBaseModel):
     connectors = db.relationship("Connector", backref="connector_definition")
     connector_specifications = db.relationship("ConnectorSpecification", back_populates="connector_definition")
     
-    def __init__(self, name, icon, connector_type, source_type, spec, resource_requirements, public, custom, max_seconds_between_messages, default_version_id, icon_url):
-        """ Create a new Connector Definition """
+    def __init__(self, name, icon, connector_type, source_type, resource_requirements, public, icon_url):
+        """ Create a new connector definition """
         self.name = name
-        self.connector_type = connector_type
-        self.spec = spec
-        self.source_type = source_type
         self.icon = icon
+        self.connector_type = connector_type
+        self.source_type = source_type
         self.resource_requirements = resource_requirements
         self.public = public
         self.icon_url = icon_url

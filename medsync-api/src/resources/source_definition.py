@@ -9,7 +9,7 @@ class SourceDefinitionsResource:
     
     def get(self):
         """Get all source definitions"""
-        source_definitions = ConnectorDefinitionRepository.get_all()
+        source_definitions = ConnectorDefinitionRepository.get_by(connector_type="source").all()
         
         return response({
             "message": "Source Definitions retrieved successfully",
@@ -18,12 +18,9 @@ class SourceDefinitionsResource:
                 "id": source_definition.id,
                 "name": source_definition.name,
                 "icon": source_definition.icon,
-                "docker_repository": source_definition.connector_specifications
-        .docker_repository,
-                "docker_image_tag": source_definition.connector_specifications
-        .docker_image_tag,    
-                "documentation_url": source_definition.connector_specifications
-        .documentation_url,
+                "docker_repository": source_definition.connector_specifications.docker_repository,
+                "docker_image_tag": source_definition.connector_specifications.docker_image_tag,    
+                "documentation_url": source_definition.connector_specifications.documentation_url,
                 "source_type": source_definition.source_type,
                 "icon_url": source_definition.icon_url,
                 "created_at": source_definition.created_at,
@@ -35,9 +32,6 @@ class SourceDefinitionsResource:
 class SourceDefinitionResource(Resource):
     """"Source Definition resource"""
     
-    @parse_params(
-        Argument("source_definition_id", location="query", required=True, help="Source Definition ID cannot be blank."),
-    )
     def get(self, source_definition_id):
         """Get a source definition"""
         source_definition = ConnectorDefinitionRepository.get_by_id(source_definition_id)
@@ -47,7 +41,7 @@ class SourceDefinitionResource(Resource):
             return response({"message": "Source Definition not found"}, 404)
         
         return response({
-            "success":True
+            "success":True,
             "message": "Source Definition retrieved successfully",
             "data": {
                 "id": source_definition.id,

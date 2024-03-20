@@ -10,10 +10,10 @@ class ConnectorDefinitionRepository:
         return ConnectorDefinition.query.filter_by(**kwargs)
 
     @staticmethod
-    def create(name, icon, connector_type, source_type, spec, resource_requirements, public, custom, max_seconds_between_messages, default_version_id, icon_url):
-        """ Create a new connector definition """
-        connector_definition = ConnectorDefinition(name, icon, connector_type, source_type, spec, resource_requirements, public, custom, max_seconds_between_messages, default_version_id, icon_url)
-        return connector_definition.save()
+    def create(name, icon, connector_type, source_type, resource_requirements, public, icon_url):
+        connector_definition = ConnectorDefinition(name, icon, connector_type, source_type, resource_requirements, public, icon_url)
+        connector_definition.save()
+        return connector_definition
     
     @staticmethod
     def get_by_id(id):

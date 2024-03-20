@@ -9,7 +9,7 @@ from resources import SourceDefinitionsResource, SourceDefinitionResource
 SOURCE_DEFINITION_BLUEPRINT = Blueprint("source_definition", __name__)
 
 Api(SOURCE_DEFINITION_BLUEPRINT).add_resource(
-    SourceDefinitionsResource, "/source-definitions"
+    SourceDefinitionsResource, "/source-definition"
 )
 
 Api(SOURCE_DEFINITION_BLUEPRINT).add_resource(

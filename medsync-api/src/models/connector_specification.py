@@ -22,7 +22,10 @@ class ConnectorSpecification(db.Model, BaseModel, metaclass=MetaBaseModel):
 
     connector_definition = db.relationship("ConnectorDefinition", back_populates="connector_specifications")
 
-    def __init__(self, name, spec):
-        """ Create a new Connector Specification """
-        self.name = name
+    def __init__(self, connector_definition_id, spec, documentation_url, docker_repository, docker_image_tag):
+        """ Create a new connector specification """
+        self.connector_definition_id = connector_definition_id
         self.spec = spec
+        self.documentation_url = documentation_url
+        self.docker_repository = docker_repository
+        self.docker_image_tag = docker_image_tag

@@ -8,10 +8,13 @@ class ConnectorRepository:
     
     def get_all():
         return Connector.query.all()
+    
+    def get_by(**kwargs):
+        return Connector.query.filter_by(**kwargs)
 
     @staticmethod
-    def create(user_id, actor_definition_id, name, configuration, actor_type, default_version_id):
-        connector = Connector(user_id, connector_definition_id, name, configuration, actor_type, default_version_id)
+    def create(user_id, connector_definition_id, name, configuration, connector_type):
+        connector = Connector(user_id, connector_definition_id, name, configuration, connector_type)
         connector.save()
         return connector
 
