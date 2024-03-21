@@ -16,6 +16,9 @@ class SourceResources(Resource):
         """ Create a new source """
         
         ###Add Job To Check Connection
+        # check(configuration) -> ConnectionStatus
+        
+        ### If ConnectionStatus is FAILED return response({"message": message}, 400)
 
         source = ConnectorRepository.create(user_id, connector_definition_id, name, configuration, "source")
 

@@ -25,24 +25,16 @@ class Connection(db.Model, BaseModel, metaclass=MetaBaseModel):
     schedule_data = db.Column(JSON, nullable=True)
     field_selection_data = db.Column(JSON, nullable=True)
 
-    def __init__(self, namespace_definition, namespace_format, prefix, source_id, destination_id, name, catalog, status, schedule, manual, resource_requirements, source_catalog_id, schedule_type, schedule_data, geography, non_breaking_change_preference, breaking_change, field_selection_data):
+    def __init__(self, source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data, field_selection_data):
         """ Create a new Connection """
-        self.namespace_definition = namespace_definition
-        self.namespace_format = namespace_format
-        self.prefix = prefix
         self.source_id = source_id
         self.destination_id = destination_id
         self.name = name
         self.catalog = catalog
         self.status = status
-        self.schedule = schedule
-        self.manual = manual
         self.resource_requirements = resource_requirements
         self.source_catalog_id = source_catalog_id
         self.schedule_type = schedule_type
         self.schedule_data = schedule_data
-        self.geography = geography
-        self.non_breaking_change_preference = non_breaking_change_preference
-        self.breaking_change = breaking_change
         self.field_selection_data = field_selection_data
 
