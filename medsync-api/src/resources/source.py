@@ -14,11 +14,6 @@ class SourceResources(Resource):
     )
     def post(self, user_id, connector_definition_id, name, configuration):
         """ Create a new source """
-        
-        ###Add Job To Check Connection
-        # check(configuration) -> ConnectionStatus
-        
-        ### If ConnectionStatus is FAILED return response({"message": message}, 400)
 
         source = ConnectorRepository.create(user_id, connector_definition_id, name, configuration, "source")
 
@@ -50,3 +45,16 @@ class SourceResources(Resource):
                 } for source in sources
             ]
         }, 200)
+        
+
+class CheckConnectionToSourceResource(Resource):
+    def get(self, source_id):
+        """ Check connection to a source """
+        
+        pass
+    
+class DiscoverSchemaForSourceResource(Resource):
+    def get(self, source_id):
+        """ Discover schema for a source """
+        pass
+    

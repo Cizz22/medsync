@@ -23,9 +23,8 @@ class Connection(db.Model, BaseModel, metaclass=MetaBaseModel):
     source_catalog_id = db.Column(db.Integer, nullable=True)
     schedule_type = db.Column(db.String(36), nullable=True)
     schedule_data = db.Column(JSON, nullable=True)
-    field_selection_data = db.Column(JSON, nullable=True)
-
-    def __init__(self, source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data, field_selection_data):
+    
+    def __init__(self, source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data):
         """ Create a new Connection """
         self.source_id = source_id
         self.destination_id = destination_id
@@ -36,5 +35,5 @@ class Connection(db.Model, BaseModel, metaclass=MetaBaseModel):
         self.source_catalog_id = source_catalog_id
         self.schedule_type = schedule_type
         self.schedule_data = schedule_data
-        self.field_selection_data = field_selection_data
+
 
