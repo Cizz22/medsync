@@ -8,8 +8,8 @@ class ConnectionRepository:
         return Connection.query.filter_by(**kwargs)
 
     @staticmethod
-    def create(source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data):
-        connection = Connection(source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data)
+    def create(user_id, source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data):
+        connection = Connection(user_id,source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data)
         connection.save()
         return connection
     

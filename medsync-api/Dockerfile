@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 3006 5005
+EXPOSE 5000
 
 ENV APPLICATION medsync-api
 

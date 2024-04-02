@@ -16,7 +16,7 @@ server = Flask(__name__)
 
 """Server Configuration"""
 server.debug = config.DEBUG
-server.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+server.config["SQLALCHEMY_DATABASE_URI"] = config.DB_URI
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 server.config["SECRET_KEY"] = config.SECRET_KEY
 

@@ -23,6 +23,11 @@ class Connection(db.Model, BaseModel, metaclass=MetaBaseModel):
     source_catalog_id = db.Column(db.Integer, nullable=True)
     schedule_type = db.Column(db.String(36), nullable=True)
     schedule_data = db.Column(JSON, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    source = db.relationship("Connector", foreign_keys=[source_id], backref="source_connections")
+    destination = db.relationship("Connector", foreign_keys=[destination_id], backref="dest_connections")
+    user = db.relationship("User", backref="connections")
     
     def __init__(self, source_id, destination_id, name, catalog, status, resource_requirements, source_catalog_id, schedule_type, schedule_data):
         """ Create a new Connection """

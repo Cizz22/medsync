@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask_restful.reqparse import Argument
 from utils import parse_params, response, create_token, token_required
-from repositories import ConnectorRepository
+from repositories import ConnectorRepository, ConnectorDefinitionRepository
 
 class SourceResources(Resource):
     """ Source resource """
@@ -14,6 +14,35 @@ class SourceResources(Resource):
     )
     def post(self, user_id, connector_definition_id, name, configuration):
         """ Create a new source """
+        
+        source_definition = ConnectorDefinitionRepository.get_by_id(connector_definition_id)
+        spec = source_definition.connector_specifications.spec
+        
+        ## Spec Example
+        # {
+            # user : string,
+            # password : string,
+            # host : string,
+            # port : integer,
+            # database : string
+        # }
+        
+        ## Configuration Example
+        # {
+            # user : "root",
+            # password : "password",
+            # host : "localhost",
+            # port : 3306,
+            # database : "test"
+        # }
+        
+        ## Check if configuration is valid based on the spec
+        for key in spec.keys():
+            if key not in configuration:
+                return response({"error": f"Configuration key {key} is missing"}, 400)
+            if not isinstance(configuration[key], spec[key]):
+                return response({"error": f"Configuration key {key} is not of type {spec[key]}"}, 400)
+            
 
         source = ConnectorRepository.create(user_id, connector_definition_id, name, configuration, "source")
 

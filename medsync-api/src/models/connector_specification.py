@@ -20,7 +20,7 @@ class ConnectorSpecification(db.Model, BaseModel, metaclass=MetaBaseModel):
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
-    connector_definition = db.relationship("ConnectorDefinition", back_populates="connector_specifications")
+    connector_definition = db.relationship("ConnectorDefinition", back_populates="connector_specification")
 
     def __init__(self, connector_definition_id, spec, documentation_url, docker_repository, docker_image_tag):
         """ Create a new connector specification """

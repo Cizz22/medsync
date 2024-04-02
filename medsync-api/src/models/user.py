@@ -19,6 +19,9 @@ class User(db.Model, BaseModel, metaclass=MetaBaseModel):
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     deleted_at = db.Column(db.DateTime, nullable=True, server_default=None)
     
+    connections = db.relationship("Connection", backref="user")
+    connectors = db.relationship("Connector", backref="user")
+    
     def __init__(self, name, email, type):
         """ Create a new User """
         self.name = name

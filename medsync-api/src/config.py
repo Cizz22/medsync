@@ -13,21 +13,15 @@ SECRET_KEY = os.getenv("APPLICATION_SECRET_KEY")
 #     "database": os.getenv("APPLICATION_SQLITE_DATABASE", "database.db")
 # }
 
-POSTGRES = {
-    "user": os.getenv("POSTGRES_USER", "user"),
-    "pw": os.getenv("POSTGRES_PASSWORD", "pass"),
-    "host": os.getenv("POSTGRES_HOST", 'localhost'),
-    "port": os.getenv("POSTGRES_PORT", 5432),
-    "db": os.getenv("POSTGRES_DB", "db"),
-}
+# POSTGRES = {
+#     "user": os.getenv("POSTGRES_USER", "user"),
+#     "pw": os.getenv("POSTGRES_PASSWORD", "pass"),
+#     "host": os.getenv("POSTGRES_HOST", 'localhost'),
+#     "port": os.getenv("POSTGRES_PORT", 5432),
+#     "db": os.getenv("POSTGRES_DB", "db"),
+# }
 
-DB_URI = "postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}".format(
-        user=POSTGRES["user"],
-        pw=POSTGRES["pw"],
-        host=POSTGRES["host"],
-        port=POSTGRES["port"],
-        db=POSTGRES["db"],
-    )
+DB_URI = os.getenv("DATABASE_URL")
 
 
 # logging.basicConfig(

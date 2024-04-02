@@ -40,7 +40,7 @@ class ConnectorDefinition(db.Model, BaseModel, metaclass=MetaBaseModel):
     icon_url = db.Column(db.String(256), nullable=True)
     
     connectors = db.relationship("Connector", backref="connector_definition")
-    connector_specifications = db.relationship("ConnectorSpecification", back_populates="connector_definition")
+    connector_specification = db.relationship("ConnectorSpecification", back_populates="connector_definition")
     
     def __init__(self, name, icon, connector_type, source_type, resource_requirements, public, icon_url):
         """ Create a new connector definition """

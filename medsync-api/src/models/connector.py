@@ -21,6 +21,9 @@ class Connector(db.Model, BaseModel, metaclass=MetaBaseModel):
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     
     connector_definition = db.relationship("ConnectorDefinition", backref="connectors")
+    source_connections = db.relationship("Connection", backref="source")
+    dest_connections = db.relationship("Connection", backref="destination")
+    user = db.relationship("User", backref="connectors")
 
     def __init__(self, user_id, connector_definition_id, name, configuration, connector_type):
         """ Create a new connector """

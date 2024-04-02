@@ -30,8 +30,10 @@ class ConnectionResources(Resource):
             }
         else:
             connection_schedule_type = "Manual"
+            connection_schedule_data = None
 
         connection = ConnectionRepository.create(
+            user_id,
             source_id, 
             destination_id, 
             connection_name, 
