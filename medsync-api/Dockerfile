@@ -15,5 +15,4 @@ ENV APPLICATION medsync-api
 
 COPY . /app
 
-## Run Python app
-CMD ["python", "src/app.py"]
+RUN pip install -r requirements.txt --user --upgrade --no-warn-script-location

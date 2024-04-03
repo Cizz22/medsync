@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask_restful.reqparse import Argument
-from utils import parse_params, response, create_token
-from repositories import UserRepository
+from src.utils import parse_params, response, create_token
+from src.repositories import UserRepository
 
 
 class SigninResource(Resource):

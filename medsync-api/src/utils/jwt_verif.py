@@ -3,7 +3,7 @@ from functools import wraps
 from flask import request, jsonify, make_response
 import jwt
 from flask import current_app
-from repositories import UserRepository
+from src.repositories import UserRepository
 
 
 def token_required(f):

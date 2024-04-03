@@ -1,4 +1,4 @@
-from models import Connection
+from src.models import Connection
 
 class ConnectionRepository:
     """ The repository for the connection model """

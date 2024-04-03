@@ -4,7 +4,7 @@ Defines the blueprint for the authentication
 from flask import Blueprint
 from flask_restful import Api
 
-from resources import SigninResource, SignupResource
+from src.resources import SigninResource, SignupResource
 
 AUTHENTICATION_BLUEPRINT = Blueprint("authentication", __name__)
 

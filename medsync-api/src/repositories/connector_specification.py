@@ -1,6 +1,6 @@
 
 
-from models import ConnectorSpecification
+from src.models import ConnectorSpecification
 
 class ConnectorSpecificationRepository:
     @staticmethod

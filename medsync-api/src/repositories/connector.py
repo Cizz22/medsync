@@ -1,6 +1,6 @@
 """"""
 
-from connector import Connector
+from src.models import Connector
 
 class ConnectorRepository:
     def __init__(self):

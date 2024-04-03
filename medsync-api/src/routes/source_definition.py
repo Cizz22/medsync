@@ -4,7 +4,7 @@ Defines the blueprint for the source definition
 from flask import Blueprint
 from flask_restful import Api
 
-from resources import SourceDefinitionsResource, SourceDefinitionResource
+from src.resources import SourceDefinitionsResource, SourceDefinitionResource
 
 SOURCE_DEFINITION_BLUEPRINT = Blueprint("source_definition", __name__)
 

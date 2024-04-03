@@ -1,7 +1,7 @@
 from werkzeug.exceptions import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from flask import current_app
-from utils import response
+from src.utils import response
 
 
 def handle_exception(e):

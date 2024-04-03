@@ -10,3 +10,4 @@ PyJWT
 Redis
 flask-cors
 Flask-Seeder
+gunicorn

@@ -1,6 +1,6 @@
 """Define the Connector Definition repository"""
 
-from models import ConnectorDefinition
+from src.models import ConnectorDefinition
 
 class ConnectorDefinitionRepository:
     """ The repository for the connection definition model """

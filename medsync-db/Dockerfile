@@ -1,3 +1,3 @@
-FROM postgres:13-alphine
+FROM postgres:13
 
-COPY src/main/resorces/init.sql /docker-entrypoint-initdb.d/000_init.sql
+COPY init.sql /docker-entrypoint-initdb.d/000_init.sql

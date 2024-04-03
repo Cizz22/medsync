@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask_restful.reqparse import Argument
-from utils import parse_params, response, create_token, token_required
-from repositories import ConnectorRepository, ConnectorDefinitionRepository
+from src.utils import parse_params, response, create_token, token_required
+from src.repositories import ConnectorRepository, ConnectorDefinitionRepository
 
 class SourceResources(Resource):
     """ Source resource """

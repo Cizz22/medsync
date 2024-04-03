@@ -12,7 +12,7 @@ class Connector(db.Model, BaseModel, metaclass=MetaBaseModel):
     __tablename__ = "connector"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     connector_definition_id = db.Column(db.Integer, db.ForeignKey('connector_definition.id'), nullable=False)
     name = db.Column(db.String(256), nullable=False)
     configuration = db.Column(JSON, nullable=False)

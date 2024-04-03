@@ -4,11 +4,10 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask.cli import with_appcontext
 
-from utils import response, error_handlers
-
-import config
-import routes
-from models import db
+import src.config as config
+import src.routes as routes
+from src.utils import response, handle_exception
+from src.models import db
 
 
 """Create an application."""
@@ -44,20 +43,31 @@ CORS(server)
 
 
 @server.route("/")
-def main():        
+def main():
     return response({
         "message": "Welcome to ETL API",
         "documentation": "",
     }, 200)
 
+
+@server.route("/create_db")
+def create_db():
+    db.create_all()
+    return response({
+        "message": "Database created",
+    }, 200)
+
+
 @server.errorhandler(Exception)
 def handle_error(e):
-    return error_handlers(e)
+    return handle_exception(e)
 
 
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
-        server.register_blueprint(blueprint, url_prefix=config.APPLICATION_ROOT)
+        server.register_blueprint(
+            blueprint, url_prefix=config.APPLICATION_ROOT)
 
 if __name__ == "__main__":
+    # Check if db exists, if not create it
     server.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
