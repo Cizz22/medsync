@@ -9,3 +9,4 @@ flask_bcrypt
 PyJWT
 flask-cors
 Flask-Seeder
+temporalio

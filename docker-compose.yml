@@ -3,9 +3,6 @@ version: '3.8'
 services:
   api:
     image: medsync/api:${VERSION}
-    build:
-      context: medsync-api
-      dockerfile: Dockerfile
     container_name: medsync-api
     restart: unless-stopped
     command: sh -c "python -m flask run --host=0.0.0.0 --port=${APPLICATION_PORT}"
@@ -26,9 +23,6 @@ services:
 
   db:
     image: medsync/db:${VERSION}
-    build:
-      context: medsync-db
-      dockerfile: Dockerfile
     container_name: medsync-db
     restart: unless-stopped
     volumes:
@@ -39,23 +33,34 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-  
+
   temporal:
     image:  medsync/temporal:${VERSION}
-    build:
-      context: medsync-temporal
-      dockerfile: Dockerfile
     container_name: medsync-temporal
     restart: unless-stopped
+    ports:
+      - "7233:7233"
     environment:
       - DB=postgresql
-      - DB_PORT=5432
+      - DB_PORT=${POSTGRES_PORT}
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+      - LOG_LEVEL=debug
+      - POSTGRES_PWD=${POSTGRES_PASSWORD}
+      - POSTGRES_SEEDS=${POSTGRES_HOST}
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - ./medsync-temporal/config:/etc/temporal/config/dynamicconfig
 
+  temporal-ui:
+    image: temporalio/ui:2.22.3
+    container_name: medsync-temporal-ui
+    restart: unless-stopped
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGIN=http://localhost:3000
+    ports:
+      - "8080:8080"
 volumes:
   medsync-db:
