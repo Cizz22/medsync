@@ -41,11 +41,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
   
   temporal:
-    image: medsync/temporal:${VERSION}
-    build: 
+    image:  medsync/temporal:${VERSION}
+    build:
       context: medsync-temporal
       dockerfile: Dockerfile
     container_name: medsync-temporal
+    restart: unless-stopped
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./medsync-temporal/config:/etc/temporal/config/dynamicconfig
 
 volumes:
   medsync-db:
