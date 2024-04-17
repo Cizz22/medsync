@@ -10,3 +10,4 @@ PyJWT
 flask-cors
 Flask-Seeder
 temporalio
+docker
