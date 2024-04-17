@@ -5,9 +5,9 @@ services:
     image: medsync/api:${VERSION}
     container_name: medsync-api
     restart: unless-stopped
-    command: sh -c "python -m flask run --host=0.0.0.0 --port=${APPLICATION_PORT}"
+    command: sh -c "python -m flask db upgrade && python -m flask run --host=0.0.0.0 --port=${APPLICATION_PORT}"
     volumes:
-      - ./medsync-api:/app
+      - ./medsync-api:/medsync/api
     depends_on:
       - db
     ports:
@@ -15,27 +15,28 @@ services:
     environment:
       - FLASK_APP=${FLASK_APP}
       - PYTHONPATH=src
-      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${APPLICATION_POSTGRES_DB}
       - APPLICATION_PORT=${APPLICATION_PORT}
       - APPLICATION_SECRET=${APPLICATION_SECRET}
       - APPLICATION_HOST=${APPLICATION_HOST}
-      - APPLICATION_DB_CONTAINER_NAME=db
+      - APPLICATION_DB_CONTAINER_NAME=${POSTGRES_HOST}
 
   db:
     image: medsync/db:${VERSION}
     container_name: medsync-db
     restart: unless-stopped
     volumes:
+      - ./medsync-db:/docker-entrypoint-initdb.d
       - medsync-db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_MULTIPLE_DATABASES=api,worker
 
   temporal:
-    image:  medsync/temporal:${VERSION}
+    image: medsync/temporal:${VERSION}
     container_name: medsync-temporal
     restart: unless-stopped
     ports:
