@@ -11,3 +11,7 @@ The MedSync Connector module is a crucial component of the MedSync application, 
 - **Connection Checking**: Verify connectivity to the destination database before initiating data migration tasks.
 - **Schema Discovery**: Discover the schema for a specified table in the database to understand its structure.
 - **Data Read/Write**: Perform data read and write operations between MedSync and the source/destination databases.
+
+## Powered by Airbyte
+
+this module is using Airbyte Connector docker Image, you can find more information about Airbyte [here](https://docs.airbyte.io/)

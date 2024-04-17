@@ -1,0 +1,1 @@
+FROM airbyte/destination-airbyte/destination-postgres
