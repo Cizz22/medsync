@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
-import path from 'path';
+// import path from 'path';
 import Joi from 'joi';
 
-dotenv.config({ path: path.join(process.cwd(), '.env') });
+dotenv.config();
 
 const envVarsSchema = Joi.object()
   .keys({
@@ -60,6 +60,6 @@ export default {
   },
   isAuthEnabled: false,
   neosync: {
-    apiUrl: envVars.NEOSYNC_BASE_URL
+    apiUrl: 'http://localhost:8080'
   }
 };

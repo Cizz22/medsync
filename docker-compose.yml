@@ -3,10 +3,35 @@ version: '3.8'
 services:
   api:
     container_name: medsync-api
-    image: medsync-api
+    image: medsync/api
     build:
-      context: ./backend
-      dockerfile: ./dev/build/Dockerfile.dev
+      context: medsync-api
+      dockerfile: Dockerfile
+    command: yarn dev -L
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:secret@db:5432/api?schema=public
+      - JWT_SECRET=thisisasamplesecret
+      - JWT_ACCESS_EXPIRATION_MINUTES=30
+      - JWT_REFRESH_EXPIRATION_DAYS=30
+      - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
+      - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
+      - SMTP_HOST=email-server
+      - SMTP_PORT=587
+      - SMTP_USERNAME=email-server-username
+      - SMTP_PASSWORD=email-server-password
+      - NEOSYNC_BASE_URL=http://engine:8080
+    networks:
+      - medsync-network
+    depends_on:
+      - db
+      - engine
+
+  engine:
+    container_name: medsync-engine
+    image: ghcr.io/nucleuscloud/neosync/api
     ports:
       - 8080:8080
     command: serve connect
@@ -16,54 +41,47 @@ services:
       - NUCLEUS_ENV=dev
       - TEMPORAL_URL=temporal:7233
       - DB_AUTO_MIGRATE=true
-      - DB_SCHEMA_DIR=/app/migrations
+      - DB_SCHEMA_DIR=/migrations
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=neosync
+      - DB_USER=postgres
+      - DB_PASS=secret
       - DB_SSL_DISABLE=true
       - DB_MIGRATIONS_TABLE=neosync_api_schema_migrations
       - DB_MIGRATIONS_TABLE_QUOTED=false
       - AUTH_ENABLED=false
-
     networks:
       - medsync-network
       - temporal-network
+    restart: on-failure
     depends_on:
       - db
-    restart: on-failure
-
   db:
-    image: postgres:13
     container_name: medsync-db
-    restart: unless-stopped
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_MULTIPLE_DATABASES=api,neosync
     networks:
       - medsync-network
     volumes:
+      - pg_data:/var/lib/postgresql/data
       - ./medsync-db:/docker-entrypoint-initdb.d
-      - medsync-db:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
 
   worker:
     container_name: medsync-worker
-    image: medsync-worker
-    build:
-      context: worker
-      dockerfile: Dockerfile
+    image: ghcr.io/nucleuscloud/neosync/worker
     environment:
       - NUCLEUS_ENV=dev
       - TEMPORAL_URL=temporal:7233
       - TEMPORAL_NAMESPACE=default
       - TEMPORAL_TASK_QUEUE=sync-job
-      - NEOSYNC_URL=http://api:8080
-      - REDIS_URL=redis://default:${REDIS_PASSWORD}@redis:6379
-      - LOG_LEVEL=INFO
+      - NEOSYNC_URL=http://engine:8080
+      - REDIS_URL=redis://default:foofar@redis:6379
     networks:
       - medsync-network
       - temporal-network
@@ -73,16 +91,15 @@ services:
     container_name: medsync-redis
     image: redis:7.2.4
     ports:
-      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - medsync-redis:/data
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass foofar
     networks:
       - medsync-network
-
+    volumes:
+      - redis_cache:/data
 volumes:
-  medsync-db:
-  medsync-redis:
+  redis_cache:
+  pg_data:
 networks:
   medsync-network:
     driver: bridge

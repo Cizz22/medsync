@@ -50,6 +50,7 @@ const queryUsers = async <Key extends keyof User>(
     'email',
     'name',
     'password',
+    'neosync_account_id',
     'role',
     'isEmailVerified',
     'createdAt',
@@ -83,6 +84,7 @@ const getUserById = async <Key extends keyof User>(
     'email',
     'name',
     'password',
+    'neosync_account_id',
     'role',
     'isEmailVerified',
     'createdAt',
@@ -110,6 +112,7 @@ const getUserByEmail = async <Key extends keyof User>(
     'password',
     'role',
     'isEmailVerified',
+    'neosync_account_id',
     'createdAt',
     'updatedAt'
   ] as Key[]

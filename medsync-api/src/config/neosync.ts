@@ -24,12 +24,12 @@ export function getNeosyncContext(): NeosyncClient {
     });
 
     return neoSyncClient;
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof ConnectError) {
-      throw new ApiError(translateGrpcCodeToHttpCode(err.code), err.message, true);
-    } else {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'unknown error type on neosync');
+      throw new ApiError(translateGrpcCodeToHttpCode(err.code), err.message);
     }
+
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to connect to Neosync');
   }
 }
 

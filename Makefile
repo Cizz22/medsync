@@ -18,3 +18,13 @@ compose-down:
 	docker compose -f ${TEMPORAL_COMPOSE} down
 	docker-compose -f $(DEV_COMPOSE) down
 .PHONY: compose-down
+
+compose-dev-up:
+	docker compose -f ${TEMPORAL_COMPOSE} up -d
+	docker compose -f $(DEV_COMPOSE) up -d
+.PHONY: compose-dev-up
+
+compose-dev-down:
+	docker compose -f $(DEV_COMPOSE) down
+	docker compose -f ${TEMPORAL_COMPOSE} down
+	

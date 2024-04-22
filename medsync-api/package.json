@@ -20,7 +20,6 @@
     "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up",
     "docker:dev-db:start": "docker-compose -f docker-compose.only-db-dev.yml up -d",
     "docker:dev-db:stop": "docker-compose -f docker-compose.only-db-dev.yml down",
-    "prepare": "husky install",
     "build": "rimraf build && tsc -p tsconfig.json"
   },
   "keywords": [
@@ -83,7 +82,7 @@
   "dependencies": {
     "@connectrpc/connect-node": "^1.4.0",
     "@neosync/sdk": "^0.4.13",
-    "@prisma/client": "^4.7.1",
+    "@prisma/client": "^4.10.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/nodemailer": "^6.4.7",
     "bcryptjs": "^2.4.3",
