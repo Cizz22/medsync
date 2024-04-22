@@ -1,1 +1,0 @@
-from .authentication import AUTHENTICATION_BLUEPRINT
