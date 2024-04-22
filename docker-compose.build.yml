@@ -4,17 +4,15 @@ services:
   api:
     image: medsync/api:${VERSION}
     build:
-      context: medsync-api
+      context: backend
       dockerfile: Dockerfile
   db:
     image: medsync/db:${VERSION}
     build:
       context: medsync-db
       dockerfile: Dockerfile
-  temporal:
-    image: medsync/temporal:${VERSION}
+  worker:
+    image: medsync/worker:${VERSION}
     build:
-      context: medsync-temporal
+      context: worker
       dockerfile: Dockerfile
-        
-    

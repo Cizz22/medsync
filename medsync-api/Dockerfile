@@ -1,18 +1,15 @@
-FROM python:3.12-slim-bullseye
+FROM node:alpine
 
-ARG DOCKER_BUILD_ARCH=amd64
+RUN mkdir -p /usr/src/node-app && chown -R node:node /usr/src/node-app
 
-WORKDIR /medsync/api
+WORKDIR /usr/src/node-app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+COPY package.json yarn.lock ./
 
-EXPOSE 5000
+USER node
 
-ENV APPLICATION medsync-api
+RUN yarn install --pure-lockfile
 
-COPY . /medsync/api
+COPY --chown=node:node . .
 
-RUN pip install -r requirements.txt --user --upgrade --no-warn-script-location --no-cache-dir
+EXPOSE 3000

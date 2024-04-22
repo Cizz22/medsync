@@ -1,1 +1,0 @@
-FROM airbyte/airbyte/source-postgres

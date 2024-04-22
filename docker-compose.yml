@@ -2,29 +2,44 @@ version: '3.8'
 
 services:
   api:
-    image: medsync/api:${VERSION}
     container_name: medsync-api
-    restart: unless-stopped
-    command: sh -c "python -m flask db upgrade && python -m flask run --host=0.0.0.0 --port=${APPLICATION_PORT}"
-    volumes:
-      - ./medsync-api:/medsync/api
+    image: medsync-api
+    build:
+      context: ./backend
+      dockerfile: ./dev/build/Dockerfile.dev
+    ports:
+      - 8080:8080
+    command: serve connect
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - NUCLEUS_ENV=dev
+      - TEMPORAL_URL=temporal:7233
+      - DB_AUTO_MIGRATE=true
+      - DB_SCHEMA_DIR=/app/migrations
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_SSL_DISABLE=true
+      - DB_MIGRATIONS_TABLE=neosync_api_schema_migrations
+      - DB_MIGRATIONS_TABLE_QUOTED=false
+      - AUTH_ENABLED=false
+
+    networks:
+      - medsync-network
+      - temporal-network
     depends_on:
       - db
-    ports:
-      - "5000:5000"
-    environment:
-      - FLASK_APP=${FLASK_APP}
-      - PYTHONPATH=src
-      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${APPLICATION_POSTGRES_DB}
-      - APPLICATION_PORT=${APPLICATION_PORT}
-      - APPLICATION_SECRET=${APPLICATION_SECRET}
-      - APPLICATION_HOST=${APPLICATION_HOST}
-      - APPLICATION_DB_CONTAINER_NAME=${POSTGRES_HOST}
+    restart: on-failure
 
   db:
-    image: medsync/db:${VERSION}
+    image: postgres:13
     container_name: medsync-db
     restart: unless-stopped
+    networks:
+      - medsync-network
     volumes:
       - ./medsync-db:/docker-entrypoint-initdb.d
       - medsync-db:/var/lib/postgresql/data
@@ -33,35 +48,44 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_MULTIPLE_DATABASES=api,worker
+      - POSTGRES_DB=${POSTGRES_DB}
 
-  temporal:
-    image: medsync/temporal:${VERSION}
-    container_name: medsync-temporal
-    restart: unless-stopped
-    ports:
-      - "7233:7233"
+  worker:
+    container_name: medsync-worker
+    image: medsync-worker
+    build:
+      context: worker
+      dockerfile: Dockerfile
     environment:
-      - DB=postgresql
-      - DB_PORT=${POSTGRES_PORT}
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
-      - LOG_LEVEL=debug
-      - POSTGRES_PWD=${POSTGRES_PASSWORD}
-      - POSTGRES_SEEDS=${POSTGRES_HOST}
-      - POSTGRES_USER=${POSTGRES_USER}
+      - NUCLEUS_ENV=dev
+      - TEMPORAL_URL=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TEMPORAL_TASK_QUEUE=sync-job
+      - NEOSYNC_URL=http://api:8080
+      - REDIS_URL=redis://default:${REDIS_PASSWORD}@redis:6379
+      - LOG_LEVEL=INFO
+    networks:
+      - medsync-network
+      - temporal-network
+    restart: on-failure
+
+  redis:
+    container_name: medsync-redis
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
-      - ./medsync-temporal/config:/etc/temporal/config/dynamicconfig
+      - medsync-redis:/data
+    networks:
+      - medsync-network
 
-  temporal-ui:
-    image: temporalio/ui:2.22.3
-    container_name: medsync-temporal-ui
-    restart: unless-stopped
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CORS_ORIGIN=http://localhost:3000
-    ports:
-      - "8080:8080"
 volumes:
   medsync-db:
+  medsync-redis:
+networks:
+  medsync-network:
+    driver: bridge
+    name: medsync-network
+  temporal-network:
+    external: true

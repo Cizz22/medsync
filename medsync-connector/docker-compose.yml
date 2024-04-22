@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  source-mysql:
-    image: medsync/source-mysql
-    build:
-      context: source-mysql
-      dockerfile: Dockerfile
-    container_name: source-mysql
