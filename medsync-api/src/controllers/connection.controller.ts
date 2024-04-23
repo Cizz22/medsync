@@ -1,10 +1,13 @@
 import { connectionService } from '../services';
 import catchAsync from '../utils/catchAsync';
 import httpStatus from 'http-status';
+import pick from '../utils/pick';
 
 const getConnections = catchAsync(async (req, res) => {
-  const accountId = req.params.account_id;
-  const connections = await connectionService.getConnections(accountId);
+  const accountId = req.user?.neosync_account_id;
+  const filter = pick(req.query, ['name', 'role']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const connections = await connectionService.getConnections(accountId, filter,options);
   res.send(connections);
 });
 
@@ -23,7 +26,7 @@ const createConnection = catchAsync(async (req, res) => {
 
 const getConnection = catchAsync(async (req, res) => {
   const connectionId = req.params.connectionId;
-  const accountId = req.user.neosync_account_id;
+  const accountId = req.user?.neosync_account_id;
   const connection = await connectionService.getConnection(accountId, connectionId);
   res.send(connection);
 });
@@ -35,7 +38,7 @@ const deleteConnection = catchAsync(async (req, res) => {
 });
 
 const checkConnectionConfig = catchAsync(async (req, res) => {
-  const {connection_type, connection_config} = req.body;
+  const { connection_type, connection_config } = req.body;
 
   const response = await connectionService.checkConnectionConfig(
     connection_type,
@@ -43,7 +46,7 @@ const checkConnectionConfig = catchAsync(async (req, res) => {
   );
 
   res.send(response);
-})
+});
 
 export default {
   getConnections,

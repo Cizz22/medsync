@@ -9,7 +9,6 @@ import {
 //Function to create connectionconfig class based on conneciton type
 
 export default async function generateConConfig(connection_type: string, connection_config: any) {
-
   switch (connection_type) {
     case 'postgresql':
       // Validate Connection config
@@ -61,3 +60,9 @@ export default async function generateConConfig(connection_type: string, connect
       break;
   }
 }
+
+// export async function toJobSourceOption(connection_config, source) {
+//
+//   switch(source.connectionConfig)
+//
+// }

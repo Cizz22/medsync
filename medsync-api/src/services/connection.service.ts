@@ -24,22 +24,24 @@ import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
 
-interface CreateConnection {
-  connection_type: string;
-  account_id: string;
-  name: string;
-  connection_config: object;
-}
+export async function getConnections(
+  accountId: string,
+) {
+  // const page = options.page || 1;
+  // const limit = options.limit || 10;
+  // const sortBy = options.sortBy || 'createdAt';
+  // const sortType = options.sortType || 'desc';
 
-export async function getConnections(accountId: string): Promise<GetConnectionsResponse> {
-  return await client.connections.getConnections(
+  const result = await client.connections.getConnections(
     new GetConnectionsRequest({
       accountId
     })
   );
+
+  return result;
 }
 
-export async function checkConnectionConfig(connection_type:string,connection_config:any) {
+export async function checkConnectionConfig(connection_type: string, connection_config: any) {
   const config = await generateConConfig(connection_type, connection_config);
 
   return await client.connections.checkConnectionConfig(

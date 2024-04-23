@@ -1,22 +1,35 @@
 import express from 'express';
 import validate from '../../middlewares/validate';
-import authValidation from '../../validations/auth.validation';
-import { authController } from '../../controllers';
 import auth from '../../middlewares/auth';
 import connectionController from '../../controllers/connection.controller';
+import { connectionValidation } from '../../validations';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(auth(), connectionController.createConnection)
-  .get(auth(), connectionController.getConnections);
+  .post(
+    auth(),
+    validate(connectionValidation.createConnection),
+    connectionController.createConnection
+  )
+  .get(auth(), validate(connectionValidation.getConnections), connectionController.getConnections);
 
 router
   .route('/:connectionId')
-  .get(auth(), connectionController.getConnection)
-  .delete(auth(), connectionController.deleteConnection);
+  .get(auth(), validate(connectionValidation.getConnection), connectionController.getConnection)
+  .delete(
+    auth(),
+    validate(connectionValidation.deleteConnection),
+    connectionController.deleteConnection
+  );
 
-router.route('/check').post(auth(), connectionController.checkConnectionConfig);
+router
+  .route('/check')
+  .post(
+    auth(),
+    validate(connectionValidation.checkConnectionConfig),
+    connectionController.checkConnectionConfig
+  );
 
 export default router;
