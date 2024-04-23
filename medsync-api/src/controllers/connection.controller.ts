@@ -10,10 +10,10 @@ const getConnections = catchAsync(async (req, res) => {
 
 const createConnection = catchAsync(async (req, res) => {
   const { connection_type, name, connection_config } = req.body;
-  const accoundId = req.params.accountId;
+  const accountId = req.user?.neosync_account_id;
   const connection = await connectionService.createConnection(
     connection_type,
-    accoundId,
+    accountId,
     name,
     connection_config
   );
@@ -21,7 +21,34 @@ const createConnection = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(connection);
 });
 
+const getConnection = catchAsync(async (req, res) => {
+  const connectionId = req.params.connectionId;
+  const accountId = req.user.neosync_account_id;
+  const connection = await connectionService.getConnection(accountId, connectionId);
+  res.send(connection);
+});
+
+const deleteConnection = catchAsync(async (req, res) => {
+  const connectionId = req.params.connectionId;
+  await connectionService.deleteConnection(connectionId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const checkConnectionConfig = catchAsync(async (req, res) => {
+  const {connection_type, connection_config} = req.body;
+
+  const response = await connectionService.checkConnectionConfig(
+    connection_type,
+    connection_config
+  );
+
+  res.send(response);
+})
+
 export default {
   getConnections,
-  createConnection
+  createConnection,
+  getConnection,
+  deleteConnection,
+  checkConnectionConfig
 };

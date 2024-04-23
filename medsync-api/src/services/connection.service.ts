@@ -20,6 +20,7 @@ import {
 import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
+import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
 
@@ -38,8 +39,14 @@ export async function getConnections(accountId: string): Promise<GetConnectionsR
   );
 }
 
-export async function checkConnectionConfig(req: CheckConnectionConfigRequest) {
-  return await client.connections.checkConnectionConfig(req);
+export async function checkConnectionConfig(connection_type:string,connection_config:any) {
+  const config = await generateConConfig(connection_type, connection_config);
+
+  return await client.connections.checkConnectionConfig(
+    new CheckConnectionConfigRequest({
+      connectionConfig: config
+    })
+  );
 }
 
 export async function isConnectionNameAvailable(accountId: string, name: string) {

@@ -17,7 +17,8 @@ const jwtVerify: VerifyCallback = async (payload, done) => {
       select: {
         id: true,
         email: true,
-        name: true
+        name: true,
+        neosync_account_id: true
       },
       where: { id: payload.sub }
     });

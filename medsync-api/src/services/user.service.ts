@@ -3,7 +3,8 @@ import httpStatus from 'http-status';
 import prisma from '../client';
 import ApiError from '../utils/ApiError';
 import { encryptPassword } from '../utils/encryption';
-
+import { getNeosyncContext } from '../config/neosync';
+import { SetPersonalAccountRequest } from '@neosync/sdk';
 /**
  * Create a user
  * @param {Object} userBody
@@ -18,12 +19,18 @@ const createUser = async (
   if (await getUserByEmail(email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
+
+  // Set user neosync account id
+  const client = getNeosyncContext();
+  const accountId = await client.users.setPersonalAccount(new SetPersonalAccountRequest());
+
   return prisma.user.create({
     data: {
       email,
       name,
       password: await encryptPassword(password),
-      role
+      role,
+      neosync_account_id: accountId
     }
   });
 };
