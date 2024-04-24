@@ -1,28 +1,39 @@
 import {
   ActivityOptions,
+  Connection,
   CreateJobRequest,
+  CreateJobRunRequest,
+  GetJobNextRunsRequest,
+  GetJobRecentRunsRequest,
+  GetJobRequest,
+  GetJobStatusRequest,
   GetJobsRequest,
+  IsJobNameAvailableRequest,
   JobDestination,
   JobMapping,
   JobSource,
+  PauseJobRequest,
   RetryPolicy,
   WorkflowOptions
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
 import connectionService from './connection.service';
 import { convertMinutesToNanoseconds } from '../utils/utils';
+import { toJobDestinationOption, toJobSourceOption } from '../utils/connectionConfig';
+import ApiError from '../utils/ApiError';
+import httpStatus from 'http-status';
 
 const client = getNeosyncContext();
 
 export async function getJobs(
-  accountId: string,
-  filter: object,
-  options: { limit?: number; page?: number; sortBy?: string; sortType?: 'asc' | 'desc' }
+  accountId: string
+  // filter: object,
+  // options: { limit?: number; page?: number; sortBy?: string; sortType?: 'asc' | 'desc' }
 ) {
-  const page = options.page || 1;
-  const limit = options.limit || 10;
-  const sortBy = options.sortBy || 'createdAt';
-  const sortType = options.sortType || 'desc';
+  // const page = options.page || 1;
+  // const limit = options.limit || 10;
+  // const sortBy = options.sortBy || 'createdAt';
+  // const sortType = options.sortType || 'desc';
 
   const result = await client.jobs.getJobs(
     new GetJobsRequest({
@@ -30,24 +41,25 @@ export async function getJobs(
     })
   );
 
-  return result;
+  return result.jobs;
 }
 
-export async function createJob(
-  accountId: string,
-  job_name: string,
-  mappings: any,
-  source: {
-    connectionId: string;
-    connectionConfig: any;
-  },
-  destionations: any,
-  cron_schedule?: string,
-  initiate_job_run?: boolean,
-  workflow_options?: any,
-  sync_options?: any
-) {
-  const sourceConnection = await connectionService.getConnection(accountId, source.connectionId);
+export async function createJob(accountId: string, req: any) {
+  //const sourceConnection = await connectionService.getConnection(accountId, source.connectionId);
+  const {
+    job_name,
+    mappings,
+    source,
+    destinations,
+    cron_schedule,
+    initiate_job_run,
+    workflow_options,
+    sync_options
+  } = req;
+
+  const connections = await connectionService.getConnections(accountId);
+
+  const sourceConnection = connections.find((connection) => connection.id === source.connectionId);
 
   let workflowOptions: WorkflowOptions | undefined = undefined;
   if (workflow_options.runTimeout) {
@@ -87,15 +99,134 @@ export async function createJob(
       });
     }),
     source: new JobSource({
-      options: source.connectionConfig
+      options: sourceConnection ? toJobSourceOption(source.options, sourceConnection) : undefined
     }),
-    destinations: destionations.map((destination: any) => {
+    destinations: destinations.map((destination: any) => {
       return new JobDestination({
         connectionId: destination.connectionId,
-        options: destination.connectionConfig
+        options: toJobDestinationOption(
+          destination.options,
+          connections.find((connection) => connection.id === destination.connectionId) as Connection
+        )
       });
     }),
     workflowOptions,
     syncOptions
   });
+
+  const job = await client.jobs.createJob(data);
+
+  return job.job;
 }
+
+export async function getJobStatuses(accountId: string) {
+  const result = await client.jobs.getJobStatuses(
+    new GetJobsRequest({
+      accountId
+    })
+  );
+
+  return result.statuses;
+}
+
+export async function isJobNameAvailable(accountId: string, name: string) {
+  const is_available = await client.jobs.isJobNameAvailable(
+    new IsJobNameAvailableRequest(
+      new IsJobNameAvailableRequest({
+        name,
+        accountId
+      })
+    )
+  );
+
+  return is_available.isAvailable;
+}
+
+export async function getJob(accountId: string, jobId: string) {
+  const job = await client.jobs.getJob(
+    new GetJobRequest({
+      id: jobId
+    })
+  );
+
+  if (job.job?.accountId !== accountId) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Job not found');
+  }
+
+  return job.job;
+}
+
+export async function deleteJob(accountId: string, jobId: string) {
+  const job = await client.jobs.deleteJob(
+    new GetJobRequest({
+      id: jobId
+    })
+  );
+
+  return job;
+}
+
+export async function createJobRun(JobId: string) {
+  const jobRun = await client.jobs.createJobRun(
+    new CreateJobRunRequest({
+      jobId: JobId
+    })
+  );
+
+  return jobRun;
+}
+
+export async function getNextJobRun(jobId: string) {
+  const jobRun = await client.jobs.getJobNextRuns(
+    new GetJobNextRunsRequest({
+      jobId
+    })
+  );
+
+  return jobRun.nextRuns;
+}
+
+export async function pauseJobRun(jobRunId: string, isPause: boolean) {
+  const jobRun = await client.jobs.pauseJob(
+    new PauseJobRequest({
+      id: jobRunId,
+      pause: isPause
+    })
+  );
+
+  return jobRun;
+}
+
+export async function getJobRecentRun(jobId: string) {
+  const jobRun = await client.jobs.getJobRecentRuns(
+    new GetJobRecentRunsRequest({
+      jobId
+    })
+  );
+
+  return jobRun.recentRuns;
+}
+
+export async function getJobStatus(jobId: string) {
+  const jobRun = await client.jobs.getJobStatus(
+    new GetJobStatusRequest({
+      jobId
+    })
+  );
+
+  return jobRun.status;
+}
+
+export default {
+  getJobs,
+  createJob,
+  getJobStatuses,
+  isJobNameAvailable,
+  getJob,
+  deleteJob,
+  createJobRun,
+  getNextJobRun,
+  pauseJobRun,
+  getJobRecentRun,
+  getJobStatus
+};

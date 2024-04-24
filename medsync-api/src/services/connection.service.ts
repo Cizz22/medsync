@@ -2,7 +2,6 @@ import {
   GetConnectionRequest,
   GetConnectionResponse,
   GetConnectionsRequest,
-  GetConnectionsResponse,
   CreateConnectionRequest,
   CheckConnectionConfigRequest,
   IsConnectionNameAvailableRequest,
@@ -15,7 +14,8 @@ import {
   PostgresConnection,
   ConnectionConfig,
   MysqlConnectionConfig,
-  MysqlConnection
+  MysqlConnection,
+  Connection
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
@@ -24,9 +24,7 @@ import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
 
-export async function getConnections(
-  accountId: string,
-) {
+export async function getConnections(accountId: string) {
   // const page = options.page || 1;
   // const limit = options.limit || 10;
   // const sortBy = options.sortBy || 'createdAt';
@@ -38,32 +36,33 @@ export async function getConnections(
     })
   );
 
-  return result;
+  return result.connections;
 }
 
 export async function checkConnectionConfig(connection_type: string, connection_config: any) {
   const config = await generateConConfig(connection_type, connection_config);
 
-  return await client.connections.checkConnectionConfig(
+  const check = await client.connections.checkConnectionConfig(
     new CheckConnectionConfigRequest({
       connectionConfig: config
     })
   );
+
+  return check.isConnected;
 }
 
 export async function isConnectionNameAvailable(accountId: string, name: string) {
-  return await client.connections.isConnectionNameAvailable(
+  const is_available = await client.connections.isConnectionNameAvailable(
     new IsConnectionNameAvailableRequest({
       accountId,
       connectionName: name
     })
   );
+
+  return is_available.isAvailable;
 }
 
-export async function getConnection(
-  accountId: string,
-  connectionId: string
-): Promise<GetConnectionResponse> {
+export async function getConnection(accountId: string, connectionId: string): Promise<Connection> {
   const connection = await client.connections.getConnection(
     new GetConnectionRequest({
       id: connectionId
@@ -74,7 +73,7 @@ export async function getConnection(
     throw new ApiError(httpStatus.NOT_FOUND, 'Connection not found');
   }
 
-  return connection;
+  return connection.connection;
 }
 
 export async function createConnection(
@@ -82,12 +81,15 @@ export async function createConnection(
   accountId: string,
   name: string,
   connection_config: any
-) {
+): Promise<Connection | undefined> {
+  let config: PostgresConnectionConfig | MysqlConnectionConfig;
+  let connectionCase: 'pgConfig' | 'mysqlConfig';
+  let connection: GetConnectionResponse;
+
   switch (connection_type) {
     case 'postgresql':
-      // Validate Connection config
-
-      const pgconfig = new PostgresConnectionConfig({
+      connectionCase = 'pgConfig';
+      config = new PostgresConnectionConfig({
         connectionConfig: {
           case: 'connection',
           value: new PostgresConnection({
@@ -101,14 +103,14 @@ export async function createConnection(
         }
       });
 
-      return await client.connections.createConnection(
+      connection = await client.connections.createConnection(
         new CreateConnectionRequest({
           name,
           accountId,
           connectionConfig: new ConnectionConfig({
             config: {
-              case: 'pgConfig',
-              value: pgconfig
+              case: connectionCase,
+              value: config
             }
           })
         })
@@ -129,7 +131,7 @@ export async function createConnection(
         }
       });
 
-      return await client.connections.createConnection(
+      connection = await client.connections.createConnection(
         new CreateConnectionRequest({
           name,
           accountId,
@@ -143,8 +145,11 @@ export async function createConnection(
       );
       break;
     default:
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid connection type');
       break;
   }
+
+  return connection.connection;
 }
 
 export async function updateConnection(req: UpdateConnectionRequest) {
