@@ -1,51 +1,52 @@
+import { User } from '@prisma/client';
 import { jobService } from '../services';
 import catchAsync from '../utils/catchAsync';
 
 const getJobs = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
-  const jobs = await jobService.getJobs(accountId);
+  const user = req.user as User;
+  const jobs = await jobService.getJobs(user.neosync_account_id);
   res.send(jobs);
 });
 
 const createJob = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
 
-  const job = await jobService.createJob(accountId, req.body);
+  const job = await jobService.createJob(user.neosync_account_id, req.body);
 
   res.status(201).send(job);
 });
 
 const getJobStatuses = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
 
-  const statuses = await jobService.getJobStatuses(accountId);
+  const statuses = await jobService.getJobStatuses(user.neosync_account_id);
 
   res.send(statuses);
 });
 
 const isJobNameAvailable = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
   const name = req.query.name as string;
 
-  const isAvailable = await jobService.isJobNameAvailable(accountId, name);
+  const isAvailable = await jobService.isJobNameAvailable(user.neosync_account_id, name);
 
   res.send({ isAvailable });
 });
 
 const getJob = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
   const jobId = req.params.jobId;
 
-  const job = await jobService.getJob(accountId, jobId);
+  const job = await jobService.getJob(user.neosync_account_id, jobId);
 
   res.send(job);
 });
 
 const deleteJob = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
   const jobId = req.params.jobId;
 
-  await jobService.deleteJob(accountId, jobId);
+  await jobService.deleteJob(user.neosync_account_id, jobId);
 
   res.send({
     message: 'Job deleted'

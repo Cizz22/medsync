@@ -60,6 +60,6 @@ export default {
   },
   isAuthEnabled: false,
   neosync: {
-    apiUrl: 'http://localhost:8080'
+    apiUrl: envVars.NEOSYNC_API_URL
   }
 };

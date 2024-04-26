@@ -39,16 +39,16 @@ export async function getConnections(accountId: string) {
   return result.connections;
 }
 
-export async function checkConnectionConfig(connection_type: string, connection_config: any) {
-  const config = await generateConConfig(connection_type, connection_config);
+export async function checkConnectionConfig(accountId: string, connection_id: string) {
+  const connection = await getConnection(accountId, connection_id);
 
   const check = await client.connections.checkConnectionConfig(
     new CheckConnectionConfigRequest({
-      connectionConfig: config
+      connectionConfig: connection.connectionConfig
     })
   );
 
-  return check.isConnected;
+  return check;
 }
 
 export async function isConnectionNameAvailable(accountId: string, name: string) {

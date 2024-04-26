@@ -1,15 +1,14 @@
 FROM node:alpine
 
-WORKDIR /usr/src/node-app
+WORKDIR /medsync/api
 
-COPY package*.json ./
+COPY package.json .
 
 RUN npm install
 
 COPY . .
 
-EXPOSE 3000
-
 RUN npx prisma generate
+
 
 

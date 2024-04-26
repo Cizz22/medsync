@@ -22,7 +22,7 @@ const createUser = async (
 
   // Set user neosync account id
   const client = getNeosyncContext();
-  const accountId = await client.users.setPersonalAccount(new SetPersonalAccountRequest());
+  const account = await client.users.setPersonalAccount(new SetPersonalAccountRequest());
 
   return prisma.user.create({
     data: {
@@ -30,7 +30,7 @@ const createUser = async (
       name,
       password: await encryptPassword(password),
       role,
-      neosync_account_id: accountId
+      neosync_account_id: account.accountId
     }
   });
 };

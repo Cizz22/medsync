@@ -32,8 +32,7 @@ const deleteConnection = {
 
 const checkConnectionConfig = {
   body: Joi.object().keys({
-    connection_type: Joi.string().required(),
-    connection_config: Joi.object().required()
+    connectionId: Joi.string().required()
   })
 };
 

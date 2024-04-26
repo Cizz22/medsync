@@ -1,22 +1,23 @@
 import { connectionService } from '../services';
 import catchAsync from '../utils/catchAsync';
 import httpStatus from 'http-status';
-import pick from '../utils/pick';
+// import pick from '../utils/pick';
+import { User } from '@prisma/client';
 
 const getConnections = catchAsync(async (req, res) => {
-  const accountId = req.user?.neosync_account_id;
-  const filter = pick(req.query, ['name', 'role']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const connections = await connectionService.getConnections(accountId, filter,options);
+  const user = req.user as User;
+  // const filter = pick(req.query, ['name', 'role']);
+  // const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const connections = await connectionService.getConnections(user.neosync_account_id);
   res.send(connections);
 });
 
 const createConnection = catchAsync(async (req, res) => {
   const { connection_type, name, connection_config } = req.body;
-  const accountId = req.user?.neosync_account_id;
+  const user = req.user as User;
   const connection = await connectionService.createConnection(
     connection_type,
-    accountId,
+    user.neosync_account_id,
     name,
     connection_config
   );
@@ -26,8 +27,8 @@ const createConnection = catchAsync(async (req, res) => {
 
 const getConnection = catchAsync(async (req, res) => {
   const connectionId = req.params.connectionId;
-  const accountId = req.user?.neosync_account_id;
-  const connection = await connectionService.getConnection(accountId, connectionId);
+  const user = req.user as User;
+  const connection = await connectionService.getConnection(user.neosync_account_id, connectionId);
   res.send(connection);
 });
 
@@ -38,11 +39,12 @@ const deleteConnection = catchAsync(async (req, res) => {
 });
 
 const checkConnectionConfig = catchAsync(async (req, res) => {
-  const { connection_type, connection_config } = req.body;
+  const { connectionId } = req.body;
+  const user = req.user as User;
 
   const response = await connectionService.checkConnectionConfig(
-    connection_type,
-    connection_config
+    user.neosync_account_id,
+    connectionId
   );
 
   res.send(response);

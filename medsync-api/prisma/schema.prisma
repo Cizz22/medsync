@@ -15,7 +15,7 @@ model User {
   email              String   @unique
   name               String?
   password           String
-  neosync_account_id String?
+  neosync_account_id String
   role               Role     @default(USER)
   isEmailVerified    Boolean  @default(false)
   createdAt          DateTime @default(now())
