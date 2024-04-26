@@ -20,7 +20,7 @@ import {
 import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
-import generateConConfig from '../utils/connectionConfig';
+// import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
 
