@@ -1,7 +1,7 @@
-import AccountPageRedirect from '@/components/AccountPageRedirect';
-import OverviewContainer from '@/components/containers/OverviewContainer';
-import PageHeader from '@/components/headers/PageHeader';
-import SkeletonTable from '@/components/skeleton/SkeletonTable';
+import AccountPageRedirect from '../../../components/AccountPageRedirect';
+import OverviewContainer from '../../../components/containers/OverviewContainer';
+import PageHeader from '../../../components/headers/PageHeader';
+import SkeletonTable from '../../../components/skeleton/SkeletonTable';
 import { ReactElement } from 'react';
 
 export default function Home(): ReactElement {

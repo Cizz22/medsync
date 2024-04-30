@@ -1,12 +1,12 @@
-import SiteFooter from '../../components/SiteFooter';
-import OnboardingChecklist from '../../components/onboarding-checklist/OnboardingChecklist';
-import AccountProvider from '../../components/providers/account-provider';
-import { PostHogIdentifier } from '../../components/providers/posthog-provider';
-import { SessionProvider } from '../../components/providers/session-provider';
-import SiteHeader from '../../components/site-header/SiteHeader';
-import { Toaster } from '../../components/ui/toaster';
+import SiteFooter from './SiteFooter';
+import OnboardingChecklist from './onboarding-checklist/OnboardingChecklist';
+import AccountProvider from './providers/account-provider';
+import { PostHogIdentifier } from './providers/posthog-provider';
+import { SessionProvider } from './providers/session-provider';
+import SiteHeader from './site-header/SiteHeader';
+import { Toaster } from './ui/toaster';
 import { ReactElement, ReactNode, Suspense } from 'react';
-import { auth } from './api/auth/[...nextauth]/auth';
+// import { auth } from './api/auth/[...nextauth]/auth';
 
 interface Props {
   children: ReactNode;

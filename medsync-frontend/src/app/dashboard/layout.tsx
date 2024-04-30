@@ -2,8 +2,8 @@ import '@/app/globals.css';
 import {
   PHProvider,
   PostHogPageview,
-} from '@/components/providers/posthog-provider';
-import { ThemeProvider } from '@/components/providers/theme-provider';
+} from '../../../components/providers/posthog-provider';
+import { ThemeProvider } from '../../../components/providers/theme-provider';
 import { fontSans } from '@/libs/fonts';
 import { cn } from '@/libs/utils';
 import { Metadata } from 'next';
