@@ -4,11 +4,11 @@ WORKDIR /medsync/api
 
 COPY package.json .
 
-RUN npm install
+RUN pnpm install
 
 COPY . .
 
-RUN npx prisma generate
+RUN pnpx prisma generate
 
 
 
