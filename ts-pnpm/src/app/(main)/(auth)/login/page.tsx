@@ -1,15 +1,39 @@
+'use client'
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/y8H0Ty82DQ7
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import Link from "next/link"
+import {signIn} from "next-auth/react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export default function Component() {
+    const [credentials, setCredentials] = useState({
+        email: "",
+        password: "",
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setCredentials((prev) => ({ ...prev, [name]: value }))
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        const result = await signIn('credentials', {
+            email: credentials.email,
+            password: credentials.password,
+            redirect: false,
+        })
+    }
+
+
     return (
         <div className="flex h-screen w-full items-center justify-center bg-gray-100 px-4 dark:bg-gray-950">
             <div className="mx-auto w-full max-w-md space-y-6">
@@ -17,10 +41,11 @@ export default function Component() {
                     <FolderSyncIcon className="h-12 w-12 text-gray-900 dark:text-gray-50" />
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">MedSync</h1>
                 </div>
+                <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" placeholder="name@example.com" type="email" />
+                        <Input id="email" name="email" onChange={handleChange} placeholder="name@example.com" type="email" value={credentials.email} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
@@ -29,7 +54,7 @@ export default function Component() {
                                 Forgot Password?
                             </Link>
                         </div>
-                        <Input id="password" placeholder="••••••••" type="password" />
+                        <Input id="password" name="password" onChange={handleChange} placeholder="••••••••" type="password" value={credentials.password}/>
                     </div>
                     <div className="flex items-center justify-between gap-2">
                         <Button className="flex-1" type="submit">
@@ -43,6 +68,7 @@ export default function Component() {
                         </Link>
                     </div>
                 </div>
+                </form>
             </div>
         </div>
     )

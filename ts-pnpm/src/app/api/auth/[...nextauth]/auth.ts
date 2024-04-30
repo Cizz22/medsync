@@ -1,17 +1,34 @@
-import NextAuth from "next-auth"
-import Credentials from "next-auth/providers/credentials"
-import { apiUrl } from "@/constant/env"
+import { apiUrl } from '@/constant/env'
+import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export default NextAuth({
   providers: [
     Credentials({
+      name: 'Sign in',
       credentials:{
-        email:{},
-        password:{}
+        email:{ label:"Email", type:"email"},
+        password:{ label:"Password", type:"password"}
       },
       authorize: async (credentials) => {
-        const user = fetch(`${apiUrl}/auth/login`, {})
+        try{
+          const res = await fetch(`${apiUrl}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+          })
+
+          if (res.ok){
+            const data = await res.json()
+            return data
+          }
+
+          return null
+        }catch(err:any){
+          throw new Error(err.message)
+        }
       }
     })
   ],
+  session: {strategy: 'jwt'},
 })
