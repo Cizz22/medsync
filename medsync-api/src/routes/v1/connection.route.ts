@@ -67,6 +67,8 @@ router
     connectionController.deleteConnection
   );
 
+router.route('/:connectionId/schema').get(auth(), connectionController.checkConnectionSchema);
+
 router
   .route('/check')
   .post(

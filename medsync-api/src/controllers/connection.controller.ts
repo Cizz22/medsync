@@ -39,7 +39,7 @@ const deleteConnection = catchAsync(async (req, res) => {
 });
 
 const checkConnectionConfig = catchAsync(async (req, res) => {
-  const { connectionId } = req.body;
+  const connectionId = req.params.connectionId;
   const user = req.user as User;
 
   const response = await connectionService.checkConnectionConfig(
@@ -50,10 +50,19 @@ const checkConnectionConfig = catchAsync(async (req, res) => {
   res.send(response);
 });
 
+const checkConnectionSchema = catchAsync(async (req, res) => {
+  const connectionId = req.params.connectionId;
+
+  const response = await connectionService.checkConnectionSchema(connectionId);
+
+  res.send(response);
+});
+
 export default {
   getConnections,
   createConnection,
   getConnection,
   deleteConnection,
-  checkConnectionConfig
+  checkConnectionConfig,
+  checkConnectionSchema
 };

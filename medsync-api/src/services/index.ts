@@ -5,3 +5,4 @@ export { default as emailService } from './email.service';
 export { default as connectionService } from './connection.service';
 export { default as jobService } from './job.service';
 export { default as TransformerService } from './transformer.service';
+export { default as RunService } from './run.service';

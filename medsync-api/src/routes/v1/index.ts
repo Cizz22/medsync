@@ -5,6 +5,7 @@ import docsRoute from './docs.route';
 import connectionRoute from './connection.route';
 import jobRoute from './job.route';
 import transformerRoute from './transformer.route';
+import runRoute from './run.route';
 import config from '../../config/config';
 
 const router = express.Router();
@@ -29,6 +30,10 @@ const defaultRoutes = [
   {
     path: '/transformer',
     route: transformerRoute
+  },
+  {
+    path: '/run',
+    route: runRoute
   }
 ];
 
