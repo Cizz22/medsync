@@ -9,6 +9,6 @@ export async function GET(
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
         const response = await ctx.axios.get(`/connection/${params.id}/constrains/unique`)
-        return response
+        return response.data
     }, req.headers.get('token'))(req)
 }

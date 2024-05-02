@@ -9,6 +9,6 @@ export async function GET(
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
         const connectionSchema = await ctx.axios.get(`/connection/${params.id}/schema`);
-        return connectionSchema;
+        return connectionSchema.data;
     }, req.headers.get("token"))(req)
 }

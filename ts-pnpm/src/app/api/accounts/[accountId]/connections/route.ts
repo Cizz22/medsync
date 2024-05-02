@@ -9,7 +9,7 @@ export async function GET(
 ) {
     return withAxiosContext(async (ctx) => {
         const response = await ctx.axios.get("/connection");
-        return response;
+        return response.data;
     }, req.headers.get("token"))(req);
 }
 
@@ -19,6 +19,6 @@ export async function POST(
     return withAxiosContext(async (ctx) => {
         const body = req.body;
         const response = await ctx.axios.post("/connection", body);
-        return response;
+        return response.data;
     }, req.headers.get("token"))(req);
 }

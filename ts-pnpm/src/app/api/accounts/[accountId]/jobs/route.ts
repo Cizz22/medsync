@@ -5,11 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
     req: NextRequest,
-    { params }: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
         const response = await ctx.axios.get(`/job`)
-        return response
+        return response.data
     }, req.headers.get("token"))(req);
 }
 
@@ -21,6 +20,6 @@ export async function POST(
             '/job', req.body
         )
 
-        return response
+        return response.data
     }, req.headers.get("token"))(req)
 }

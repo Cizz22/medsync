@@ -10,7 +10,7 @@ export async function GET(
     return withAxiosContext(async (ctx) => {
         const connection = await ctx.axios.get(`/connection/${params.id}`);
 
-        return connection;
+        return connection.data;
     }, req.headers.get("token"))(req)
 }
 

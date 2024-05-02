@@ -1,6 +1,7 @@
-import { apiUrl } from "@/constant/env";
 import axios, { AxiosInstance } from "axios";
 import { NextRequest, NextResponse } from "next/server";
+
+import { apiUrl } from "@/constant/env";
 
 interface AxiosContext {
     axios:AxiosInstance;
