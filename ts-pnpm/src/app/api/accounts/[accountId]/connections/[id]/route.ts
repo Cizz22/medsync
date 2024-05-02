@@ -1,6 +1,6 @@
-import { withAxiosContext } from "@/api-only/axios-context";
-
 import { NextRequest, NextResponse } from "next/server";
+
+import { withAxiosContext } from "@/api-only/axios-context";
 import { RequestContext } from "@/shared";
 
 export async function GET(

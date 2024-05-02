@@ -15,7 +15,9 @@ import {
   ConnectionConfig,
   MysqlConnectionConfig,
   MysqlConnection,
-  Connection
+  Connection,
+  GetConnectionForeignConstraintsRequest,
+  GetConnectionPrimaryConstraintsRequest
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
@@ -186,11 +188,33 @@ export async function checkConnectionSchema(connectionId: string) {
 }
 
 export async function getConnectionUniqueConstrains(connectionId: string) {
-  return await client.connectiondata.getConnectionUniqueConstraints(
+  const res = await client.connectiondata.getConnectionUniqueConstraints(
     new GetConnectionUniqueConstraintsRequest({
       connectionId
     })
   );
+
+  return res.tableConstraints;
+}
+
+export async function getConnectionForeignConstraints(connectionId: string) {
+  const constraints = await client.connectiondata.getConnectionForeignConstraints(
+    new GetConnectionForeignConstraintsRequest({
+      connectionId
+    })
+  );
+
+  return constraints.tableConstraints;
+}
+
+export async function getConnectionPrimaryConstraints(connectionId: string) {
+  const constrains = await client.connectiondata.getConnectionPrimaryConstraints(
+    new GetConnectionPrimaryConstraintsRequest({
+      connectionId
+    })
+  );
+
+  return constrains.tableConstraints;
 }
 
 export default {
@@ -201,5 +225,7 @@ export default {
   deleteConnection,
   checkConnectionConfig,
   checkConnectionSchema,
-  getConnectionUniqueConstrains
+  getConnectionUniqueConstrains,
+  getConnectionForeignConstraints,
+  getConnectionPrimaryConstraints
 };

@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import httpStatus from 'http-status';
 // import pick from '../utils/pick';
 import { User } from '@prisma/client';
+import { send } from 'process';
 
 const getConnections = catchAsync(async (req, res) => {
   const user = req.user as User;
@@ -58,11 +59,36 @@ const checkConnectionSchema = catchAsync(async (req, res) => {
   res.send(response);
 });
 
+const getConnectionPrimaryConstraints = catchAsync(async (req, res) => {
+  const connectionId = req.params.connectionId;
+  const response = await connectionService.getConnectionPrimaryConstraints(connectionId);
+
+  res.send(response);
+});
+
+const getConnectionForeignConstraints = catchAsync(async (req, res) => {
+  const connecitonId = req.params.connectionId;
+
+  const response = await connectionService.getConnectionForeignConstraints(connecitonId);
+
+  res.json(response);
+});
+
+const getConnectionUniqueConstrains = catchAsync(async (req, res) => {
+  const connecitonId = req.params.connectionId;
+  const response = await connectionService.getConnectionUniqueConstrains(connecitonId);
+
+  res.json(response);
+});
+
 export default {
   getConnections,
   createConnection,
   getConnection,
   deleteConnection,
   checkConnectionConfig,
-  checkConnectionSchema
+  checkConnectionSchema,
+  getConnectionForeignConstraints,
+  getConnectionPrimaryConstraints,
+  getConnectionUniqueConstrains
 };

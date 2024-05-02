@@ -70,6 +70,18 @@ router
 router.route('/:connectionId/schema').get(auth(), connectionController.checkConnectionSchema);
 
 router
+  .route('/:connectionId/constrains/primary')
+  .get(auth(), connectionController.getConnectionPrimaryConstraints);
+
+router
+  .route('/:connectionId/constrains/unique')
+  .get(auth(), connectionController.getConnectionUniqueConstrains);
+
+router
+  .route('/:connectionId/constrains/foreign')
+  .get(auth(), connectionController.getConnectionForeignConstraints);
+
+router
   .route('/check')
   .post(
     auth(),
