@@ -135,11 +135,8 @@ services:
 
       - KC_HOSTNAME_URL=http://116.193.191.197:8083
       - KC_PROXY_HEADER=forwarded
-<<<<<<< HEAD
-=======
       - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_HTTP_ENABLED=true
->>>>>>> 5a4afefb16d646f198a2b53fa12128c454484b70
 
       - KC_DB=postgres
       - KC_DB_URL_HOST=db
