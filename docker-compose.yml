@@ -3,7 +3,6 @@ version: '3.8'
 services:
   api:
     container_name: medsync-api
-    image: medsync/api
     build:
       context: medsync-api
       dockerfile: Dockerfile
