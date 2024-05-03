@@ -127,7 +127,7 @@ services:
     container_name: medsync-auth-keycloak
     image: quay.io/keycloak/keycloak
     ports:
-      - 8083:8443
+      - 8083:8080
     command: start-dev --import-realm
     environment:
       - KEYCLOAK_ADMIN=admin
