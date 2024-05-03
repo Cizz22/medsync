@@ -1,37 +1,35 @@
 version: '3.8'
 
 services:
-  # api:
-  #   container_name: medsync-api
-  #   image: medsync/api
-  #   build:
-  #     context: medsync-api
-  #     dockerfile: Dockerfile
-  #   command: yarn dev -L
-  #   volumes:
-  #     - ./medsync-api:/medsync/api
-  #   ports:
-  #     - 3000:3000
-  #   environment:
-  #     - PORT=3000
-  #     - NODE_ENV=development
-  #     - DATABASE_URL=postgresql://postgres:secret@db:5432/api?schema=public
-  #     - JWT_SECRET=thisisasamplesecret
-  #     - JWT_ACCESS_EXPIRATION_MINUTES=30
-  #     - JWT_REFRESH_EXPIRATION_DAYS=30
-  #     - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
-  #     - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
-  #     - SMTP_HOST=email-server
-  #     - SMTP_PORT=587
-  #     - SMTP_USERNAME=email-server-username
-  #     - SMTP_PASSWORD=email-server-password
-  #     - NEOSYNC_API_URL=http://engine:8080
-  #   networks:
-  #     - medsync-network
-  #   depends_on:
-  #     - db
-  #     - engine
-  #     - worker
+  api:
+    container_name: medsync-api
+    image: medsync/api
+    build:
+      context: medsync-api
+      dockerfile: Dockerfile
+    command: pnpm run start
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=5000
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:secret@db:5432/api?schema=public
+      - JWT_SECRET=thisisasamplesecret
+      - JWT_ACCESS_EXPIRATION_MINUTES=30
+      - JWT_REFRESH_EXPIRATION_DAYS=30
+      - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
+      - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
+      - SMTP_HOST=email-server
+      - SMTP_PORT=587
+      - SMTP_USERNAME=email-server-username
+      - SMTP_PASSWORD=email-server-password
+      - NEOSYNC_API_URL=http://engine:8080
+    networks:
+      - medsync-network
+    depends_on:
+      - db
+      - engine
+      - worker
 
   engine:
     container_name: medsync-engine
