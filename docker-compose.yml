@@ -24,8 +24,23 @@ services:
       - SMTP_USERNAME=email-server-username
       - SMTP_PASSWORD=email-server-password
       - NEOSYNC_API_URL=http://engine:8080
+
+      - AUTH_ENABLED=false
+      - AUTH_ISSUER=http://keycloak:8080/realms/neosync
+      - AUTH_EXPECTED_ISSUER=http://localhost:8083/realms/neosync
+      - AUTH_AUTHORIZE_URL=http://localhost:8083/realms/neosync/protocol/openid-connect/auth
+      - AUTH_USERINFO_URL=http://keycloak:8080/realms/neosync/protocol/openid-connect/userinfo
+      - AUTH_TOKEN_URL=http://keycloak:8080/realms/neosync/protocol/openid-connect/token
+
+      - AUTH_CLIENT_ID=neosync-app
+      - AUTH_CLIENT_SECRET=72alWGzhHInDskRHduTQ8BjB4Lgn0n3a
+      - AUTH_AUDIENCE=neosync
+      - AUTH_SCOPE=openid email profile offline_access
+      - AUTH_PROVIDER_ID=keycloak
+      - AUTH_PROVIDER_NAME=Keycloak
     networks:
       - medsync-network
+      - kc-network
     depends_on:
       - db
       - engine
@@ -53,10 +68,18 @@ services:
       - DB_SSL_DISABLE=true
       - DB_MIGRATIONS_TABLE=neosync_api_schema_migrations
       - DB_MIGRATIONS_TABLE_QUOTED=false
-      - AUTH_ENABLED=false
+      - AUTH_ENABLED=true
+      - AUTH_AUDIENCE=neosync
+      - AUTH_BASEURL=http://keycloak:8080/realms/neosync
+      - AUTH_EXPECTED_ISS=http://localhost:8083/realms/neosync
+      - AUTH_CLI_CLIENT_ID=neosync-cli
+      - AUTH_CLI_AUDIENCE=neosync
+      - AUTH_CLIENTID_SECRET={"neosync-cli":"GkVsthDzDvBfzb2vT4UO95xbXrwoXE5w"}
+      - AUTH_SIGNATURE_ALGORITHM=RS256
     networks:
       - medsync-network
       - temporal-network
+      - kc-network
     restart: on-failure
     depends_on:
       - db
@@ -71,6 +94,7 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=api,neosync
     networks:
       - medsync-network
+      - kc-network
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./medsync-db:/docker-entrypoint-initdb.d
@@ -101,6 +125,32 @@ services:
       - medsync-network
     volumes:
       - redis_cache:/data
+
+  keycloak:
+    container_name: medsync-auth-keycloak
+    image: quay.io/keycloak/keycloak
+    ports:
+      - 8083:8080
+    command: start-dev --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=password
+
+      - KC_HOSTNAME_URL=http://localhost:8083
+
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=db
+      - KC_DB_URL_PORT=5432
+      - KC_DB_URL_DATABASE=neosync
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=secret
+      - KC_DB_SCHEMA=keycloak
+    volumes:
+      - ./keycloak/imports:/opt/keycloak/data/import
+    networks:
+      - kc-network
+    depends_on:
+      - db
 volumes:
   redis_cache:
   pg_data:
@@ -110,3 +160,6 @@ networks:
     name: medsync-network
   temporal-network:
     external: true
+  kc-network:
+    driver: bridge
+    name: kc-network

@@ -4,7 +4,13 @@ import prisma from '../client';
 import ApiError from '../utils/ApiError';
 import { encryptPassword } from '../utils/encryption';
 import { getNeosyncContext } from '../config/neosync';
-import { SetPersonalAccountRequest } from '@neosync/sdk';
+import {
+  CreateTeamAccountRequest,
+  GetUserAccountsRequest,
+  SetPersonalAccountRequest,
+  SetUserRequest
+} from '@neosync/sdk';
+
 /**
  * Create a user
  * @param {Object} userBody
@@ -22,7 +28,8 @@ const createUser = async (
 
   // Set user neosync account id
   const client = getNeosyncContext();
-  const account = await client.users.setPersonalAccount(new SetPersonalAccountRequest());
+  const account = await client.users.convertPersonalToTeamAccount
+  console.log(account);
 
   return prisma.user.create({
     data: {
@@ -30,7 +37,7 @@ const createUser = async (
       name,
       password: await encryptPassword(password),
       role,
-      neosync_account_id: account.accountId
+      neosync_account_id: 'ddsd'
     }
   });
 };

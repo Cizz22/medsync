@@ -2,8 +2,6 @@ import { User } from '@prisma/client';
 import { RunService } from '../services';
 import catchAsync from '../utils/catchAsync';
 
-
-
 const getRuns = catchAsync(async (req, res) => {
   const user = req.user as User;
   const jobId = req.query.jobId?.toString() ?? '';
