@@ -6,7 +6,7 @@ import catchAsync from '../utils/catchAsync';
 
 const getRuns = catchAsync(async (req, res) => {
   const user = req.user as User;
-  const jobId = req.query.jobId ?? '';
+  const jobId = req.query.jobId?.toString() ?? '';
   const runs = await RunService.getRuns(user.neosync_account_id, jobId);
 
   res.send(runs);
