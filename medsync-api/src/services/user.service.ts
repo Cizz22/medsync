@@ -10,6 +10,7 @@ import {
   SetPersonalAccountRequest,
   SetUserRequest
 } from '@neosync/sdk';
+import { formatName } from '../utils/utils';
 
 /**
  * Create a user
@@ -19,16 +20,22 @@ import {
 const createUser = async (
   email: string,
   password: string,
-  name?: string,
+  name: string,
   role: Role = Role.USER
 ): Promise<User> => {
   if (await getUserByEmail(email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
+  const formattedName = formatName(name);
+
   // Set user neosync account id
   const client = getNeosyncContext();
-  const account = await client.users.convertPersonalToTeamAccount
+  const account = await client.users.createTeamAccount(
+    new CreateTeamAccountRequest({
+      name: formattedName
+    })
+  );
   console.log(account);
 
   return prisma.user.create({
@@ -37,7 +44,7 @@ const createUser = async (
       name,
       password: await encryptPassword(password),
       role,
-      neosync_account_id: 'ddsd'
+      neosync_account_id: account.accountId
     }
   });
 };

@@ -9,8 +9,7 @@
       "time": true,
       "env": {
         "NODE_ENV": "production"
-      },
-      "interpreter": "~/.bun/bin/bun"
+      }
     }
   ]
 }
