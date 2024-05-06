@@ -68,7 +68,7 @@ services:
       - AUTH_ENABLED=true
       - AUTH_AUDIENCE=neosync
       - AUTH_BASEURL=http://keycloak:8080/realms/neosync
-      - AUTH_EXPECTED_ISS=http://localhost:8083/realms/neosync
+      - AUTH_EXPECTED_ISS=http://116.193.191.197:8083/realms/neosync
       - AUTH_CLI_CLIENT_ID=neosync-cli
       - AUTH_CLI_AUDIENCE=neosync
       - AUTH_CLIENTID_SECRET={"neosync-cli":"GkVsthDzDvBfzb2vT4UO95xbXrwoXE5w"}

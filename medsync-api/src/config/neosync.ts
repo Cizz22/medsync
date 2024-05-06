@@ -10,11 +10,12 @@ import config from './config';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
 import axios from 'axios';
+import { token } from 'morgan';
 
 export function getNeosyncContext(): NeosyncClient {
   try {
     const neoSyncClient: NeosyncClient = getNeosyncClient({
-      getAccessToken: getAccessTokenFn(config.isAuthEnabled),
+      getAccessToken: getAccessToken(),
       getTransport(interceptors) {
         return createConnectTransport({
           baseUrl: config.neosync.apiUrl,
@@ -34,33 +35,35 @@ export function getNeosyncContext(): NeosyncClient {
   }
 }
 
-function getAccessTokenFn(isAuthEnabled: boolean): GetAccessTokenFn | undefined {
-  if (!isAuthEnabled) {
-    return undefined;
-  }
+function getAccessToken(): GetAccessTokenFn | undefined {
   return async (): Promise<string> => {
-    const headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
+    const postData = new URLSearchParams({
+      grant_type: 'password',
+      client_id: 'neosync-app',
+      client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
+      username: 'cisatraa@gmail.com',
+      password: '12345678'
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: postData
     };
 
-    const token = await axios.post(
+    const response = await fetch(
       'http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token',
-      {
-        grant_type: 'password',
-        client_id: 'neosync-app',
-        client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
-        username: 'cisatraa@gmail.com',
-        password: '12345678'
-      },
-      {
-        headers
-      }
+      requestOptions
     );
-    const accessToken = token.data.access_token;
-    if (!accessToken) {
-      throw new Error('no session provided');
+
+    if (!response.ok) {
+      throw new Error('Failed to get access token');
     }
-    return accessToken;
+
+    const token = await response.json();
+    return token.access_token;
   };
 }
 
@@ -91,4 +94,7 @@ function translateGrpcCodeToHttpCode(code: Code): number {
       return 500;
     }
   }
+}
+function getAccessTokenFn() {
+  throw new Error('Function not implemented.');
 }
