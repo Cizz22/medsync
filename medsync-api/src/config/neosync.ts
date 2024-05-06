@@ -10,7 +10,6 @@ import config from './config';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
 import axios from 'axios';
-import { token } from 'morgan';
 
 export function getNeosyncContext(): NeosyncClient {
   try {
@@ -35,36 +34,35 @@ export function getNeosyncContext(): NeosyncClient {
   }
 }
 
-function getAccessToken(): GetAccessTokenFn | undefined {
-  return async (): Promise<string> => {
-    const postData = new URLSearchParams({
-      grant_type: 'password',
-      client_id: 'neosync-app',
-      client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
-      username: 'cisatraa@gmail.com',
-      password: '12345678'
-    });
+function getAccessToken(): GetAccessTokenFn {
+  const test = async () => {
+    try {
+      const body = new URLSearchParams({
+        grant_type: 'password',
+        client_id: 'neosync-app',
+        client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
+        username: 'cisatraa@gmail.com',
+        password: '12345678'
+      });
+      const res = await fetch(
+        'http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST',
+          body: body
+        }
+      );
 
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: postData
-    };
+      const resData = await res.json();
 
-    const response = await fetch(
-      'http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token',
-      requestOptions
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to get access token');
+      return resData.access_token;
+    } catch (err: any) {
+      throw new Error(err);
     }
-
-    const token = await response.json();
-    return token.access_token;
   };
+  return test;
 }
 
 function translateGrpcCodeToHttpCode(code: Code): number {
