@@ -9,6 +9,7 @@ import { createConnectTransport } from '@connectrpc/connect-node';
 import config from './config';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
+import axios from 'axios';
 
 export function getNeosyncContext(): NeosyncClient {
   try {
@@ -37,14 +38,30 @@ function getAccessTokenFn(isAuthEnabled: boolean): GetAccessTokenFn | undefined 
   if (!isAuthEnabled) {
     return undefined;
   }
-  // return async (): Promise<string> => {
-  //   const session = await auth();
-  //   const accessToken = session?.accessToken;
-  //   if (!accessToken) {
-  //     throw new Error('no session provided');
-  //   }
-  //   return accessToken;
-  // };
+  return async (): Promise<string> => {
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    const token = await axios.post(
+      'http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token',
+      {
+        grant_type: 'password',
+        client_id: 'neosync-app',
+        client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
+        username: 'cisatraa@gmail.com',
+        password: '12345678'
+      },
+      {
+        headers
+      }
+    );
+    const accessToken = token.data.access_token;
+    if (!accessToken) {
+      throw new Error('no session provided');
+    }
+    return accessToken;
+  };
 }
 
 function translateGrpcCodeToHttpCode(code: Code): number {
