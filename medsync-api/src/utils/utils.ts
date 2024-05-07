@@ -90,3 +90,14 @@ export function getTransformerSourceString(ds: TransformerSource): string {
   const value = TransformerSource[ds];
   return value ? value.toLowerCase() : 'unspecified';
 }
+
+export function formatName(name: string): string {
+  // Remove any characters that are not lowercase letters, numbers, or hyphens
+  name = name.toLowerCase().replace(/[^a-z0-9-]/g, '');
+
+  // Ensure the length is between 3 and 30 characters
+  name = name.substring(0, 30);
+
+  // Return the formatted name
+  return name;
+}

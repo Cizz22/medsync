@@ -10,7 +10,15 @@ function create_user_and_database() {
 	    CREATE USER $database;
 	    CREATE DATABASE $database;
 	    GRANT ALL PRIVILEGES ON DATABASE $database TO $database;
-EOSQL
+	EOSQL
+	
+	if [ "$database" = "neosync" ]; then
+		echo "  Creating schema 'keycloak' for database 'neosync'"
+		psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+			\connect $database;
+			CREATE SCHEMA IF NOT EXISTS keycloak;
+		EOSQL
+	fi
 }
 
 if [ -n "$POSTGRES_MULTIPLE_DATABASES" ]; then

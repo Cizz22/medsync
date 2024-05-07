@@ -9,11 +9,12 @@ import { createConnectTransport } from '@connectrpc/connect-node';
 import config from './config';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
+import axios from 'axios';
 
 export function getNeosyncContext(): NeosyncClient {
   try {
     const neoSyncClient: NeosyncClient = getNeosyncClient({
-      getAccessToken: getAccessTokenFn(config.isAuthEnabled),
+      getAccessToken: getAccessToken(),
       getTransport(interceptors) {
         return createConnectTransport({
           baseUrl: config.neosync.apiUrl,
@@ -33,18 +34,35 @@ export function getNeosyncContext(): NeosyncClient {
   }
 }
 
-function getAccessTokenFn(isAuthEnabled: boolean): GetAccessTokenFn | undefined {
-  if (!isAuthEnabled) {
-    return undefined;
-  }
-  // return async (): Promise<string> => {
-  //   const session = await auth();
-  //   const accessToken = session?.accessToken;
-  //   if (!accessToken) {
-  //     throw new Error('no session provided');
-  //   }
-  //   return accessToken;
-  // };
+function getAccessToken(): GetAccessTokenFn {
+  const test = async () => {
+    try {
+      const body = new URLSearchParams({
+        grant_type: 'password',
+        client_id: 'neosync-app',
+        client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
+        username: 'cisatraa@gmail.com',
+        password: '12345678'
+      });
+      const res = await fetch(
+        'http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST',
+          body: body
+        }
+      );
+
+      const resData = await res.json();
+
+      return resData.access_token;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+  return test;
 }
 
 function translateGrpcCodeToHttpCode(code: Code): number {
@@ -74,4 +92,7 @@ function translateGrpcCodeToHttpCode(code: Code): number {
       return 500;
     }
   }
+}
+function getAccessTokenFn() {
+  throw new Error('Function not implemented.');
 }

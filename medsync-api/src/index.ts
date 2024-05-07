@@ -3,13 +3,34 @@ import app from './app';
 import prisma from './client';
 import config from './config/config';
 import logger from './config/logger';
+import { getNeosyncContext } from './config/neosync';
+import {
+  CreateAccountApiKeyRequest,
+  GetConnectionRequest,
+  GetConnectionsRequest,
+  GetUserAccountsRequest,
+  GetUserRequest,
+  SetPersonalAccountRequest
+} from '@neosync/sdk';
 
 let server: Server;
+const client = getNeosyncContext();
+
 prisma.$connect().then(() => {
   logger.info('Connected to SQL Database');
   server = app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
   });
+
+  //Test COnnection to Neosync
+  client.users
+    .getUser(new GetUserRequest())
+    .then(() => {
+      logger.info('Connected to Neosync');
+    })
+    .catch((err) => {
+      logger.error('Failed to connect to Neosync', err);
+    });
 });
 
 const exitHandler = () => {

@@ -1,8 +1,14 @@
-import { apiUrl } from '@/constant/env'
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 
-export default NextAuth({
+import { apiUrl } from '@/constant/env'
+
+export const {
+  handlers: {GET, POST},
+  auth,
+  signIn,
+  signOut
+} = NextAuth({
   providers: [
     Credentials({
       name: 'Sign in',
@@ -24,7 +30,8 @@ export default NextAuth({
           }
 
           return null
-        }catch(err:any){
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }catch(err: any){
           throw new Error(err.message)
         }
       }

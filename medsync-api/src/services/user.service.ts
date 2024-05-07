@@ -4,7 +4,14 @@ import prisma from '../client';
 import ApiError from '../utils/ApiError';
 import { encryptPassword } from '../utils/encryption';
 import { getNeosyncContext } from '../config/neosync';
-import { SetPersonalAccountRequest } from '@neosync/sdk';
+import {
+  CreateTeamAccountRequest,
+  GetUserAccountsRequest,
+  SetPersonalAccountRequest,
+  SetUserRequest
+} from '@neosync/sdk';
+import { formatName } from '../utils/utils';
+
 /**
  * Create a user
  * @param {Object} userBody
@@ -13,16 +20,23 @@ import { SetPersonalAccountRequest } from '@neosync/sdk';
 const createUser = async (
   email: string,
   password: string,
-  name?: string,
+  name: string,
   role: Role = Role.USER
 ): Promise<User> => {
   if (await getUserByEmail(email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
+  const formattedName = formatName(name);
+
   // Set user neosync account id
   const client = getNeosyncContext();
-  const account = await client.users.setPersonalAccount(new SetPersonalAccountRequest());
+  const account = await client.users.createTeamAccount(
+    new CreateTeamAccountRequest({
+      name: formattedName
+    })
+  );
+  console.log(account);
 
   return prisma.user.create({
     data: {
