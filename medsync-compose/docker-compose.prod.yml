@@ -2,7 +2,7 @@ services:
   api:
     container_name: medsync-api
     image: cizz22/medsync:latest
-    command: pnpm run start
+    command: pnpm run dev
     ports:
       - 5000:5000
     environment:
