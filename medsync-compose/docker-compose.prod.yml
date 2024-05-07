@@ -144,7 +144,7 @@ services:
       - KC_DB_PASSWORD=secret
       - KC_DB_SCHEMA=keycloak
     volumes:
-      - ./keycloak/imports:/opt/keycloak/data/import
+      - ../keycloak/imports:/opt/keycloak/data/import
     networks:
       - kc-network
     depends_on:
