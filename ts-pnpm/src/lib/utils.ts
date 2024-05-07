@@ -29,3 +29,15 @@ export function getRefreshIntervalFn<T>(
     return fn(data);
   };
 }
+
+export function getErrorMessage(error: unknown): string {
+  return isErrorWithMessage(error) ? error.message : 'unknown error message';
+}
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'message' in error &&
+    typeof error.message === 'string'
+  );
+}

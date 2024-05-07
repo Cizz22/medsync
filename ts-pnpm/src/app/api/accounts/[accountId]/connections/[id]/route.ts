@@ -8,7 +8,7 @@ export async function GET(
     {params}: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        const connection = await ctx.axios.get(`/connection/${params.id}`);
+        const connection = await ctx.axios.get(`/connections/${params.id}`);
 
         return connection.data;
     }, req.headers.get("token"))(req)
@@ -19,6 +19,6 @@ export async function DELETE(
     {params}: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        await ctx.axios.delete(`/connection/${params.id}`);
+        await ctx.axios.delete(`/connections/${params.id}`);
     }, req.headers.get("token"))(req)
 }

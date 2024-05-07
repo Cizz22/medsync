@@ -9,7 +9,7 @@ export async function POST(
     { params }: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        const res = await ctx.axios.post(`/job/${params.id}/create-run`, req.body)
+        const res = await ctx.axios.post(`/jobs/${params.id}/create-run`, req.body)
         return res.data
     }, req.headers.get("token"))(req)
 }

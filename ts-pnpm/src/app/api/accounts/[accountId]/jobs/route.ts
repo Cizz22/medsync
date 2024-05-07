@@ -7,7 +7,7 @@ export async function GET(
     req: NextRequest,
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        const response = await ctx.axios.get(`/job`)
+        const response = await ctx.axios.get(`/jobs`)
         return response.data
     }, req.headers.get("token"))(req);
 }
@@ -17,7 +17,7 @@ export async function POST(
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
         const response = await ctx.axios.post(
-            '/job', req.body
+            '/jobs', req.body
         )
 
         return response.data

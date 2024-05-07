@@ -8,7 +8,7 @@ export async function GET(
     { params }: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        const response = await ctx.axios.get(`/connection/${params.id}/constrains/foreign`)
+        const response = await ctx.axios.get(`/connections/${params.id}/constrains/foreign`)
         return response.data
     }, req.headers.get('token'))(req)
 }
