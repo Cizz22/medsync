@@ -11,7 +11,7 @@ build: docker compose -f $(DEV_BUILD_COMPOSE) build
 
 compose-up:
 	docker compose -f ${TEMPORAL_COMPOSE} up -d
-	docker-compose -f $(PROD_COMPOSE) up -d
+	docker compose -f $(PROD_COMPOSE) up -d
 .PHONY: compose-up
 
 compose-down:
