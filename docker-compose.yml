@@ -40,6 +40,7 @@ services:
       - db
       - engine
       - worker
+      - keycloak
 
   engine:
     container_name: medsync-engine
