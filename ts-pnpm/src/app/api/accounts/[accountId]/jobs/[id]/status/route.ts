@@ -8,7 +8,7 @@ export async function GET(
     {params}:RequestContext
 ):Promise<NextResponse>{
     return withAxiosContext(async(ctx) => {
-        const res = await ctx.axios.get(`/job/${params.id}/status`)
+        const res = await ctx.axios.get(`/jobs/${params.id}/status`)
         return res.data
     },req.headers.get("token"))(req)
 

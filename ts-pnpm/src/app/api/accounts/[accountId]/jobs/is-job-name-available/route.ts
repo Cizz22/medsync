@@ -10,7 +10,7 @@ export async function GET(
     return withAxiosContext(async (ctx) => {
         const { searchParams } = new URL(req.url);
         const name = searchParams.get('name') ?? '';
-        const isAvailable = await ctx.axios.get('/job/name-available',
+        const isAvailable = await ctx.axios.get('/jobs/name-available',
             {
                 params: {
                     name
