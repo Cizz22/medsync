@@ -1,46 +1,46 @@
 services:
-  api:
-    container_name: medsync-api
-    image: cizz22/medsync:latest
-    command: bun run dev
-    ports:
-      - 5000:5000
-    environment:
-      - PORT=5000
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:secret@db:5432/api?schema=public
-      - JWT_SECRET=thisisasamplesecret
-      - JWT_ACCESS_EXPIRATION_MINUTES=30
-      - JWT_REFRESH_EXPIRATION_DAYS=30
-      - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
-      - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
-      - SMTP_HOST=email-server
-      - SMTP_PORT=587
-      - SMTP_USERNAME=email-server-username
-      - SMTP_PASSWORD=email-server-password
-      - NEOSYNC_API_URL=http://engine:8080
+  # api:
+  #   container_name: medsync-api
+  #   image: cizz22/medsync:latest
+  #   command: bun run dev
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     - PORT=5000
+  #     - NODE_ENV=development
+  #     - DATABASE_URL=postgresql://postgres:secret@db:5432/api?schema=public
+  #     - JWT_SECRET=thisisasamplesecret
+  #     - JWT_ACCESS_EXPIRATION_MINUTES=30
+  #     - JWT_REFRESH_EXPIRATION_DAYS=30
+  #     - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
+  #     - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
+  #     - SMTP_HOST=email-server
+  #     - SMTP_PORT=587
+  #     - SMTP_USERNAME=email-server-username
+  #     - SMTP_PASSWORD=email-server-password
+  #     - NEOSYNC_API_URL=http://engine:8080
 
-      - AUTH_ENABLED=false
-      - AUTH_ISSUER=http://keycloak:8080/realms/neosync
-      - AUTH_EXPECTED_ISSUER=http://localhost:8083/realms/neosync
-      - AUTH_AUTHORIZE_URL=http://localhost:8083/realms/neosync/protocol/openid-connect/auth
-      - AUTH_USERINFO_URL=http://keycloak:8080/realms/neosync/protocol/openid-connect/userinfo
-      - AUTH_TOKEN_URL=http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token
+  #     - AUTH_ENABLED=false
+  #     - AUTH_ISSUER=http://keycloak:8080/realms/neosync
+  #     - AUTH_EXPECTED_ISSUER=http://localhost:8083/realms/neosync
+  #     - AUTH_AUTHORIZE_URL=http://localhost:8083/realms/neosync/protocol/openid-connect/auth
+  #     - AUTH_USERINFO_URL=http://keycloak:8080/realms/neosync/protocol/openid-connect/userinfo
+  #     - AUTH_TOKEN_URL=http://116.193.191.197:8083/realms/neosync/protocol/openid-connect/token
 
-      - AUTH_CLIENT_ID=neosync-app
-      - AUTH_CLIENT_SECRET=72alWGzhHInDskRHduTQ8BjB4Lgn0n3a
-      - AUTH_AUDIENCE=neosync
-      - AUTH_SCOPE=openid email profile offline_access
-      - AUTH_PROVIDER_ID=keycloak
-      - AUTH_PROVIDER_NAME=Keycloak
-    networks:
-      - medsync-network
-      - kc-network
-    depends_on:
-      - db
-      - engine
-      - worker
-      - keycloak
+  #     - AUTH_CLIENT_ID=neosync-app
+  #     - AUTH_CLIENT_SECRET=72alWGzhHInDskRHduTQ8BjB4Lgn0n3a
+  #     - AUTH_AUDIENCE=neosync
+  #     - AUTH_SCOPE=openid email profile offline_access
+  #     - AUTH_PROVIDER_ID=keycloak
+  #     - AUTH_PROVIDER_NAME=Keycloak
+  #   networks:
+  #     - medsync-network
+  #     - kc-network
+  #   depends_on:
+  #     - db
+  #     - engine
+  #     - worker
+  #     - keycloak
 
   engine:
     container_name: medsync-engine
