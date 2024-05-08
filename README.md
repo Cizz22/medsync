@@ -23,7 +23,57 @@ MedSync is built using the following technologies:
 - **PostgreSQL 13**: The chosen database management system for storing migrated data.
 - **Docker**: Utilized for containerization and orchestration of the application.
 
-## Instalation
+## Progress
+
+This section tracks the progress of the project, detailing the completion status of each functional requirement.
+
+### API
+
+- [x] Authentication
+    - [x] Login
+    - [x] Register
+- [x] Jobs
+    - [x] Create Job
+    - [x] Get Jobs
+    - [x] Get Job by Id 
+    - [x] Get Job Statuses
+    - [x] Is Job Name Available
+- [x] Connections
+- [x] Runs
+- [x] Transformers
+- [ ] Documentation
+    - [x] Auth Docs
+    - [ ] Job Docs
+    - [ ] Connections
+    - [ ] Runs Docs
+    - [ ] Transformaer Docs
+
+### Engine
+
+- [x] Main Engine functionality
+- [x] Integration with Docker
+
+### Worker
+
+- [x] Migration functionality
+- [x] Integration with docker
+
+### Temporal
+
+- [x] Configuration
+
+### Frontend
+
+- [x] Auth 
+    - [x] Login
+    - [ ] Session Configuration
+- [x] Dashboard
+    - [x] Layout
+    - [ ] Jobs
+    - [ ] Connections
+    - [ ] Runs
+    - [ ] Transformers
+- [x] Integration with API endpoints
 
 ## License
 

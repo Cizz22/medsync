@@ -1,16 +1,15 @@
-FROM node:alpine
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1
 
 WORKDIR /medsync/api
 
 COPY package.json .
 
-RUN pnpm install
+RUN bun install
 
 COPY . .
 
-RUN pnpx prisma generate
+RUN bunx prisma generate
 
 

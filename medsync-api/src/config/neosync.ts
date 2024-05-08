@@ -9,7 +9,6 @@ import { createConnectTransport } from '@connectrpc/connect-node';
 import config from './config';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
-import axios from 'axios';
 
 export function getNeosyncContext(): NeosyncClient {
   try {
