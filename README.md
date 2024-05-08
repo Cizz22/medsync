@@ -17,10 +17,12 @@ MedSync is a data migration tool developed as a part of the final paper. It aims
 
 MedSync is built using the following technologies:
 
-- **Python 3.12**: The core programming language used for development.
-- **Flask**: A micro web framework used to build the API application.
+- **Typescript**: The core programming language used for development.
+- **Express JS**: A micro web framework used to build the API application.
 - **Temporal**: Used for scheduling ETL tasks.
 - **PostgreSQL 13**: The chosen database management system for storing migrated data.
+- **Neosych API**: ETL engine to perform migration task
+- **Next JS & Tauri**: Frontend framework
 - **Docker**: Utilized for containerization and orchestration of the application.
 
 ## Progress
