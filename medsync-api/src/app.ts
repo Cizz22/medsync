@@ -13,6 +13,7 @@ import routes from './routes/v1';
 import { errorConverter, errorHandler } from './middlewares/error';
 import ApiError from './utils/ApiError';
 import dotenv from 'dotenv';
+import prisma from './client';
 
 dotenv.config();
 
@@ -50,6 +51,13 @@ passport.use('jwt', jwtStrategy);
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
 }
+
+app.route('/').get((req, res) => {
+  res.json({
+    message: 'Medsync API',
+    docs: 'https://intip.in/medsyncdocs/'
+  });
+});
 
 // v1 api routes
 app.use('/v1', routes);
