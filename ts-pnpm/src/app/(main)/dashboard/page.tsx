@@ -6,9 +6,10 @@
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import { Card,CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select,SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { auth } from "@/app/api/auth/[...nextauth]/auth"
 
 export default function Component() {
   return (
@@ -156,7 +157,7 @@ export default function Component() {
   )
 }
 
-function ActivityIcon(props:any) {
+function ActivityIcon(props: any) {
   return (
     <svg
       {...props}
@@ -176,7 +177,7 @@ function ActivityIcon(props:any) {
 }
 
 
-function CreditCardIcon(props:any) {
+function CreditCardIcon(props: any) {
   return (
     <svg
       {...props}
@@ -197,7 +198,7 @@ function CreditCardIcon(props:any) {
 }
 
 
-function DollarSignIcon(props:any) {
+function DollarSignIcon(props: any) {
   return (
     <svg
       {...props}
@@ -218,7 +219,7 @@ function DollarSignIcon(props:any) {
 }
 
 
-function MountainIcon(props:any) {
+function MountainIcon(props: any) {
   return (
     <svg
       {...props}
@@ -238,7 +239,7 @@ function MountainIcon(props:any) {
 }
 
 
-function UsersIcon(props:any) {
+function UsersIcon(props: any) {
   return (
     <svg
       {...props}

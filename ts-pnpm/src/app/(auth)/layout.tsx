@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 import '@/app/globals.css';
 
 import { ThemeProvider } from '@/components/providers/theme-provider';
-
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'Neosync',
@@ -30,6 +30,7 @@ export default async function RootLayout({
           <>
               {children}
           </>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

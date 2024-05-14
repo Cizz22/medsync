@@ -1,13 +1,11 @@
-import { JsonValue } from '@bufbuild/protobuf';
-import { GetUserAccountsResponse } from '@neosync/sdk';
 import { HookReply } from './types';
-import { useNucleusAuthenticatedFetch } from './useAuthenticatedFetch';
+import { useAuthenticatedFetch } from './useAuthenticatedFetch';
 
-export function useGetUserAccounts(): HookReply<GetUserAccountsResponse> {
-  return useNucleusAuthenticatedFetch<GetUserAccountsResponse, JsonValue>(
+export function useGetUserAccounts(token: string): HookReply<JSON> {
+  return useAuthenticatedFetch<JSON>(
     `/api/users/accounts`,
+    token,
     true,
     undefined,
-    (data) => GetUserAccountsResponse.fromJson(data)
   );
 }

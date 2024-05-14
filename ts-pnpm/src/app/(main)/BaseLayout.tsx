@@ -16,19 +16,21 @@ interface Props {
 export default async function BaseLayout(props: Props): Promise<ReactElement> {
   const { children } = props;
   const session = await auth();
+   // eslint-disable-next-line no-console
+   console.log(session)
 
   return (
     <SessionProvider session={session}>
       {/* <AccountProvider> */}
-        <div className="relative flex min-h-screen flex-col">
-          <SiteHeader />
-          <div className="flex-1 container" id="top-level-layout">
-            {children}
-          </div>
-          <SiteFooter />
-          <Toaster />
-          {/* <OnboardingChecklist /> */}
+      <div className="relative flex min-h-screen flex-col">
+        <SiteHeader />
+        <div className="flex-1 container" id="top-level-layout">
+          {children}
         </div>
+        <SiteFooter />
+        <Toaster />
+        {/* <OnboardingChecklist /> */}
+      </div>
       {/* </AccountProvider> */}
     </SessionProvider>
   );

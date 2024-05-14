@@ -3,31 +3,18 @@ import useSWR, { KeyedMutator, SWRConfiguration } from 'swr';
 
 import { HookReply } from './types';
 import { useGenericErrorToast } from './useGenericErrorToast';
-import { useNeosyncUser } from './useNeosyncUser';
 import { fetcher } from '../fetcher';
 
-export function useNucleusAuthenticatedFetch<T, RawT>(
+export function useAuthenticatedFetch<T, RawT = T>(
   fetchUrl: string,
-  isReadyCondition: boolean | undefined,
-  swrConfig: SWRConfiguration<RawT, Error> | undefined,
-  onData: (data: RawT) => T,
-  customFetcher?: (url: string) => Promise<RawT>
-): HookReply<T>;
-export function useNucleusAuthenticatedFetch<T>(
-  fetchUrl: string,
-  isReadyCondition?: boolean,
-  swrConfig?: SWRConfiguration<T, Error>,
-  customFetcher?: (url: string) => Promise<T>
-): HookReply<T>;
-export function useNucleusAuthenticatedFetch<T, RawT = T>(
-  fetchUrl: string,
+  token?: string,
   isReadyCondition = true,
   swrConfig?: SWRConfiguration<RawT | T, Error>,
   onData?: (data: RawT | undefined) => T,
   customFetcher?: (url: string) => Promise<RawT | T>
 ): HookReply<RawT | T> {
-  const { data: userResp, isLoading: isUserLoading } = useNeosyncUser();
-  const isReady = isReadyCondition && !isUserLoading && !!userResp;
+
+  const isReady = isReadyCondition
 
   const fetcherToUse = customFetcher ? customFetcher : fetcher;
 
@@ -38,10 +25,11 @@ export function useNucleusAuthenticatedFetch<T, RawT = T>(
     isLoading: isDataLoading,
     isValidating,
   } = useSWR<RawT | T, Error>(
-    isReady ? fetchUrl : null,
+    isReady ? (token ? [fetchUrl, token] : fetchUrl) : null,
     fetcherToUse,
     swrConfig
   );
+
   useGenericErrorToast(error);
 
   // Must include the isReady check, otherwise isLoading is false, but there is no data or error
