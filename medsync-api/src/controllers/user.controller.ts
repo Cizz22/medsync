@@ -3,6 +3,7 @@ import pick from '../utils/pick';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { userService } from '../services';
+import { User } from '@prisma/client';
 
 const createUser = catchAsync(async (req, res) => {
   const { email, password, name, role } = req.body;
@@ -35,10 +36,19 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const whoAmI = catchAsync(async (req, res) => {
+  const user = req.user as User;
+
+  const userRes = await userService.getUserById(user.id);
+
+  res.send(userRes);
+});
+
 export default {
   createUser,
   getUsers,
   getUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  whoAmI
 };

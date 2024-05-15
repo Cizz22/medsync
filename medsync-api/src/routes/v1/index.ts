@@ -20,19 +20,19 @@ const defaultRoutes = [
     route: userRoute
   },
   {
-    path: '/connection',
+    path: '/connections',
     route: connectionRoute
   },
   {
-    path: '/job',
+    path: '/jobs',
     route: jobRoute
   },
   {
-    path: '/transformer',
+    path: '/transformers',
     route: transformerRoute
   },
   {
-    path: '/run',
+    path: '/runs',
     route: runRoute
   }
 ];
