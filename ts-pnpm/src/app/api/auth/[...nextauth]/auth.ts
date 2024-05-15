@@ -100,13 +100,12 @@ export const {
       }
 
       return token
-    }
+    },
 
     async session({session, token}){
       if(token){
         session.user.neosync_account_id = token.neosync_account_id
         session.user.name = token.name
-        session.user.email = token?.email
         session.user.accessToken = token.accessToken
       }
 
