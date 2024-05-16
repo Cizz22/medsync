@@ -21,7 +21,6 @@ router
   .patch(auth(), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth(), validate(userValidation.deleteUser), userController.deleteUser);
 
-
 export default router;
 
 /**
