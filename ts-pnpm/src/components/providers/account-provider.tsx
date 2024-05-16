@@ -1,6 +1,7 @@
 'use client';
 // import { UserAccount } from '@neosync/sdk';
 import { useParams, useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
 import {
     createContext,
     ReactElement,
@@ -11,7 +12,6 @@ import {
 } from 'react';
 
 import { useGetUserAccounts } from '@/lib/hooks/useUserAccounts';
-import { Session } from 'next-auth';
 
 interface AccountContextType {
     account: object | undefined;
@@ -34,7 +34,7 @@ interface Props {
 }
 
 interface UserAccount {
-    
+
 }
 
 export default function AccountProvider(props: Props): ReactElement {
@@ -63,22 +63,15 @@ export default function AccountProvider(props: Props): ReactElement {
 
         router.push(`/dashboard/${accountResponse?.neosync_account_id}/jobs`);
 
-    }, [
-        userAccount?.id,
-        userAccount?.name,
-        accountsResponse?.accounts.length,
-        isLoading,
-        accountName,
-    ]);
+    }, [isLoading, accountId, accountResponse, router]);
 
     function setAccount(userAccount: UserAccount): void {
-        if (userAccount.name !== accountName) {
+        if (userAccount.neosync_account_id !== accountId) {
             // this order matters. Otherwise if we push first,
             // when it routes to the page, there is no account param and it defaults to personal /shrug
             // by setting this here, it finds the last selected account and is able to effectively route to the correct spot.
-            setLastSelectedAccount(userAccount.name);
             setUserAccount(userAccount);
-            router.push(`/${userAccount.name}`);
+            router.push(`/dashboard/${userAccount.neosync_account_id}`);
         }
     }
 
@@ -96,19 +89,6 @@ export default function AccountProvider(props: Props): ReactElement {
     );
 }
 
-function useGetAccountName(): string {
-    const { account } = useParams();
-
-    const accountParam = getSingleOrUndefined(account);
-    if (accountParam) {
-        return accountParam;
-    }
-    const singleStoredAccount = getSingleOrUndefined(storedAccount);
-    if (singleStoredAccount) {
-        return singleStoredAccount;
-    }
-    return DEFAULT_ACCOUNT_NAME;
-}
 
 function getSingleOrUndefined(val: string | string[]): string | undefined {
     if (Array.isArray(val)) {

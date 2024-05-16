@@ -6,6 +6,10 @@ import { userController } from '../../controllers';
 
 const router = express.Router();
 
+router.route('/me').get(auth(), userController.whoAmI);
+router.route('/config/temporal').get(auth(), userController.getUserTemporalConfig);
+router.route('/config/onboarding').get(auth(), userController.getUserAccountOnBoardingConfig);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
@@ -13,13 +17,10 @@ router
 
 router
   .route('/:userId')
-  .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
-  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .get(auth(), validate(userValidation.getUser), userController.getUser)
+  .patch(auth(), validate(userValidation.updateUser), userController.updateUser)
+  .delete(auth(), validate(userValidation.deleteUser), userController.deleteUser);
 
-router.route('/me').get(auth(), userController.whoAmI);
-router.route('/config/temporal').get(auth(), userController.getUserTemporalConfig);
-router.route('/config/onboarding').get(auth(), userController.getUserAccountOnBoardingConfig);
 
 export default router;
 
