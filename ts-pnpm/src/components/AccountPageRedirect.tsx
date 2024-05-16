@@ -21,8 +21,8 @@ export default function AccountPageRedirect(props: Props): JSX.Element {
     if (isLoading || !account?.name) {
       return;
     }
-    router.push(`/${account.name}/jobs`);
-  }, [isLoading, account?.name, account?.id]);
+    router.push(`/dashboard/${account.neosync_account_id}/jobs`);
+  }, [isLoading, account?.name, account?.id, account?.neosync_account_id, router]);
 
   if (isLoading) {
     return <Skeleton className="w-full h-full py-2" />;

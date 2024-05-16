@@ -103,17 +103,7 @@ const queryUsers = async <Key extends keyof User>(
  */
 const getUserById = async <Key extends keyof User>(
   id: number,
-  keys: Key[] = [
-    'id',
-    'email',
-    'name',
-    'password',
-    'neosync_account_id',
-    'role',
-    'isEmailVerified',
-    'createdAt',
-    'updatedAt'
-  ] as Key[]
+  keys: Key[] = ['id', 'email', 'name', 'neosync_account_id'] as Key[]
 ): Promise<Pick<User, Key> | null> => {
   return prisma.user.findUnique({
     where: { id },
