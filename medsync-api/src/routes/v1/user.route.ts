@@ -18,6 +18,8 @@ router
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
 router.route('/me').get(auth(), userController.whoAmI);
+router.route('/config/temporal').get(auth(), userController.getUserTemporalConfig);
+router.route('/config/onboarding').get(auth(), userController.getUserAccountOnBoardingConfig);
 
 export default router;
 

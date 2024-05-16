@@ -16,8 +16,6 @@ interface Props {
 export default async function BaseLayout(props: Props): Promise<ReactElement> {
   const { children } = props;
   const session = await auth();
-   // eslint-disable-next-line no-console
-   console.log(session)
 
   return (
     <SessionProvider session={session}>

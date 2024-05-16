@@ -65,8 +65,7 @@ const STEPS_METADATA: Record<
 
 export default function OnboardingChecklist(): ReactElement {
   const { account } = useAccount();
-  const { data, isLoading, isValidating, mutate, error } =
-    useGetAccountOnboardingConfig(account?.id ?? '');
+  const { data, isLoading, isValidating, mutate, error } = useGetAccountOnboardingConfig(account?.id ?? '');
   const [isOpen, setIsOpen] = useState(false);
   const [showGuide, setShowGuide] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

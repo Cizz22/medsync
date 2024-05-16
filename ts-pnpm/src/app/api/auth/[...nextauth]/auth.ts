@@ -70,8 +70,7 @@ export const {
           })
 
           if (!res.ok) {
-            const body = await res.json();
-            throw new Error(body.message.message);
+            return null
           }
 
           const data = await res.json()
@@ -85,7 +84,7 @@ export const {
           }
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-          return err
+          throw new Error(err)
         }
       }
     })
@@ -95,7 +94,7 @@ export const {
       if (user) {
         token.name = user.name
         token.email = user.email
-        token.neosync_account_id = user.neosync_account_id
+        token.neosync_account_id = user.id
         token.accessToken = user.accessToken
       }
 
@@ -106,6 +105,7 @@ export const {
       if(token){
         session.user.neosync_account_id = token.neosync_account_id
         session.user.name = token.name
+        session.user.email = token?.email
         session.user.accessToken = token.accessToken
       }
 

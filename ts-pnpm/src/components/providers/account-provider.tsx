@@ -9,9 +9,9 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
 
 import { useGetUserAccounts } from '@/lib/hooks/useUserAccounts';
+import { Session } from 'next-auth';
 
 interface AccountContextType {
     account: object | undefined;
@@ -30,20 +30,22 @@ const AccountContext = createContext<AccountContextType>({
 
 interface Props {
     children: ReactNode;
+    session: Session | null;
 }
 
-const DEFAULT_ACCOUNT_NAME = 'personal';
-const STORAGE_ACCOUNT_KEY = 'account';
+interface UserAccount {
+    
+}
 
 export default function AccountProvider(props: Props): ReactElement {
-    const { children } = props;
-    const { account } = useParams();
-    const accountName = useGetAccountName();
+    const { children, session } = props;
+    const accessToken = session?.user?.accessToken;
+    const { accountId } = useParams();
 
-    const { data: accountsResponse, isLoading, mutate } = useGetUserAccounts();
+    const { data: accountResponse, isLoading, mutate } = useGetUserAccounts(accessToken);
     const router = useRouter();
 
-    const [userAccount, setUserAccount] = useState<UserAccount | undefined>(
+    const [userAccount, setUserAccount] = useState(
         undefined
     );
 
@@ -51,25 +53,16 @@ export default function AccountProvider(props: Props): ReactElement {
         if (isLoading) {
             return;
         }
-        if (userAccount?.name === accountName) {
+        if (accountId === accountResponse?.neosync_account_id) {
             return;
         }
-        const foundAccount = accountsResponse?.accounts.find(
-            (a: { name: string; }) => a.name === accountName
-        );
-        if (userAccount && foundAccount && userAccount.id === foundAccount.id) {
-            return;
-        }
-        if (foundAccount) {
-            setUserAccount(foundAccount);
-            const accountParam = getSingleOrUndefined(account);
-            if (!accountParam || accountParam !== foundAccount.name) {
-                router.push(`/${foundAccount.name}/jobs`);
-            }
-        } else if (accountName !== DEFAULT_ACCOUNT_NAME) {
-            setLastSelectedAccount(DEFAULT_ACCOUNT_NAME);
-            router.push(`/${DEFAULT_ACCOUNT_NAME}/jobs`);
-        }
+        // if (userAccount && foundAccount && userAccount.id === foundAccount.id) {
+        //     return;
+        // }
+        setUserAccount(accountResponse);
+
+        router.push(`/dashboard/${accountResponse?.neosync_account_id}/jobs`);
+
     }, [
         userAccount?.id,
         userAccount?.name,

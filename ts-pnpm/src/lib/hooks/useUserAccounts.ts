@@ -1,11 +1,13 @@
-import { HookReply } from './types';
 import { useAuthenticatedFetch } from './useAuthenticatedFetch';
 
-export function useGetUserAccounts(token: string): HookReply<JSON> {
-  return useAuthenticatedFetch<JSON>(
-    `/api/users/accounts`,
-    token,
-    true,
-    undefined,
+interface UserAccountResponse {
+  
+}
+
+export function useGetUserAccounts(token: string | undefined) {
+  return useAuthenticatedFetch(
+    `/api/users/whoami`,
+    !!token,
+    token
   );
 }

@@ -44,11 +44,31 @@ const whoAmI = catchAsync(async (req, res) => {
   res.send(userRes);
 });
 
+const getUserTemporalConfig = catchAsync(async (req, res) => {
+  const user = req.user as User;
+
+  const userTemporalConfig = await userService.getUserTemporalConfig(user.neosync_account_id);
+
+  res.send(userTemporalConfig);
+});
+
+const getUserAccountOnBoardingConfig = catchAsync(async (req, res) => {
+  const user = req.user as User;
+
+  const userAccountOnBoardingConfig = await userService.getUserAccountOnBoardingConfig(
+    user.neosync_account_id
+  );
+
+  res.send(userAccountOnBoardingConfig);
+});
+
 export default {
   createUser,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
-  whoAmI
+  whoAmI,
+  getUserTemporalConfig,
+  getUserAccountOnBoardingConfig
 };

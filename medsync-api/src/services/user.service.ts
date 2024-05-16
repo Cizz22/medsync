@@ -6,11 +6,15 @@ import { encryptPassword } from '../utils/encryption';
 import { getNeosyncContext } from '../config/neosync';
 import {
   CreateTeamAccountRequest,
+  GetAccountOnboardingConfigRequest,
   GetUserAccountsRequest,
   SetPersonalAccountRequest,
   SetUserRequest
 } from '@neosync/sdk';
 import { formatName } from '../utils/utils';
+import { cli } from 'winston/lib/winston/config';
+
+const client = getNeosyncContext();
 
 /**
  * Create a user
@@ -36,7 +40,6 @@ const createUser = async (
       name: formattedName
     })
   );
-  console.log(account);
 
   return prisma.user.create({
     data: {
@@ -184,11 +187,33 @@ const deleteUserById = async (userId: number): Promise<User> => {
   return user;
 };
 
+const getUserAccountOnBoardingConfig = async (accountId: string) => {
+  const userOnBoardingConfig = client.users.getAccountOnboardingConfig(
+    new GetAccountOnboardingConfigRequest({
+      accountId
+    })
+  );
+
+  return (await userOnBoardingConfig).config;
+};
+
+const getUserTemporalConfig = async (accountId: string) => {
+  const userTemporalConfig = client.users.getAccountTemporalConfig(
+    new GetAccountOnboardingConfigRequest({
+      accountId
+    })
+  );
+
+  return (await userTemporalConfig).config;
+};
+
 export default {
   createUser,
   queryUsers,
   getUserById,
   getUserByEmail,
   updateUserById,
-  deleteUserById
+  deleteUserById,
+  getUserAccountOnBoardingConfig,
+  getUserTemporalConfig
 };

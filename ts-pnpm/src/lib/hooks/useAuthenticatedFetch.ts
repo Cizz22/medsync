@@ -7,10 +7,9 @@ import { fetcher } from '../fetcher';
 
 export function useAuthenticatedFetch<T, RawT = T>(
   fetchUrl: string,
-  token?: string,
   isReadyCondition = true,
+  token?: string,
   swrConfig?: SWRConfiguration<RawT | T, Error>,
-  onData?: (data: RawT | undefined) => T,
   customFetcher?: (url: string) => Promise<RawT | T>
 ): HookReply<RawT | T> {
 
@@ -46,7 +45,7 @@ export function useAuthenticatedFetch<T, RawT = T>(
   }
 
   return {
-    data: onData && !error ? onData(data as RawT) : data,
+    data,
     error,
     isLoading: false,
     isValidating,
