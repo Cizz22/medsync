@@ -19,7 +19,8 @@ declare module "next-auth/jwt" {
   interface JWT {
     neosync_account_id: string,
     accessToken: string,
-    tokenExpires: string
+    tokenExpires: string,
+    refresh_token: string,
   }
 }
 
@@ -27,13 +28,15 @@ declare module "next-auth" {
   interface User {
     neosync_account_id: string,
     accessToken: string,
-    tokenExpires: string
+    tokenExpires: string,
+    refresh_token: string,
   }
 
   interface Session {
     user: {
       neosync_account_id: string,
       accessToken: string,
+      refresh_token: string,
       tokenExpires: string
     } & DefaultSession["user"]
   }
@@ -80,7 +83,8 @@ export const {
             name: data.user.name,
             id: data.user.neosync_account_id,
             accessToken: data.tokens.access.token,
-            tokenExpires: data.tokens.access.expires
+            tokenExpires: data.tokens.access.expires,
+            refreshToken: data.tokens.refresh.token
           }
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
@@ -96,17 +100,19 @@ export const {
         token.email = user.email
         token.neosync_account_id = user.id
         token.accessToken = user.accessToken
+        token.refresh_token = user.refreshToken
       }
 
       return token
     },
 
-    async session({session, token}){
-      if(token){
+    async session({ session, token }) {
+      if (token) {
         session.user.neosync_account_id = token.neosync_account_id
         session.user.name = token.name
         session.user.email = token?.email
         session.user.accessToken = token.accessToken
+        session.user.refresh_token = token.refresh_token
       }
 
       return session

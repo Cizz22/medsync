@@ -3,12 +3,17 @@ import { ReactElement } from 'react';
 
 import '@/app/globals.css';
 
+import AccountProvider from '@/components/providers/account-provider';
+import { SessionProvider } from '@/components/providers/session-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import SiteHeader from '@/components/site-header/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
+import { Toaster } from '@/components/ui/toaster';
 
-import BaseLayout from './BaseLayout';
+import { auth } from '../api/auth/[...nextauth]/auth';
 
 export const metadata: Metadata = {
-  title: 'Neosync',
+  title: 'Medsync',
   description: 'Open Source Test Data Management',
   icons: [{ rel: 'icon', url: '#' }],
 };
@@ -18,6 +23,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }): Promise<ReactElement> {
+  const session = await auth();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -29,7 +36,20 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <>
-              <BaseLayout>{children}</BaseLayout>
+            <SessionProvider session={session}>
+              <AccountProvider session={session}>
+                <div className="relative flex min-h-screen flex-col">
+                  <SiteHeader />
+                  <div className="flex-1 container" id="top-level-layout">
+                    {children}
+                  </div>
+                  <SiteFooter />
+                  <Toaster />
+                  {/* <OnboardingChecklist /> */}
+                </div>
+              </AccountProvider>
+            </SessionProvider>
+
           </>
         </ThemeProvider>
       </body>

@@ -69,12 +69,10 @@ export function UserNav(): ReactElement | null {
             className="cursor-pointer"
             onClick={async () => {
               try {
-                await signOut({
-                  callbackUrl: `/api/auth/provider-sign-out?idToken=${session.data}`,
-                });
+                await signOut();
               } catch (err) {
                 toast({
-                  title: 'Unable to sign out of provider session',
+                  title: 'Unable to sign out',
                   variant: 'destructive',
                 });
               }
