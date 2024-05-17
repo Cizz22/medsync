@@ -39,16 +39,16 @@ function JobTable(props: JobTableProps): ReactElement {
     const { } = props;
     const { account } = useAccount();
     const { isLoading, data, mutate } = useGetJobs(account?.neosync_account_id, account?.access_token);
-    const { data: statusData } = useGetJobStatuses(account?.neosync_account_id , account?.access_token);
+    const { data: statusData } = useGetJobStatuses(account?.neosync_account_id, account?.access_token);
     const columns = useMemo(
         () =>
             getColumns({
-                accountName: account?.name ?? '',
+                accountName: account?.neosync_account_id as string,
                 onDeleted() {
                     mutate();
                 },
             }),
-        [account?.name]
+        [account?.neosync_account_id, mutate]
     );
 
     if (isLoading) {
@@ -85,9 +85,9 @@ function NewJobButton(): ReactElement {
     return (
         <NextLink
             href={`/${account?.name}/new/job`}
-            // onClick={() => {
-            //     posthog.capture('clicked_new_job_button');
-            // }}
+        // onClick={() => {
+        //     posthog.capture('clicked_new_job_button');
+        // }}
         >
             <Button onClick={() => { }}>
                 <ButtonText leftIcon={<PlusIcon />} text="New Job" />

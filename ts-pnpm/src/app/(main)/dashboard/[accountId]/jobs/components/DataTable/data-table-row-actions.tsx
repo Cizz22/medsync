@@ -35,7 +35,7 @@ export function DataTableRowActions<TData>({
 
   async function onDelete(): Promise<void> {
     try {
-      await removeJob(account?.neosync_account_id, job.id);
+      await removeJob(account?.neosync_account_id, job.id, account?.access_token);
       toast({
         title: 'Job removed successfully!',
         variant: 'default',
@@ -83,12 +83,15 @@ export function DataTableRowActions<TData>({
   );
 }
 
-async function removeJob(accountId: string | undefined, jobId: string): Promise<void> {
-  if (!accountId || !jobId) {
+async function removeJob(accountId: string | undefined, jobId: string, access_token: string | undefined): Promise<void> {
+  if (!accountId || !jobId || !access_token) {
     throw new Error('Invalid account or job');
   }
   const res = await fetch(`/api/accounts/${accountId}/jobs/${jobId}`, {
     method: 'DELETE',
+    headers: {
+      'token': access_token
+    }
   });
   if (!res.ok) {
     const body = await res.json();
