@@ -20,6 +20,19 @@ export interface ConnectionResponse {
   account_id: string
 }
 
+export interface CheckConnectionConfigResponse {
+  isConnected: boolean,
+  connectionError?: string
+  privilage: ConnectionRolePrivilege[]
+}
+
+export interface ConnectionRolePrivilege {
+  grantees: string,
+  schema: string,
+  table: string,
+  privilage_type: string[]
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function useGetConnection(
   accountId: string,
