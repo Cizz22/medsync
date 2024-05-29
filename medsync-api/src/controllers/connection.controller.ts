@@ -40,12 +40,14 @@ const deleteConnection = catchAsync(async (req, res) => {
 });
 
 const checkConnectionConfig = catchAsync(async (req, res) => {
-  const connectionId = req.params.connectionId;
+  const { db, tunnel, connection_type } = req.body;
   const user = req.user as User;
 
   const response = await connectionService.checkConnectionConfig(
     user.neosync_account_id,
-    connectionId
+    db,
+    tunnel,
+    connection_type
   );
 
   res.send(response);

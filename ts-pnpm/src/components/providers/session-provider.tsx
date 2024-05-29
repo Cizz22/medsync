@@ -1,6 +1,7 @@
 'use client';
 
 import { isPast, parseISO } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { Session } from 'next-auth';
 import {
   SessionProvider as NextAuthSessionProvider,
@@ -11,7 +12,6 @@ import { ReactNode } from 'react';
 
 // import { useGetSystemAppConfig } from '@/libs/hooks/useGetSystemAppConfig';
 import { Skeleton } from '../ui/skeleton';
-import { useRouter } from 'next/navigation';
 
 interface Props {
   children: ReactNode;

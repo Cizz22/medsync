@@ -57,6 +57,7 @@ export default function Component() {
                 setIsLoading(false)
                 return
             }
+            
 
             toast({
                 title: "Login Success",
@@ -90,9 +91,9 @@ export default function Component() {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <Label htmlFor="password">Password</Label>
-                                <Link className="text-sm font-medium text-gray-900 hover:underline dark:text-gray-50" href="#">
+                                {/* <Link className="text-sm font-medium text-gray-900 hover:underline dark:text-gray-50" href="#">
                                     Forgot Password?
-                                </Link>
+                                </Link> */}
                             </div>
                             <Input id="password" name="password" onChange={handleChange} placeholder="••••••••" type="password" value={credentials.password} />
                         </div>

@@ -29,7 +29,8 @@ export default function AccountPageRedirect(props: Props): JSX.Element {
   }
 
   if (!account) {
-    return <Error statusCode={404} />;
+    //Back to Login Page
+    router.push('/login');
   }
 
   return <>{children}</>;

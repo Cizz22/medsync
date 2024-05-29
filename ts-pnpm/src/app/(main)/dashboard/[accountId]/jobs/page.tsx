@@ -2,6 +2,7 @@
 'use client';
 import { PlusIcon } from '@radix-ui/react-icons';
 import NextLink from 'next/link';
+import { useSession } from 'next-auth/react';
 import { ReactElement, useMemo } from 'react';
 
 import { useGetJobs } from '@/lib/hooks/useGetJobs';
@@ -37,18 +38,18 @@ interface JobTableProps { }
 function JobTable(props: JobTableProps): ReactElement {
     // eslint-disable-next-line no-empty-pattern
     const { } = props;
-    const { account } = useAccount();
-    const { isLoading, data, mutate } = useGetJobs(account?.neosync_account_id, account?.access_token);
-    const { data: statusData } = useGetJobStatuses(account?.neosync_account_id, account?.access_token);
+    const session = useSession()
+    const { isLoading, data, mutate } = useGetJobs(session.data?.user.neosync_account_id, session.data?.user.accessToken);
+    const { data: statusData } = useGetJobStatuses(session.data?.user.neosync_account_id, session.data?.user.accessToken);
     const columns = useMemo(
         () =>
             getColumns({
-                accountName: account?.neosync_account_id as string,
+                accountName: session.data?.user.neosync_account_id as string,
                 onDeleted() {
                     mutate();
                 },
             }),
-        [account?.neosync_account_id, mutate]
+        [mutate, session.data?.user.neosync_account_id]
     );
 
     if (isLoading) {
@@ -80,11 +81,11 @@ function JobTable(props: JobTableProps): ReactElement {
 }
 
 function NewJobButton(): ReactElement {
-    const { account } = useAccount();
+    const session = useSession()
     // const posthog = usePostHog();
     return (
         <NextLink
-            href={`/${account?.name}/new/job`}
+            href={`/dashboard/${session.data.user.neosync_account_id}/new/job`}
         // onClick={() => {
         //     posthog.capture('clicked_new_job_button');
         // }}

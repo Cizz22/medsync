@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { yupResolver } from '@hookform/resolvers/yup';
 // import {
@@ -59,6 +60,41 @@ import {
   SSL_MODES,
 } from '@/yup-validations/connections';
 
+interface PostgresConfig {
+  host: any;
+  name: any;
+  user: any;
+  pass: any;
+  port: any;
+  sslMode: any;
+}
+
+interface IsConnectionNameAvaiableResponse {
+  isAvailable: boolean;
+}
+
+interface PostgresConnectionConfig {
+  connectionConfig: {
+    case: 'connection' | 'url';
+    value: PostgresConfig | string;
+  };
+  tunnel: {
+    host: any;
+    port: any;
+    user: any;
+    knownHostPublicKey?: any;
+    authentication?: {
+      authConfig: {
+        case: any,
+        value: any,
+      },
+    }
+  };
+  connectionOptions: {
+    maxConnectionLimit: any;
+  }
+}
+
 export default function PostgresForm() {
   const searchParams = useSearchParams();
   const { account } = useAccount();
@@ -114,19 +150,7 @@ export default function PostgresForm() {
     }
 
     try {
-      let connection: ConnectionResponse = {
-        id: '',
-        name: '',
-        created_at: '',
-        updated_at: '',
-        connectionConfig: {
-          case: 'config',
-          value: {},
-        },
-        created_by_user_id: '',
-        updated_by_user_id: '',
-        account_id: '',
-      }
+      let connection: ConnectionResponse;
 
       if (activeTab === 'host') {
         connection = await createPostgresConnection(
@@ -137,7 +161,7 @@ export default function PostgresForm() {
           values.tunnel,
           values.options
         );
-      } else if (activeTab === 'url') {
+      } else {
         connection = await createPostgresConnection(
           values.connectionName,
           account.neosync_account_id,
@@ -200,15 +224,15 @@ export default function PostgresForm() {
       const returnTo = searchParams.get('returnTo');
       if (returnTo) {
         router.push(returnTo);
-      } else if (connection.connection?.id) {
+      } else if (connection?.id) {
         router.push(
-          `/${account?.name}/connections/${connection.connection.id}`
+          `/${account?.name}/connections/${connection.id}`
         );
       } else {
         router.push(`/${account?.name}/connections`);
       }
     } catch (err) {
-      console.error('Error in form submission:', err);
+      // console.error('Error in form submission:', err);
       toast({
         title: 'Unable to create connection',
         description: getErrorMessage(err),
@@ -232,11 +256,11 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
 
           if (
             connData &&
-            connData.connection?.connectionConfig?.config.case === 'pgConfig'
+            connData?.connectionConfig?.config.case === 'pgConfig'
           ) {
-            const config = connData.connection?.connectionConfig?.config.value;
+            const config = connData?.connectionConfig?.config.value;
 
-            let pgConfig: PostgresConnection | string | undefined;
+            let pgConfig: PostgresConfig | string | undefined;
 
             if (config.connectionConfig.case == 'connection') {
               pgConfig = config.connectionConfig.value;
@@ -284,7 +308,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
 
             form.reset({
               ...form.getValues(),
-              connectionName: connData.connection?.name + '-copy',
+              connectionName: connData?.name + '-copy',
               db: dbConfig,
               url: typeof pgConfig === 'string' ? pgConfig : '',
               options: {
@@ -512,7 +536,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {SSL_MODES.map((mode) => (
+                        {SSL_MODES.map((mode: any) => (
                           <SelectItem
                             className="cursor-pointer"
                             key={mode}
@@ -697,6 +721,10 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
             variant="outline"
             onClick={async () => {
               setIsValidating(true);
+              let res: CheckConnectionConfigResponse = {
+                isConnected: false,
+                privilage: []
+              };
               try {
                 if (activeTab === 'host') {
                   res = await checkPostgresConnection(
@@ -715,15 +743,15 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
                 }
                 setIsValidating(false);
                 setValidationResponse(res);
-                setPermissionData(res.privileges);
+                setPermissionData(res.privilage);
                 setOpenPermissionDialog(res?.isConnected && true);
               } catch (err) {
                 setValidationResponse(
-                  new CheckConnectionConfigResponse({
+                  {
                     isConnected: false,
                     connectionError:
                       err instanceof Error ? err.message : 'unknown error',
-                  })
+                  }
                 );
                 setIsValidating(false);
               }
@@ -758,7 +786,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
           />
         )}
       </form>
-    </Form>
+    </Form >
   );
 }
 interface ErrorAlertProps {
@@ -786,77 +814,112 @@ async function createPostgresConnection(
 ) {
   //Create empety object pgconfig
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pgconfig: any = {}
 
-  if (url) {
-    pgconfig['connectionConfig'] = {
-      case: 'url',
-      value: url,
-    };
-  } else {
-    pgconfig.connectionConfig = {
-      case: 'connection',
-      value: {
-        host: db?.host,
-        name: db?.name,
-        user: db?.user,
-        pass: db?.pass,
-        port: db?.port,
-        sslMode: db?.sslMode,
-      }
-    };
-  }
+  // const defaultValue = {
+  //   connectionName: '',
+  //   url: '',
+  //   options: {
+  //     maxConnectionLimit: 80,
+  //   },
+  //   tunnel: {
+  //     host: '',
+  //     port: 22,
+  //     knownHostPublicKey: '',
+  //     user: '',
+  //     passphrase: '',
+  //     privateKey: '',
+  //   },
+  // };
 
-  if (options && options.maxConnectionLimit != 0) {
-    pgconfig.connectionOptions = {
-      maxConnectionLimit: options.maxConnectionLimit,
-    };
-  }
+  // const pgconfig: PostgresConnectionConfig = {
+  //   connectionConfig: {
+  //     case: 'connection',
+  //     value: {
+  //       host: db?.host,
+  //       name: db?.name,
+  //       user: db?.user,
+  //       pass: db?.pass,
+  //       port: db?.port,
+  //       sslMode: db?.sslMode,
+  //     }
+  //   },
+  //   connectionOptions: {
+  //     maxConnectionLimit: defaultValue.options.maxConnectionLimit
+  //   },
+  //   tunnel: {
+  //     host: defaultValue.tunnel.host,
+  //     port: defaultValue.tunnel.port,
+  //     user: defaultValue.tunnel.user,
+  //     knownHostPublicKey: defaultValue.tunnel.knownHostPublicKey,
+  //     authentication: {
+  //       authConfig: {
+  //         case: '',
+  //         value: {},
+  //       },
+  //     }
+  //   },
+  // };
 
-  if (tunnel && tunnel.host) {
-    pgconfig.tunnel = {
-      host: tunnel.host,
-      port: tunnel.port,
-      user: tunnel.user,
-      knownHostPublicKey: tunnel.knownHostPublicKey
-        ? tunnel.knownHostPublicKey
-        : undefined,
-    };
-    if (tunnel.privateKey) {
-      pgconfig.tunnel.authentication = {
-        authConfig: {
-          case: 'privateKey',
-          value: {
-            value: tunnel.privateKey,
-            passphrase: tunnel.passphrase,
-          },
-        },
-      };
-    } else if (tunnel.passphrase) {
-      pgconfig.tunnel.authentication = {
-        authConfig: {
-          case: 'passphrase',
-          value: {
-            value: tunnel.passphrase,
-          },
-        },
-      };
-    }
-  }
+  // if (url) {
+  //   pgconfig.connectionConfig = {
+  //     case: 'url',
+  //     value: url,
+  //   };
+  // }
+
+  // if (options && options.maxConnectionLimit != 0) {
+  //   pgconfig.connectionOptions = {
+  //     maxConnectionLimit: options.maxConnectionLimit,
+  //   };
+  // }
+
+  // if (tunnel && tunnel.host) {
+  //   pgconfig.tunnel = {
+  //     host: tunnel.host,
+  //     port: tunnel.port,
+  //     user: tunnel.user,
+  //     knownHostPublicKey: tunnel.knownHostPublicKey
+  //       ? tunnel.knownHostPublicKey
+  //       : undefined,
+  //   };
+  //   if (tunnel.privateKey) {
+  //     pgconfig.tunnel.authentication = {
+  //       authConfig: {
+  //         case: 'privateKey',
+  //         value: {
+  //           value: tunnel.privateKey,
+  //           passphrase: tunnel.passphrase,
+  //         },
+  //       },
+  //     };
+  //   } else if (tunnel.passphrase) {
+  //     pgconfig.tunnel.authentication = {
+  //       authConfig: {
+  //         case: 'passphrase',
+  //         value: {
+  //           value: tunnel.passphrase,
+  //         },
+  //       },
+  //     };
+  //   }
+  // }
+
   const res = await fetch(`/api/accounts/${accountId}/connections`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      accountId,
-      name: name,
-      connectionConfig: {
-        config: {
-          case: 'pgConfig',
-          value: pgconfig,
-        },
-      },
+      connection_type: 'postgresql',
+      name,
+      connection_config: {
+        host: db?.host,
+        name: db?.name,
+        user: db?.user,
+        pass: db?.pass,
+        port: db?.port,
+        sslMode: db?.sslMode
+      }
     }
     ),
   });
@@ -875,9 +938,9 @@ async function checkPostgresConnection(
 ): Promise<CheckConnectionConfigResponse> {
   let requestBody;
   if (url) {
-    requestBody = { url, tunnel };
+    requestBody = { url, tunnel, connection_type: 'postgresql' };
   } else {
-    requestBody = { db, tunnel };
+    requestBody = { db, tunnel, connection_type: 'postgresql' };
   }
   const res = await fetch(
     `/api/accounts/${accountId}/connections/postgres/check`,
@@ -899,7 +962,7 @@ async function checkPostgresConnection(
 export async function isConnectionNameAvailable(
   name: string,
   accountId: string
-): Promise<IsConnectionNameAvailableResponse> {
+): Promise<IsConnectionNameAvaiableResponse> {
   const res = await fetch(
     `/api/accounts/${accountId}/connections/is-connection-name-available?connectionName=${name}`,
     {
@@ -919,7 +982,7 @@ export async function isConnectionNameAvailable(
 export async function GetConnectionCloneValues(
   accountId: string,
   sourceConnId: string
-): Promise<GetConnectionResponse> {
+): Promise<ConnectionResponse> {
   const res = await fetch(
     `/api/accounts/${accountId}/connections/${sourceConnId}`,
     {

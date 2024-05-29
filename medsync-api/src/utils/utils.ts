@@ -1,5 +1,17 @@
-import { SupportedJobType, TransformerDataType, TransformerSource } from '@neosync/sdk';
+import {
+  ConnectionConfig,
+  GetConnectionResponse,
+  MysqlConnection,
+  MysqlConnectionConfig,
+  PostgresConnection,
+  PostgresConnectionConfig,
+  SupportedJobType,
+  TransformerDataType,
+  TransformerSource
+} from '@neosync/sdk';
 import { format } from 'date-fns';
+import ApiError from './ApiError';
+import httpStatus from 'http-status';
 
 export function formatDateTime(
   dateStr?: string | Date | number,
@@ -100,4 +112,63 @@ export function formatName(name: string): string {
 
   // Return the formatted name
   return name;
+}
+
+export function createConnectionConfig(connection_type: string, connection_config: any) {
+  let config: PostgresConnectionConfig | MysqlConnectionConfig;
+  let connectionCase: 'pgConfig' | 'mysqlConfig';
+  let connectionConfig: ConnectionConfig;
+
+  switch (connection_type) {
+    case 'postgresql':
+      connectionCase = 'pgConfig';
+      config = new PostgresConnectionConfig({
+        connectionConfig: {
+          case: 'connection',
+          value: new PostgresConnection({
+            host: connection_config.host,
+            name: connection_config.name,
+            user: connection_config.user,
+            pass: connection_config.pass,
+            port: connection_config.port,
+            sslMode: connection_config.sslMode
+          })
+        }
+      });
+
+      connectionConfig = new ConnectionConfig({
+        config: {
+          case: connectionCase,
+          value: config
+        }
+      });
+      break;
+    case 'mysql':
+      const mqconfig = new MysqlConnectionConfig({
+        connectionConfig: {
+          case: 'connection',
+          value: new MysqlConnection({
+            host: connection_config.host,
+            name: connection_config.name,
+            user: connection_config.user,
+            pass: connection_config.pass,
+            port: connection_config.port,
+            protocol: connection_config.protocol
+          })
+        }
+      });
+
+      connectionConfig = new ConnectionConfig({
+        config: {
+          case: 'mysqlConfig',
+          value: mqconfig
+        }
+      });
+      break;
+    default:
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid connection type');
+      break;
+  }
+
+  return connectionConfig;
 }

@@ -22,6 +22,7 @@ import {
 import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
+import { createConnectionConfig } from '../utils/utils';
 // import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
@@ -41,12 +42,17 @@ export async function getConnections(accountId: string) {
   return result.connections;
 }
 
-export async function checkConnectionConfig(accountId: string, connection_id: string) {
-  const connection = await getConnection(accountId, connection_id);
+export async function checkConnectionConfig(
+  accountId: string,
+  db: any,
+  tunnel: any,
+  connection_type: string
+) {
+  const connectionConfig = createConnectionConfig(connection_type, db);
 
   const check = await client.connections.checkConnectionConfig(
     new CheckConnectionConfigRequest({
-      connectionConfig: connection.connectionConfig
+      connectionConfig
     })
   );
 
@@ -84,73 +90,15 @@ export async function createConnection(
   name: string,
   connection_config: any
 ): Promise<Connection | undefined> {
-  let config: PostgresConnectionConfig | MysqlConnectionConfig;
-  let connectionCase: 'pgConfig' | 'mysqlConfig';
-  let connection: GetConnectionResponse;
+  const connectionConfig = createConnectionConfig(connection_type, connection_config);
 
-  switch (connection_type) {
-    case 'postgresql':
-      connectionCase = 'pgConfig';
-      config = new PostgresConnectionConfig({
-        connectionConfig: {
-          case: 'connection',
-          value: new PostgresConnection({
-            host: connection_config.host,
-            name: connection_config.name,
-            user: connection_config.user,
-            pass: connection_config.pass,
-            port: connection_config.port,
-            sslMode: connection_config.sslMode
-          })
-        }
-      });
-
-      connection = await client.connections.createConnection(
-        new CreateConnectionRequest({
-          name,
-          accountId,
-          connectionConfig: new ConnectionConfig({
-            config: {
-              case: connectionCase,
-              value: config
-            }
-          })
-        })
-      );
-      break;
-    case 'mysql':
-      const mqconfig = new MysqlConnectionConfig({
-        connectionConfig: {
-          case: 'connection',
-          value: new MysqlConnection({
-            host: connection_config.host,
-            name: connection_config.name,
-            user: connection_config.user,
-            pass: connection_config.pass,
-            port: connection_config.port,
-            protocol: connection_config.protocol
-          })
-        }
-      });
-
-      connection = await client.connections.createConnection(
-        new CreateConnectionRequest({
-          name,
-          accountId,
-          connectionConfig: new ConnectionConfig({
-            config: {
-              case: 'mysqlConfig',
-              value: mqconfig
-            }
-          })
-        })
-      );
-      break;
-    default:
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid connection type');
-      break;
-  }
-
+  const connection = await client.connections.createConnection(
+    new CreateConnectionRequest({
+      name,
+      accountId,
+      connectionConfig
+    })
+  );
   return connection.connection;
 }
 

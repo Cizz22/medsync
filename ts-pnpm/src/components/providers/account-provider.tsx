@@ -2,6 +2,7 @@
 // import { UserAccount } from '@neosync/sdk';
 import { useParams, useRouter } from 'next/navigation';
 import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 import {
     createContext,
     ReactElement,
@@ -12,7 +13,6 @@ import {
 } from 'react';
 
 import { useGetUserAccounts } from '@/lib/hooks/useUserAccounts';
-import { signOut } from 'next-auth/react';
 
 interface AccountContextType {
     account: UserAccount | undefined;
@@ -45,15 +45,17 @@ interface UserAccount {
 export default function AccountProvider(props: Props): ReactElement {
     const { children, session } = props;
     const accessToken = session?.user?.accessToken;
-    const refreshToken = session?.user?.refreshToken;
+    // const refreshToken = session?.user?.refreshToken;
     const { accountId } = useParams();
-
-    const { data: accountResponse, error, isLoading, mutate } = useGetUserAccounts(accessToken);
-    const router = useRouter();
 
     const [userAccount, setUserAccount] = useState<UserAccount | undefined>(
         undefined
     );
+
+    const { data: accountResponse, error, isLoading, mutate } = useGetUserAccounts(accessToken);
+    const router = useRouter();
+
+    
 
     useEffect(() => {
         if (error) {

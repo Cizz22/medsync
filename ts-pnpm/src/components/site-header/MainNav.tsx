@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 
 import { MainLogo } from './MainLogo';
 import { getPathNameHighlight } from './util';
+import { useAccount } from '../providers/account-provider';
 // import { useAccount } from '../providers/account-provider';
 
 export function MainNav({
@@ -17,7 +18,8 @@ export function MainNav({
   const pathname = usePathname();
   // const { account } = useAccount();
   const { resolvedTheme } = useTheme();
-  const accountName = 'personal';
+  const { account } = useAccount();
+  const accountName = account?.neosync_account_id;
 
   return (
     <div className="mr-4 hidden lg:flex">
@@ -38,7 +40,7 @@ export function MainNav({
           Overview
         </Link> */}
         <Link
-          href={`/${accountName}/jobs`}
+          href={`/dashboard/${accountName}/jobs`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
             getPathNameHighlight('/job', pathname)
@@ -47,7 +49,7 @@ export function MainNav({
           Jobs
         </Link>
         <Link
-          href={`/${accountName}/runs`}
+          href={`/dashboard/${accountName}/runs`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
             getPathNameHighlight('/run', pathname)
@@ -56,7 +58,7 @@ export function MainNav({
           Runs
         </Link>
         <Link
-          href={`/${accountName}/transformers`}
+          href={`/dashboard/${accountName}/transformers`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
             getPathNameHighlight('/transformer', pathname)
@@ -65,7 +67,7 @@ export function MainNav({
           Transformers
         </Link>
         <Link
-          href={`/${accountName}/connections`}
+          href={`/dashboard/${accountName}/connections`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
             getPathNameHighlight('connection', pathname)
@@ -75,7 +77,7 @@ export function MainNav({
         </Link>
 
         <Link
-          href={`/${accountName}/settings`}
+          href={`/dashboard/${accountName}/settings`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
             getPathNameHighlight('/settings', pathname)

@@ -40,7 +40,7 @@ function getAccessToken(): GetAccessTokenFn {
         grant_type: 'password',
         client_id: 'neosync-app',
         client_secret: '72alWGzhHInDskRHduTQ8BjB4Lgn0n3a',
-        username: 'user@gmail.com',
+        username: 'usermain@gmail.com',
         password: '12345678'
       });
       const res = await fetch(

@@ -11,6 +11,7 @@ import SiteFooter from '@/components/SiteFooter';
 import { Toaster } from '@/components/ui/toaster';
 
 import { auth } from '../api/auth/[...nextauth]/auth';
+import { useGetUserAccounts } from '@/lib/hooks/useUserAccounts';
 
 export const metadata: Metadata = {
   title: 'Medsync',

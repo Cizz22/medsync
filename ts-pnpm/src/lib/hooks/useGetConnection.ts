@@ -4,8 +4,8 @@ import { useAuthenticatedFetch } from "@/lib/hooks/useAuthenticatedFetch"
 
 export interface ConnectionConfig {
   config: {
-    case: string,
-    value: any
+    case: string;
+    value: any;
   }
 }
 
@@ -23,7 +23,7 @@ export interface ConnectionResponse {
 export interface CheckConnectionConfigResponse {
   isConnected: boolean,
   connectionError?: string
-  privilage: ConnectionRolePrivilege[]
+  privilage?: ConnectionRolePrivilege[]
 }
 
 export interface ConnectionRolePrivilege {
