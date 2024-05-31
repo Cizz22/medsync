@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { useToast } from '../ui/use-toast';
+import router from 'next/navigation';
 
 export function UserNav(): ReactElement | null {
   const session = useSession();
@@ -70,6 +71,7 @@ export function UserNav(): ReactElement | null {
             onClick={async () => {
               try {
                 await signOut();
+                router.push('/login');
               } catch (err) {
                 toast({
                   title: 'Unable to sign out',

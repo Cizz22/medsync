@@ -38,9 +38,10 @@ import JobsProgressSteps, {
 } from '../JobsProgressSteps';
 import { NewJobType } from '../page';
 import { DEFINE_FORM_SCHEMA, DefineFormValues } from '../schema';
-import { DEFAULT_CRON_STRING } from '../../../jobs/[id]/components/ScheduleCard';
+// import { DEFAULT_CRON_STRING } from '../../../jobs/[id]/components/ScheduleCard';
 
 const isBrowser = () => typeof window !== 'undefined';
+const DEFAULT_CRON_STRING = '0 0 * * *';
 
 export default function Page({ searchParams }: PageProps): ReactElement {
   const router = useRouter();

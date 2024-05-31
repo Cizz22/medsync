@@ -49,7 +49,7 @@ export default function Component() {
                 redirect: false
             })
 
-            if (result.error) {
+            if (result?.error) {
                 toast({
                     title: "Invalid Credentials",
                     variant: 'destructive'

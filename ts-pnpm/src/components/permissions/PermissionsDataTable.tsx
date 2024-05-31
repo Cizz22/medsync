@@ -14,7 +14,6 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactElement } from 'react';
 
 import {
-  StickyHeaderTable,
   TableBody,
   TableHead,
   TableHeader,
@@ -63,7 +62,7 @@ export default function PermissionsDataTable<TData, TValue>({
         className="rounded-md border relative overflow-y-auto max-h-[500px] dark:border-gray-700 "
         ref={tableContainerRef}
       >
-        <StickyHeaderTable>
+        {/* <StickyHeaderTable> */}
           <TableHeader className="bg-gray-100 dark:bg-gray-800">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -136,7 +135,7 @@ export default function PermissionsDataTable<TData, TValue>({
               );
             })}
           </TableBody>
-        </StickyHeaderTable>
+        {/* </StickyHeaderTable> */}
       </div>
     </div>
   );

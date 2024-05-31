@@ -55,7 +55,6 @@ export default function AccountProvider(props: Props): ReactElement {
     const { data: accountResponse, error, isLoading, mutate } = useGetUserAccounts(accessToken);
     const router = useRouter();
 
-    
 
     useEffect(() => {
         if (error) {
@@ -85,7 +84,7 @@ export default function AccountProvider(props: Props): ReactElement {
 
         router.push(`/dashboard/${accountResponse?.neosync_account_id}/jobs`);
 
-    }, [isLoading, accountId, accountResponse, router, accessToken]);
+    }, [isLoading, accountId, accountResponse , accessToken]);
 
     function setAccount(userAccount: UserAccount): void {
         if (userAccount.neosync_account_id !== accountId) {

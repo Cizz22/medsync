@@ -85,7 +85,7 @@ function NewJobButton(): ReactElement {
     // const posthog = usePostHog();
     return (
         <NextLink
-            href={`/dashboard/${session.data.user.neosync_account_id}/new/job`}
+            href={`/dashboard/${session.data?.user.neosync_account_id}/new/job`}
         // onClick={() => {
         //     posthog.capture('clicked_new_job_button');
         // }}

@@ -104,7 +104,7 @@ export default function PostgresForm() {
   //   account?.id ?? ''
   // );
   // used to know which tab - host or url that the user is on when we submit the form
-  const [activeTab, setActiveTab] = useState<string>('url');
+  const [activeTab, setActiveTab] = useState<string>('host');
 
   const form = useForm<PostgresFormValues>({
     resolver: yupResolver(POSTGRES_FORM_SCHEMA),
@@ -380,7 +380,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
           )}
         />
 
-        <RadioGroup
+        {/* <RadioGroup
           defaultValue="url"
           onValueChange={(e) => setActiveTab(e)}
           value={activeTab}
@@ -396,8 +396,8 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               <Label htmlFor="r1">Host</Label>
             </div>
           </div>
-        </RadioGroup>
-        {activeTab == 'url' && (
+        </RadioGroup> */}
+        {/* {activeTab == 'url' && (
           <FormField
             control={form.control}
             name="url"
@@ -418,142 +418,142 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               </FormItem>
             )}
           />
-        )}
-        {activeTab == 'host' && (
-          <>
-            <FormField
-              control={form.control}
-              name="db.host"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    Host Name
-                  </FormLabel>
-                  <FormDescription>The host name</FormDescription>
-                  <FormControl>
-                    <Input placeholder="Host" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        )} */}
+        {/* {activeTab == 'host' && ( */}
+        <>
+          <FormField
+            control={form.control}
+            name="db.host"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  Host Name
+                </FormLabel>
+                <FormDescription>The host name</FormDescription>
+                <FormControl>
+                  <Input placeholder="Host" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="db.port"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    Database Port
-                  </FormLabel>
-                  <FormDescription>The database port.</FormDescription>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="5432"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e.target.valueAsNumber);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="db.port"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  Database Port
+                </FormLabel>
+                <FormDescription>The database port.</FormDescription>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="5432"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e.target.valueAsNumber);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="db.name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    Database Name
-                  </FormLabel>
-                  <FormDescription>The database name</FormDescription>
-                  <FormControl>
-                    <Input placeholder="postgres" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="db.name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  Database Name
+                </FormLabel>
+                <FormDescription>The database name</FormDescription>
+                <FormControl>
+                  <Input placeholder="postgres" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="db.user"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    Database Username
-                  </FormLabel>
-                  <FormDescription>The database username</FormDescription>
-                  <FormControl>
-                    <Input placeholder="postgres" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="db.user"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  Database Username
+                </FormLabel>
+                <FormDescription>The database username</FormDescription>
+                <FormControl>
+                  <Input placeholder="postgres" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="db.pass"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    Database Password
-                  </FormLabel>
-                  <FormDescription>The database password</FormDescription>
-                  <FormControl>
-                    <Input type="password" placeholder="postgres" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="db.pass"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  Database Password
+                </FormLabel>
+                <FormDescription>The database password</FormDescription>
+                <FormControl>
+                  <Input type="password" placeholder="postgres" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="db.sslMode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <RequiredLabel />
-                    SSL Mode
-                  </FormLabel>
-                  <FormDescription>
-                    Turn on SSL Mode to use TLS for client/server encryption.
-                  </FormDescription>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SSL_MODES.map((mode: any) => (
-                          <SelectItem
-                            className="cursor-pointer"
-                            key={mode}
-                            value={mode}
-                          >
-                            {mode}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
+          <FormField
+            control={form.control}
+            name="db.sslMode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel />
+                  SSL Mode
+                </FormLabel>
+                <FormDescription>
+                  Turn on SSL Mode to use TLS for client/server encryption.
+                </FormDescription>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SSL_MODES.map((mode: any) => (
+                        <SelectItem
+                          className="cursor-pointer"
+                          key={mode}
+                          value={mode}
+                        >
+                          {mode}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+        {/* )} */}
         <FormField
           control={form.control}
           name="options.maxConnectionLimit"
@@ -726,21 +726,12 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
                 privilage: []
               };
               try {
-                if (activeTab === 'host') {
-                  res = await checkPostgresConnection(
-                    account?.neosync_account_id ?? '',
-                    form.getValues().db,
-                    form.getValues().tunnel,
-                    undefined
-                  );
-                } else if (activeTab === 'url') {
-                  res = await checkPostgresConnection(
-                    account?.neosync_account_id ?? '',
-                    undefined,
-                    form.getValues().tunnel,
-                    form.getValues().url ?? ''
-                  );
-                }
+                res = await checkPostgresConnection(
+                  account?.neosync_account_id ?? '',
+                  form.getValues().db,
+                  form.getValues().tunnel,
+                  undefined
+                );
                 setIsValidating(false);
                 setValidationResponse(res);
                 setPermissionData(res.privilage);
@@ -964,7 +955,7 @@ export async function isConnectionNameAvailable(
   accountId: string
 ): Promise<IsConnectionNameAvaiableResponse> {
   const res = await fetch(
-    `/api/accounts/${accountId}/connections/is-connection-name-available?connectionName=${name}`,
+    `/api/accounts/${accountId}/connections/is-connection-name-available?name=${name}`,
     {
       method: 'GET',
       headers: {

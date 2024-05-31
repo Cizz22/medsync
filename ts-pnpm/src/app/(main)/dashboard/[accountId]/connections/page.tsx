@@ -71,7 +71,7 @@ function NewConnectionButton(props: NewConnectionButtonprops): ReactElement {
   const { } = props;
   const { account } = useAccount();
   return (
-    <NextLink href={`/${account?.name}/new/connection`}>
+    <NextLink href={`/dashboard/${account?.neosync_account_id}/new/connection`}>
       <Button>
         <ButtonText leftIcon={<PlusIcon />} text="New Connection" />
       </Button>

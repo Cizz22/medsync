@@ -83,6 +83,16 @@ const getConnectionUniqueConstrains = catchAsync(async (req, res) => {
   res.json(response);
 });
 
+const isConnectionNameAvailable = catchAsync(async (req, res) => {
+  const user = req.user as User;
+  const name = req.query.name as string;
+  const available = await connectionService.isConnectionNameAvailable(
+    user.neosync_account_id,
+    name
+  );
+  res.json(available);
+});
+
 export default {
   getConnections,
   createConnection,
@@ -92,5 +102,6 @@ export default {
   checkConnectionSchema,
   getConnectionForeignConstraints,
   getConnectionPrimaryConstraints,
-  getConnectionUniqueConstrains
+  getConnectionUniqueConstrains,
+  isConnectionNameAvailable
 };

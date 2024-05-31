@@ -7,7 +7,7 @@ export function useGetConnections(
   token: string | undefined
 ): HookReply<Array<ConnectionResponse>> {
   return useAuthenticatedFetch(
-    `/accounts/${accountId}/connections`,
+    `/api/accounts/${accountId}/connections`,
     !!accountId && !!token,
     token
   )

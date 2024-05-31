@@ -60,8 +60,10 @@ export default function Page({ searchParams }: PageProps): ReactElement {
     destinations: [{ connectionId: '', destinationOptions: {} }],
   });
 
-  const { isLoading: isConnectionsLoading, data: connectionsData } =
-    useGetConnections(account?.neosync_account_id, account?.access_token);
+  const { data: connectionsData, isLoading: isConnectionsLoading } = useGetConnections(account?.neosync_account_id, account?.access_token);
+
+  // eslint-disable-next-line no-console
+  console.log(connectionsData);
 
   const connections = connectionsData ?? [];
 
@@ -313,7 +315,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
               onClick={() => {
                 if (searchParams?.from === 'new-connection') {
                   router.push(
-                    `/${account?.name}/new/job/define?sessionId=${sessionPrefix}`
+                    `/dashboard/${account?.neosync_account_id}/new/job/define?sessionId=${sessionPrefix}`
                   );
                   return;
                 }

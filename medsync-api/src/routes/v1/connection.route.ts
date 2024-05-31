@@ -15,48 +15,15 @@ router
   )
   .get(auth(), validate(connectionValidation.getConnections), connectionController.getConnections);
 
-/**
- * @swagger
- * /connections:
- *  get:
- *   summary: Get all connections
- *   tags: [Connection]
- *   security:
- *   - bearerAuth: []
- *   responses:
- *    200:
- *     description: Success. Returns an array of connections.
- *     content:
- *       application/json:
- *         schema:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Connection'
- */
+router
+  .route('/check')
+  .post(
+    auth(),
+    validate(connectionValidation.checkConnectionConfig),
+    connectionController.checkConnectionConfig
+  );
 
-/**
- * @swagger
- * /connections:
- *  post:
- *   summary: Create a new connection
- *   tags: [Connection]
- *   security:
- *   - bearerAuth: []
- *   requestBody:
- *     description: Data for creating a new connection
- *     required: true
- *     content:
- *       application/json:
- *         schema:
- *           $ref: '#/components/schemas/NewConnection'
- *   responses:
- *    200:
- *     description: Success. The connection has been created.
- *    400:
- *     description: Bad Request. Invalid input provided.
- *    401:
- *     description: Unauthorized. Authentication credentials are missing or invalid.
- */
+router.route('/name-available').get(auth(), connectionController.isConnectionNameAvailable);
 
 router
   .route('/:connectionId')
@@ -80,14 +47,6 @@ router
 router
   .route('/:connectionId/constrains/foreign')
   .get(auth(), connectionController.getConnectionForeignConstraints);
-
-router
-  .route('/check')
-  .post(
-    auth(),
-    validate(connectionValidation.checkConnectionConfig),
-    connectionController.checkConnectionConfig
-  );
 
 export default router;
 

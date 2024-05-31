@@ -29,7 +29,7 @@ export default function ConnectionCard(props: Props) {
     <Card
       onClick={() =>
         router.push(
-          `/${account?.name}/new/connection/${connection.urlSlug
+          `/dashboard/${account?.neosync_account_id}/new/connection/${connection.urlSlug
           }?${searchParams.toString()}`
         )
       }

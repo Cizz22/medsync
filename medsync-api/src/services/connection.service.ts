@@ -175,5 +175,6 @@ export default {
   checkConnectionSchema,
   getConnectionUniqueConstrains,
   getConnectionForeignConstraints,
-  getConnectionPrimaryConstraints
+  getConnectionPrimaryConstraints,
+  isConnectionNameAvailable
 };
