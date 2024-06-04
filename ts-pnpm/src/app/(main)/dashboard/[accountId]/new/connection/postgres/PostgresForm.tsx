@@ -133,7 +133,7 @@ export default function PostgresForm() {
       },
     },
 
-    context: { accountId: account?.neosync_account_id ?? '', activeTab: activeTab },
+    context: { accountId: account?.neosync_account_id, token:account?.access_token, activeTab: activeTab },
   });
   const router = useRouter();
   const [validationResponse, setValidationResponse] = useState<CheckConnectionConfigResponse | undefined>();
@@ -156,6 +156,7 @@ export default function PostgresForm() {
         connection = await createPostgresConnection(
           values.connectionName,
           account.neosync_account_id,
+          account.access_token as string,
           values.db,
           undefined, // don't pass in the url since user is submitting the db values
           values.tunnel,
@@ -165,6 +166,7 @@ export default function PostgresForm() {
         connection = await createPostgresConnection(
           values.connectionName,
           account.neosync_account_id,
+          account.access_token as string,
           undefined, // don't pass in the db values since user is submitting the url
           values.url ?? '',
           values.tunnel,
@@ -226,10 +228,10 @@ export default function PostgresForm() {
         router.push(returnTo);
       } else if (connection?.id) {
         router.push(
-          `/${account?.name}/connections/${connection.id}`
+          `/dashboard/${account?.neosync_account_id}/connections/${connection.id}`
         );
       } else {
-        router.push(`/${account?.name}/connections`);
+        router.push(`/dashboard/${account?.neosync_account_id}/connections`);
       }
     } catch (err) {
       // console.error('Error in form submission:', err);
@@ -798,6 +800,7 @@ function ErrorAlert(props: ErrorAlertProps): ReactElement {
 async function createPostgresConnection(
   name: string,
   accountId: string,
+  token:string,
   db?: PostgresFormValues['db'],
   url?: string,
   tunnel?: PostgresFormValues['tunnel'],
@@ -899,6 +902,7 @@ async function createPostgresConnection(
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      'token': token
     },
     body: JSON.stringify({
       connection_type: 'postgresql',
@@ -952,7 +956,8 @@ async function checkPostgresConnection(
 
 export async function isConnectionNameAvailable(
   name: string,
-  accountId: string
+  accountId: string,
+  token: string
 ): Promise<IsConnectionNameAvaiableResponse> {
   const res = await fetch(
     `/api/accounts/${accountId}/connections/is-connection-name-available?name=${name}`,
@@ -960,6 +965,7 @@ export async function isConnectionNameAvailable(
       method: 'GET',
       headers: {
         'content-type': 'application/json',
+        'token': token
       },
     }
   );

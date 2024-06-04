@@ -63,7 +63,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() =>
-            router.push(`/${account?.neosync_account_id}/connections/${connection.id}`)
+            router.push(`/dashboard/${account?.neosync_account_id}/connections/${connection.id}`)
           }
         >
           View
@@ -73,7 +73,7 @@ export function DataTableRowActions<TData>({
           className="cursor-pointer"
           onClick={() =>
             router.push(
-              `/${account?.neosync_account_id}/new/connection/${getConnectionType(connection.connectionConfig?.config.case ?? '')}?sourceId=${connection.id}`
+              `/dashboard/${account?.neosync_account_id}/new/connection/${getConnectionType(connection.connectionConfig?.config.case ?? '')}?sourceId=${connection.id}`
             )
           }
         >

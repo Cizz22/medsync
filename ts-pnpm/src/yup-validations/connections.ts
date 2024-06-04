@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 import { getErrorMessage } from '@/lib/utils';
 
-// import { isConnectionNameAvailable } from '@/app/(mgmt)/[account]/new/connection/postgres/PostgresForm';
+import { isConnectionNameAvailable } from '@/app/(main)/dashboard/[accountId]/new/connection/postgres/PostgresForm';
 
 /* This is the standard regular expression we assign to all or most "name" fields on the backend. */
 export const RESOURCE_NAME_REGEX = /^[a-z0-9-]{3,30}$/;
@@ -33,6 +33,7 @@ const connectionNameSchema = Yup.string()
       }
 
       const accountId = context?.options?.context?.accountId;
+      const token = context?.options?.context?.token;
       if (!accountId) {
         return context.createError({
           message: 'Account is not valid.',
@@ -40,8 +41,8 @@ const connectionNameSchema = Yup.string()
       }
 
       try {
-        const res = await isConnectionNameAvailable(value, accountId);
-        if (!res.isAvailable) {
+        const res = await isConnectionNameAvailable(value, accountId, token);
+        if (!res) {
           return context.createError({
             message: 'This Connection Name is already taken.',
           });

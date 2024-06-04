@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { withAxiosContext } from "@/api-only/axios-context";
 
 
-
-export async function POST(
+export async function GET(
     req: NextRequest,
 ) {
     return withAxiosContext(async (ctx) => {

@@ -139,7 +139,12 @@ function getCategory(cc: any): string {
   if (!cc) {
     return '-';
   }
-  switch (cc.config.case) {
+  const caseConfig: string = Object.keys(cc)[0];
+
+  // eslint-disable-next-line no-console
+  console.log(caseConfig)
+  
+  switch (caseConfig) {
     case 'pgConfig':
       return 'Postgres';
     case 'mysqlConfig':
