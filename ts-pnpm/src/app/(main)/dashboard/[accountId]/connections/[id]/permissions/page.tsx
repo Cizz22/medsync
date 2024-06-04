@@ -1,20 +1,20 @@
 'use client';
-'use client';
-import { PlainMessage } from '@bufbuild/protobuf';
-import {
-  CheckConnectionConfigResponse,
-  ConnectionRolePrivilege,
-  GetConnectionResponse,
-  PostgresConnectionConfig,
-} from '@neosync/sdk';
+// import { PlainMessage } from '@bufbuild/protobuf';
+// import {
+//   CheckConnectionConfigResponse,
+//   ConnectionRolePrivilege,
+//   GetConnectionResponse,
+//   PostgresConnectionConfig,
+// } from '@neosync/sdk';
 import { UpdateIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 import Error from 'next/error';
 import { useState } from 'react';
 import { KeyedMutator } from 'swr';
 
-import { useGetConnection } from '@/libs/hooks/useGetConnection';
-import { useTestProgressConnection } from '@/libs/hooks/useTestPostgresConnection';
+import { CheckConnectionConfigResponse, ConnectionRolePrivilege, useGetConnection } from '@/lib/hooks/useGetConnection';
+// import { useTestProgressConnection } from '@/libs/hooks/useTestPostgresConnection';
+import {TestProgressConnection} from '@/lib/hooks/useTestProgressConnection';
 
 import { CloneConnectionButton } from '@/components/CloneConnectionButton';
 import OverviewContainer from '@/components/containers/OverviewContainer';
@@ -31,7 +31,7 @@ import { PageProps } from '@/components/types';
 import { Button } from '@/components/ui/button';
 import { toast, useToast } from '@/components/ui/use-toast';
 
-import { getErrorMessage } from '@/util/util';
+import { getErrorMessage } from '@/lib/utils';
 
 import { getConnectionComponentDetails } from '../components/connection-component';
 import RemoveConnectionButton from '../components/RemoveConnectionButton';
@@ -39,17 +39,18 @@ import RemoveConnectionButton from '../components/RemoveConnectionButton';
 export default function PermissionsPage({ params }: PageProps) {
   const id = params?.id ?? '';
   const { account } = useAccount();
-  const { data, isLoading, mutate } = useGetConnection(account?.id ?? '', id);
+  const { data, isLoading, mutate } = useGetConnection(account?.neosync_account_id ?? '', account?.access_token ?? '' ,id);
+
+  const isPgConfig = Object.keys(data?.connectionConfig)[0] == 'pgConfig'
 
   const {
     data: validationRes,
     isLoading: isLoadingValidation,
     mutate: mutateValidation,
-  } = useTestProgressConnection(
-    account?.id ?? '',
-    data?.connection?.connectionConfig?.config.case === 'pgConfig'
-      ? data.connection.connectionConfig.config.value
-      : new PostgresConnectionConfig({})
+  } = TestProgressConnection(
+    account?.neosync_account_id ?? '',
+    account?.neosync_account_id ?? '',
+    isPgConfig ? data?.connectionConfig.pgConfig : data?.connectionConfig.mysqlConfig
   );
 
   const { toast } = useToast();
@@ -63,21 +64,17 @@ export default function PermissionsPage({ params }: PageProps) {
       </div>
     );
   }
-  if (!isLoading && !data?.connection) {
+  if (!isLoading && !data) {
     return <Error statusCode={404} />;
   }
 
   const connectionComponent = getConnectionComponentDetails({
-    connection: data?.connection!,
+    connection: data,
     onSaved: (resp) => {
-      mutate(
-        new GetConnectionResponse({
-          connection: resp.connection,
-        })
-      );
+      mutate(resp);
       toast({
         title: 'Successfully updated connection!',
-        variant: 'success',
+        variant: 'default',
       });
     },
     onSaveFailed: (err) =>
@@ -88,13 +85,13 @@ export default function PermissionsPage({ params }: PageProps) {
       }),
     extraPageHeading: (
       <div className="flex flex-row items-center gap-4">
-        {data?.connection?.connectionConfig?.config.case &&
-          data?.connection?.id && (
+        {data?.connectionConfig &&
+          data?.id && (
             <CloneConnectionButton
               connectionType={
-                data?.connection?.connectionConfig?.config.case ?? ''
+               Object.keys(data?.connectionConfig)[0] ?? ''
               }
-              id={data?.connection?.id ?? ''}
+              id={data?.id ?? ''}
             />
           )}
         <RemoveConnectionButton connectionId={id} />
@@ -102,14 +99,14 @@ export default function PermissionsPage({ params }: PageProps) {
     ),
     subHeading: (
       <ResourceId
-        labelText={data?.connection?.id ?? ''}
-        copyText={data?.connection?.id ?? ''}
+        labelText={data?.id ?? ''}
+        copyText={data?.id ?? ''}
         onHoverText="Copy the connection id"
       />
     ),
   });
 
-  const basePath = `/${account?.name}/connections/${data?.connection?.id}`;
+  const basePath = `/dashboard/${account?.neosync_account_id}/connections/${data?.id}`;
 
   const subnav = [
     {
@@ -134,9 +131,9 @@ export default function PermissionsPage({ params }: PageProps) {
           <SubNav items={subnav} />
           <div>
             <PermissionsPageContainer
-              data={validationRes?.privileges ?? []}
+              data={validationRes?.privilage ?? []}
               validationResponse={validationRes?.isConnected ?? false}
-              connectionName={data?.connection?.name ?? ''}
+              connectionName={data?.name ?? ''}
               columns={columns}
               mutateValidation={mutateValidation}
             />
@@ -151,7 +148,7 @@ interface PermissionsPageContainerProps {
   connectionName: string;
   data: ConnectionRolePrivilege[];
   validationResponse: boolean;
-  columns: ColumnDef<PlainMessage<ConnectionRolePrivilege>>[];
+  columns: ColumnDef<ConnectionRolePrivilege>[];
   mutateValidation:
     | KeyedMutator<unknown>
     | KeyedMutator<CheckConnectionConfigResponse>;

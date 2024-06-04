@@ -13,7 +13,7 @@ import { ConnectionResponse } from '@/lib/hooks/useGetConnection';
 import ConnectionIcon from '@/components/connections/ConnectionIcon';
 import PageHeader from '@/components/headers/PageHeader';
 
-import MysqlForm from './MysqlForm';
+// import MysqlForm from './MysqlForm';
 import PostgresForm from './PostgresForm';
 
 interface ConnectionComponent {
@@ -25,7 +25,7 @@ interface ConnectionComponent {
 
 interface GetConnectionComponentDetailsProps {
   connection?: ConnectionResponse;
-  onSaved(updatedConnResp): void;
+  onSaved(updatedConnResp:ConnectionResponse): void;
   onSaveFailed(err: unknown): void;
   extraPageHeading?: ReactElement;
   subHeading?: ReactElement;
@@ -37,9 +37,9 @@ export function getConnectionComponentDetails(
   const { connection, onSaved, extraPageHeading, onSaveFailed, subHeading } =
     props;
 
-  switch (connection?.connectionConfig?.config?.case) {
+  switch (Object.keys(connection?.connectionConfig)[0]) {
     case 'pgConfig':
-      const value = connection.connectionConfig.config.value;
+      const value = connection?.connectionConfig.pgConfig;
       let pgConfig;
 
       let dbConfig = {
@@ -54,9 +54,9 @@ export function getConnectionComponentDetails(
       // define header type for postgres, either generic postgres or neon
       let headerType = 'generic';
 
-      switch (value.connectionConfig.case) {
+      switch (Object.keys(value)[0]) {
         case 'connection':
-          pgConfig = value.connectionConfig.value;
+          pgConfig = value.connection;
           dbConfig = {
             host: pgConfig.host ?? '',
             name: pgConfig.name ?? '',
@@ -72,7 +72,7 @@ export function getConnectionComponentDetails(
           }
           break;
         case 'url':
-          pgConfig = value.connectionConfig.value;
+          pgConfig = value.url;
           if (pgConfig.includes('neon')) {
             headerType = 'neon';
           } else {
@@ -85,7 +85,7 @@ export function getConnectionComponentDetails(
       }
 
       return {
-        name: connection.name,
+        name: connection?.name ?? '',
         summary: (
           <div>
             <p>No summary found.</p>
@@ -107,9 +107,9 @@ export function getConnectionComponentDetails(
         ),
         body: (
           <PostgresForm
-            connectionId={connection.id}
+            connectionId={connection?.id ?? ''}
             defaultValues={{
-              connectionName: connection.name,
+              connectionName: connection?.name ?? '',
               db: dbConfig,
               url: typeof pgConfig === 'string' ? pgConfig : '',
               options: {
@@ -237,7 +237,7 @@ export function getConnectionComponentDetails(
 }
 
 function getPassphraseFromSshAuthentication(
-  sshauth: SSHAuthentication
+  sshauth:any
 ): string | undefined {
   switch (sshauth.authConfig.case) {
     case 'passphrase':
@@ -250,7 +250,7 @@ function getPassphraseFromSshAuthentication(
 }
 
 function getPrivateKeyFromSshAuthentication(
-  sshauth: SSHAuthentication
+  sshauth:any
 ): string | undefined {
   switch (sshauth.authConfig.case) {
     case 'privateKey':

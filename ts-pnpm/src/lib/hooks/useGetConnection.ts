@@ -12,7 +12,7 @@ export interface ConnectionConfig {
 export interface ConnectionResponse {
   id: string,
   name: string,
-  connectionConfig: ConnectionConfig,
+  connectionConfig: any,
   created_by_user_id: string,
   createdAt: string,
   updated_by_user_id: string,
@@ -30,7 +30,7 @@ export interface ConnectionRolePrivilege {
   grantees: string,
   schema: string,
   table: string,
-  privilage_type: string[]
+  privilegeType: string[]
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function

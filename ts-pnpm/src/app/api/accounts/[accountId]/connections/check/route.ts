@@ -7,7 +7,8 @@ export async function POST(
     req: NextRequest,
 ) {
     return withAxiosContext(async (ctx) => {
-        const response = await ctx.axios.post("/connections/check", req.body);
+        const body = await req.json
+        const response = await ctx.axios.post("/connections/check", body);
         return response.data;
     }, req.headers.get("token"))(req);
 }

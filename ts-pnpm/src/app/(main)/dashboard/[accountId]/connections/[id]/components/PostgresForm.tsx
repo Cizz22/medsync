@@ -1,19 +1,19 @@
 'use client';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  CheckConnectionConfigResponse,
-  ConnectionConfig,
-  ConnectionRolePrivilege,
-  PostgresConnection,
-  PostgresConnectionConfig,
-  SqlConnectionOptions,
-  SSHAuthentication,
-  SSHPassphrase,
-  SSHPrivateKey,
-  SSHTunnel,
-  UpdateConnectionRequest,
-  UpdateConnectionResponse,
-} from '@neosync/sdk';
+// import {
+//   CheckConnectionConfigResponse,
+//   ConnectionConfig,
+//   ConnectionRolePrivilege,
+//   PostgresConnection,
+//   PostgresConnectionConfig,
+//   SqlConnectionOptions,
+//   SSHAuthentication,
+//   SSHPassphrase,
+//   SSHPrivateKey,
+//   SSHTunnel,
+//   UpdateConnectionRequest,
+//   UpdateConnectionResponse,
+// } from '@neosync/sdk';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { ReactElement, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -58,11 +58,13 @@ import {
   PostgresFormValues,
   SSL_MODES,
 } from '@/yup-validations/connections';
+import { CheckConnectionConfigResponse, ConnectionResponse, ConnectionRolePrivilege } from '@/lib/hooks/useGetConnection';
+import { PostgresConnectionConfig } from '../../../new/connection/postgres/PostgresForm';
 
 interface Props {
   connectionId: string;
   defaultValues: PostgresFormValues;
-  onSaved(updatedConnectionResp: UpdateConnectionResponse): void;
+  onSaved(updatedConnectionResp: ConnectionResponse): void;
   onSaveFailed(err: unknown): void;
 }
 
@@ -95,31 +97,24 @@ export default function PostgresForm(props: Props) {
     useState<ConnectionRolePrivilege[]>();
 
   async function onSubmit(values: PostgresFormValues) {
+    if (!account) {
+      return;
+    }
+    
+
     try {
-      let connection: UpdateConnectionResponse = new UpdateConnectionResponse(
-        {}
-      );
-      if (activeTab === 'host') {
+      let connection: ConnectionResponse;
+    
         connection = await updatePostgresConnection(
           connectionId,
           values.connectionName,
-          account?.id ?? '',
+          account?.neosync_account_id,
+          account?.access_token as string,
           values.db,
           values.tunnel,
-          undefined,
           values.options
         );
-      } else if (activeTab === 'url') {
-        connection = await updatePostgresConnection(
-          connectionId,
-          values.connectionName,
-          account?.id ?? '',
-          undefined,
-          undefined,
-          values.url,
-          values.options
-        );
-      }
+      
       onSaved(connection);
     } catch (err) {
       console.error(err);
@@ -162,8 +157,8 @@ export default function PostgresForm(props: Props) {
           )}
         />
 
-        <RadioGroup
-          defaultValue="url"
+        {/* <RadioGroup
+          defaultValue="host"
           onValueChange={(e) => setActiveTab(e)}
           value={activeTab}
         >
@@ -178,7 +173,7 @@ export default function PostgresForm(props: Props) {
               <Label htmlFor="r1">Host</Label>
             </div>
           </div>
-        </RadioGroup>
+        </RadioGroup> */}
 
         {activeTab == 'url' && (
           <FormField
@@ -505,35 +500,29 @@ export default function PostgresForm(props: Props) {
             onClick={async () => {
               setIsValidating(true);
               try {
-                let res: CheckConnectionConfigResponse =
-                  new CheckConnectionConfigResponse({});
-                if (activeTab === 'host') {
+                let res: CheckConnectionConfigResponse = {
+                  isConnected: false,
+                  privilage: []
+                };
                   res = await checkPostgresConnection(
-                    account?.id ?? '',
-                    form.getValues().db,
-                    form.getValues().tunnel,
-                    undefined
+                  account?.neosync_account_id ?? '',
+                  account?.access_token ?? '',
+                  form.getValues().tunnel,
+                  undefined
                   );
-                } else if (activeTab === 'url') {
-                  res = await checkPostgresConnection(
-                    account?.id ?? '',
-                    undefined,
-                    form.getValues().tunnel,
-                    form.getValues().url ?? ''
-                  );
-                }
+                
                 setIsValidating(false);
                 setValidationResponse(res);
-                setPermissionData(res.privileges);
+                setPermissionData(res.privilage);
                 setOpenPermissionDialog(res?.isConnected && true);
               } catch (err) {
                 setIsValidating(false);
                 setValidationResponse(
-                  new CheckConnectionConfigResponse({
+                  {
                     isConnected: false,
                     connectionError:
                       err instanceof Error ? err.message : 'unknown error',
-                  })
+                  }
                 );
               }
             }}
@@ -574,63 +563,92 @@ async function updatePostgresConnection(
   connectionId: string,
   connectionName: string,
   accountId: string,
+  token:string,
   db?: PostgresFormValues['db'],
   tunnel?: PostgresFormValues['tunnel'],
-  url?: string,
   options?: PostgresFormValues['options']
-): Promise<UpdateConnectionResponse> {
-  let pgconfig = new PostgresConnectionConfig({});
-  if (url) {
-    pgconfig.connectionConfig = {
-      case: 'url',
-      value: url,
-    };
-  } else {
+) {
+  let pgconfig: PostgresConnectionConfig = {
+    connectionConfig: {
+      case: 'connection',
+      value: {
+        host: '',
+        name: '',
+        user: '',
+        pass: '',
+        port: '',
+        sslMode: '',
+      },
+    },
+    tunnel: {
+      host: '',
+      port: '',
+      user: '',
+      knownHostPublicKey: '',
+      authentication: {
+        authConfig: {
+          case: '',
+          value: {
+            value: '',
+            passphrase: '',
+          }
+        },
+      }
+    },
+    connectionOptions: {
+      maxConnectionLimit: ''
+    }
+  }
+
     pgconfig.connectionConfig = {
       case: 'connection',
-      value: new PostgresConnection({
+      value: {
         host: db?.host,
         name: db?.name,
         user: db?.user,
         pass: db?.pass,
         port: db?.port,
         sslMode: db?.sslMode,
-      }),
+      },
+    };
+  
+
+
+  if (options && options.maxConnectionLimit != 0) {
+    pgconfig.connectionOptions = {
+      maxConnectionLimit: options.maxConnectionLimit,
     };
   }
-  if (options && options.maxConnectionLimit != 0) {
-    pgconfig.connectionOptions = new SqlConnectionOptions({
-      maxConnectionLimit: options.maxConnectionLimit,
-    });
-  }
+
   if (tunnel && tunnel.host) {
-    pgconfig.tunnel = new SSHTunnel({
+    pgconfig.tunnel = {
       host: tunnel.host,
       port: tunnel.port,
       user: tunnel.user,
       knownHostPublicKey: tunnel.knownHostPublicKey
         ? tunnel.knownHostPublicKey
         : undefined,
-    });
+    };
+
     if (tunnel.privateKey) {
-      pgconfig.tunnel.authentication = new SSHAuthentication({
+      pgconfig.tunnel.authentication = {
         authConfig: {
           case: 'privateKey',
-          value: new SSHPrivateKey({
+          value: {
             value: tunnel.privateKey,
             passphrase: tunnel.passphrase,
-          }),
+          },
         },
-      });
+      };
     } else if (tunnel.passphrase) {
-      pgconfig.tunnel.authentication = new SSHAuthentication({
+      pgconfig.tunnel.authentication = {
         authConfig: {
           case: 'passphrase',
-          value: new SSHPassphrase({
+          value: {
             value: tunnel.passphrase,
-          }),
+          },
         },
-      });
+      };
     }
   }
 
@@ -640,18 +658,19 @@ async function updatePostgresConnection(
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
+        'token': token
       },
       body: JSON.stringify(
-        new UpdateConnectionRequest({
+        {
           id: connectionId,
           name: connectionName,
-          connectionConfig: new ConnectionConfig({
+          connectionConfig: {
             config: {
               case: 'pgConfig',
               value: pgconfig,
             },
-          }),
-        })
+          },
+        }
       ),
     }
   );
@@ -659,20 +678,22 @@ async function updatePostgresConnection(
     const body = await res.json();
     throw new Error(body.message);
   }
-  return UpdateConnectionResponse.fromJson(await res.json());
+
+  return await res.json();
 }
 
 async function checkPostgresConnection(
   accountId: string,
+  token: string,
   db?: PostgresFormValues['db'],
   tunnel?: PostgresFormValues['tunnel'],
   url?: string
 ): Promise<CheckConnectionConfigResponse> {
   let requestBody;
   if (url) {
-    requestBody = { url, tunnel };
+    requestBody = { url, tunnel, connection_type: 'postgresql' };
   } else {
-    requestBody = { db, tunnel };
+    requestBody = { db, tunnel, connection_type: 'postgresql' };
   }
   const res = await fetch(
     `/api/accounts/${accountId}/connections/postgres/check`,
@@ -680,6 +701,7 @@ async function checkPostgresConnection(
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'token':token
       },
       body: JSON.stringify(requestBody),
     }
@@ -688,7 +710,7 @@ async function checkPostgresConnection(
     const body = await res.json();
     throw new Error(body.message);
   }
-  return CheckConnectionConfigResponse.fromJson(await res.json());
+  return await res.json();
 }
 
 interface ErrorAlertProps {

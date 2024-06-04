@@ -52,11 +52,10 @@ export default function ConnectionPage({ params }: PageProps) {
       }),
     extraPageHeading: (
       <div className="flex flex-row items-center gap-4">
-        {data?.connectionConfig?.config.case &&
+        {data?.connectionConfig?.config &&
           data?.id && (
             <CloneConnectionButton
-              connectionType={
-                data?.connectionConfig?.config.case ?? ''
+              connectionType={Object.keys(data?.connectionConfig)[0] ?? ''
               }
               id={data?.id ?? ''}
             />
@@ -86,8 +85,7 @@ export default function ConnectionPage({ params }: PageProps) {
     },
   ];
 
-  const isPostgres =
-    data?.connectionConfig?.config.case == 'pgConfig';
+  const isPostgres = Object.keys(data?.connectionConfig)[0] == 'pgConfig';
 
   return (
     <OverviewContainer

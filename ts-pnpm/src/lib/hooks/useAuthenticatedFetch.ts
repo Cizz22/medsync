@@ -10,7 +10,7 @@ export function useAuthenticatedFetch<T, RawT = T>(
   isReadyCondition = true,
   token?: string,
   swrConfig?: SWRConfiguration<RawT | T, Error>,
-  customFetcher?: (url: string) => Promise<RawT | T>
+  customFetcher?: ([url, token]: [string, string]) => Promise<RawT | T>
 ): HookReply<RawT | T> {
 
   const isReady = isReadyCondition

@@ -3,7 +3,7 @@ import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog';
 import { useAccount } from '@/components/providers/account-provider';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { getErrorMessage } from '@/util/util';
+import { getErrorMessage } from '@/lib/utils';
 import { TrashIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import { ReactElement } from 'react';
@@ -20,10 +20,10 @@ export default function RemoveConnectionButton(props: Props): ReactElement {
 
   async function onDelete(): Promise<void> {
     try {
-      await removeConnection(account.account?.id ?? '', connectionId);
+      await removeConnection(account.account?.neosync_account_id ?? '',connectionId ,account.account?.access_token ?? '' );
       toast({
         title: 'Successfully removed connection!',
-        variant: 'success',
+        variant: 'default',
       });
       router.push(`/${account.account?.name}/connections`);
     } catch (err) {
@@ -52,14 +52,19 @@ export default function RemoveConnectionButton(props: Props): ReactElement {
 
 async function removeConnection(
   accountId: string,
-  connectionId: string
+  connectionId: string,
+  accessToken: string
 ): Promise<void> {
+  if (!accessToken || !accountId || !connectionId) {
+    throw new Error('Invalid parameters');
+  }
+
   const res = await fetch(
     `/api/accounts/${accountId}/connections/${connectionId}`,
     {
       method: 'DELETE',
       headers: {
-        token:
+        'token': accessToken
       }
     }
   );
@@ -67,5 +72,4 @@ async function removeConnection(
     const body = await res.json();
     throw new Error(body.message);
   }
-  await res.json();
 }

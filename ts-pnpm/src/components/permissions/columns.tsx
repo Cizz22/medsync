@@ -1,22 +1,19 @@
 'use client';
 
-import { PlainMessage } from '@bufbuild/protobuf';
-import { ConnectionRolePrivilege } from '@neosync/sdk';
 import { CheckCircledIcon, CircleBackslashIcon } from '@radix-ui/react-icons';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { DataTableColumnHeader } from './data-table-column-header';
+import { ConnectionRolePrivilege } from '@/lib/hooks/useGetConnection';
 
-export function getPermissionColumns(): ColumnDef<
-  PlainMessage<ConnectionRolePrivilege>
->[] {
+export function getPermissionColumns(): ColumnDef<ConnectionRolePrivilege>[] {
   return [
     {
       accessorKey: 'Role',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Role" />
       ),
-      cell: ({ row }) => <div>{row.original.grantee}</div>,
+      cell: ({ row }) => <div>{row.original.grantees}</div>,
     },
 
     {

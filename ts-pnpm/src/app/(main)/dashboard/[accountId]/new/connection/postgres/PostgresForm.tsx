@@ -73,7 +73,7 @@ interface IsConnectionNameAvaiableResponse {
   isAvailable: boolean;
 }
 
-interface PostgresConnectionConfig {
+export interface PostgresConnectionConfig {
   connectionConfig: {
     case: 'connection' | 'url';
     value: PostgresConfig | string;
@@ -730,7 +730,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               try {
                 res = await checkPostgresConnection(
                   account?.neosync_account_id ?? '',
-                  form.getValues().db,
+                  account?.access_token ?? '',
                   form.getValues().tunnel,
                   undefined
                 );
@@ -927,9 +927,11 @@ async function createPostgresConnection(
 
 async function checkPostgresConnection(
   accountId: string,
+  token: string,
   db?: PostgresFormValues['db'],
   tunnel?: PostgresFormValues['tunnel'],
   url?: string
+  
 ): Promise<CheckConnectionConfigResponse> {
   let requestBody;
   if (url) {
@@ -943,6 +945,7 @@ async function checkPostgresConnection(
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'token':token
       },
       body: JSON.stringify(requestBody),
     }
