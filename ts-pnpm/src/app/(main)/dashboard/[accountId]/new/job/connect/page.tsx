@@ -344,11 +344,11 @@ function splitConnections(connections: ConnectionResponse[]): {
   const s3: ConnectionResponse[] = [];
 
   connections.forEach((connection) => {
-    if (connection.connectionConfig?.config.case === 'pgConfig') {
+    if (Object.keys(connection.connectionConfig)[0] === 'pgConfig') {
       postgres.push(connection);
-    } else if (connection.connectionConfig?.config.case === 'mysqlConfig') {
+    } else if (Object.keys(connection.connectionConfig)[0] === 'mysqlConfig') {
       mysql.push(connection);
-    } else if (connection.connectionConfig?.config.case === 'awsS3Config') {
+    } else if (Object.keys(connection.connectionConfig)[0] === 'awsS3Config') {
       s3.push(connection);
     }
   });

@@ -940,7 +940,7 @@ async function checkPostgresConnection(
     requestBody = { db, tunnel, connection_type: 'postgresql' };
   }
   const res = await fetch(
-    `/api/accounts/${accountId}/connections/postgres/check`,
+    `/api/accounts/${accountId}/connections/check`,
     {
       method: 'POST',
       headers: {

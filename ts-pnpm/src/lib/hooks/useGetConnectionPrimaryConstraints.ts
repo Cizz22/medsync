@@ -1,22 +1,18 @@
-import { JsonValue } from '@bufbuild/protobuf';
-import { GetConnectionPrimaryConstraintsResponse } from '@neosync/sdk';
-import { HookReply } from './types';
-import { useNucleusAuthenticatedFetch } from './useNucleusAuthenticatedFetch';
+// import { JsonValue } from '@bufbuild/protobuf';
+// import { GetConnectionPrimaryConstraintsResponse } from '@neosync/sdk';
 
-export function useGetConnectionPrimaryConstraints(
-  accountId: string,
-  connectionId: string
-): HookReply<GetConnectionPrimaryConstraintsResponse> {
-  return useNucleusAuthenticatedFetch<
-    GetConnectionPrimaryConstraintsResponse,
-    JsonValue | GetConnectionPrimaryConstraintsResponse
-  >(
-    `/api/accounts/${accountId}/connections/${connectionId}/primary-constraints`,
-    !!accountId && !!connectionId,
-    undefined,
-    (data) =>
-      data instanceof GetConnectionPrimaryConstraintsResponse
-        ? data
-        : GetConnectionPrimaryConstraintsResponse.fromJson(data)
-  );
-}
+// import { HookReply } from './types';
+// import { useAuthenticatedFetch } from './useAuthenticatedFetch';
+
+
+// export function useGetConnectionPrimaryConstraints(
+//   accountId: string,
+//   connectionId: string,
+//   token: string
+// ): HookReply<GetConnectionPrimaryConstraintsResponse> {
+//   return useAuthenticatedFetch(
+//     `/api/accounts/${accountId}/connections/${connectionId}/primary-constraints`,
+//     !!accountId && !!connectionId,
+//     token
+//   );
+// }

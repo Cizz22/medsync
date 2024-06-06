@@ -19,7 +19,6 @@ router
   .route('/check')
   .post(
     auth(),
-    validate(connectionValidation.checkConnectionConfig),
     connectionController.checkConnectionConfig
   );
 
