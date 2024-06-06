@@ -15,12 +15,7 @@ router
   )
   .get(auth(), validate(connectionValidation.getConnections), connectionController.getConnections);
 
-router
-  .route('/check')
-  .post(
-    auth(),
-    connectionController.checkConnectionConfig
-  );
+router.route('/check').post(auth(), connectionController.checkConnectionConfig);
 
 router.route('/name-available').get(auth(), connectionController.isConnectionNameAvailable);
 
