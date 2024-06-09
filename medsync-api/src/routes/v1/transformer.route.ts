@@ -10,19 +10,21 @@ router
   .get(auth(), transformerController.getUserDefinedTransformers)
   .post(auth(), transformerController.createUserDefinedTransformer);
 
-router
-  .route('/user-defined/:transformerId')
-  .get(auth(), transformerController.getUserDefinedTransformer);
-
-router.route('/is-name-available').post(auth(), transformerController.isNameAvailable);
-
-router
+  router
   .route('/user-defined/validate-code')
   .post(auth(), transformerController.validateTransformerCode);
 
 router
   .route('/user-defined/validate-regex')
   .post(auth(), transformerController.validateTransformerRegex);
+
+
+router
+  .route('/user-defined/:transformerId')
+  .get(auth(), transformerController.getUserDefinedTransformer);
+
+router.route('/is-name-available').post(auth(), transformerController.isNameAvailable);
+
 
 router.route('/system').get(auth(), transformerController.getSystemTransformers);
 router.route('/system/:transformerId').get(auth(), transformerController.getSystemTransformer);

@@ -120,7 +120,6 @@ async function removeConnection(
     const body = await res.json();
     throw new Error(body.message);
   }
-  await res.json();
 }
 
 export function getConnectionType(connType: string): string {

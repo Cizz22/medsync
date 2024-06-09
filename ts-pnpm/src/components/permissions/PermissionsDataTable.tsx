@@ -18,6 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Table
 } from '@/components/ui/table';
 
 interface DataTableProps<TData, TValue> {
@@ -62,7 +63,7 @@ export default function PermissionsDataTable<TData, TValue>({
         className="rounded-md border relative overflow-y-auto max-h-[500px] dark:border-gray-700 "
         ref={tableContainerRef}
       >
-        {/* <StickyHeaderTable> */}
+        <Table>
           <TableHeader className="bg-gray-100 dark:bg-gray-800">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -135,6 +136,7 @@ export default function PermissionsDataTable<TData, TValue>({
               );
             })}
           </TableBody>
+          </Table>
         {/* </StickyHeaderTable> */}
       </div>
     </div>

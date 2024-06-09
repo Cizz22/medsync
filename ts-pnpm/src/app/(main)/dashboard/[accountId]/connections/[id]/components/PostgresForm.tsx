@@ -502,7 +502,7 @@ export default function PostgresForm(props: Props) {
               try {
                 let res: CheckConnectionConfigResponse = {
                   isConnected: false,
-                  privilage: []
+                  privileges: []
                 };
                   res = await checkPostgresConnection(
                   account?.neosync_account_id ?? '',
@@ -513,7 +513,7 @@ export default function PostgresForm(props: Props) {
                 
                 setIsValidating(false);
                 setValidationResponse(res);
-                setPermissionData(res.privilage);
+                setPermissionData(res.privileges);
                 setOpenPermissionDialog(res?.isConnected && true);
               } catch (err) {
                 setIsValidating(false);

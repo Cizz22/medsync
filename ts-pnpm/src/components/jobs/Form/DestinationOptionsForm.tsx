@@ -30,9 +30,9 @@ export default function DestinationOptionsForm(
     return <></>;
   }
 
-  switch (connection?.connectionConfig?.config?.case) {
+  switch (Object.keys(connection?.connectionConfig)[0]) {
     case 'pgConfig':
-      const value = connection.connectionConfig.config.value;
+      // const value = connection.connectionConfig.config.value;
       const truncateBeforeInsertName =
         index != null
           ? `destinations.${index}.destinationOptions.truncateBeforeInsert`
@@ -137,13 +137,11 @@ export default function DestinationOptionsForm(
         </div>
       );
     case 'mysqlConfig':
-      const mysqlValue = connection.connectionConfig.config.value;
+      // const mysqlValue = connection.connectionConfig.config.value;
       const mysqltruncateBeforeInsertName =
         index != null
           ? `destinations.${index}.destinationOptions.truncateBeforeInsert`
           : `destinationOptions.truncateBeforeInsert`;
-      switch (mysqlValue.connectionConfig.case) {
-        case 'connection':
           return (
             <div className={`grid grid-cols-1 md:grid-cols-1 ${grid} gap-4`}>
               <div>
@@ -212,16 +210,7 @@ export default function DestinationOptionsForm(
               </div>
             </div>
           );
-      }
+      
       return <></>;
-    case 'awsS3Config':
-      return <></>;
-    default:
-      return (
-        <div>
-          No connection component found for: (
-          {connection?.name ?? 'unknown name'})
-        </div>
-      );
   }
 }

@@ -725,18 +725,20 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               setIsValidating(true);
               let res: CheckConnectionConfigResponse = {
                 isConnected: false,
-                privilage: []
+                privileges: []
               };
               try {
                 res = await checkPostgresConnection(
                   account?.neosync_account_id ?? '',
                   account?.access_token ?? '',
+                  form.getValues().db,
                   form.getValues().tunnel,
                   undefined
                 );
+        
                 setIsValidating(false);
                 setValidationResponse(res);
-                setPermissionData(res.privilage);
+                setPermissionData(res.privileges);
                 setOpenPermissionDialog(res?.isConnected && true);
               } catch (err) {
                 setValidationResponse(
@@ -940,8 +942,8 @@ async function checkPostgresConnection(
     requestBody = { db, tunnel, connection_type: 'postgresql' };
   }
 
-  console.log(req)
-  
+  console.log(requestBody)
+
   const res = await fetch(
     `/api/accounts/${accountId}/connections/check`,
     {

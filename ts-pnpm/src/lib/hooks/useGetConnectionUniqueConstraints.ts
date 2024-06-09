@@ -1,22 +1,25 @@
-import { JsonValue } from '@bufbuild/protobuf';
-import { GetConnectionUniqueConstraintsResponse } from '@neosync/sdk';
+// import { JsonValue } from '@bufbuild/protobuf';
+// import { GetConnectionUniqueConstraintsResponse } from '@neosync/sdk';
 import { HookReply } from './types';
-import { useNucleusAuthenticatedFetch } from './useNucleusAuthenticatedFetch';
+import { useAuthenticatedFetch } from './useAuthenticatedFetch';
+
+export interface GetConnectionUniqueConstraintsResponse {
+  [key:string]: UniqueConstraints
+}
+
+export interface UniqueConstraints{
+  columns:string[]
+}
+
 
 export function useGetConnectionUniqueConstraints(
   accountId: string,
+  token:string,
   connectionId: string
 ): HookReply<GetConnectionUniqueConstraintsResponse> {
-  return useNucleusAuthenticatedFetch<
-    GetConnectionUniqueConstraintsResponse,
-    JsonValue | GetConnectionUniqueConstraintsResponse
-  >(
-    `/api/accounts/${accountId}/connections/${connectionId}/unique-constraints`,
+  return useAuthenticatedFetch(
+    `/api/accounts/${accountId}/connections/${connectionId}/constrains/unique`,
     !!accountId && !!connectionId,
-    undefined,
-    (data) =>
-      data instanceof GetConnectionUniqueConstraintsResponse
-        ? data
-        : GetConnectionUniqueConstraintsResponse.fromJson(data)
+    token
   );
 }

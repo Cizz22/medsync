@@ -13,7 +13,7 @@ export function getPermissionColumns(): ColumnDef<ConnectionRolePrivilege>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Role" />
       ),
-      cell: ({ row }) => <div>{row.original.grantees}</div>,
+      cell: ({ row }) => <div>{row.original.grantee}</div>,
     },
 
     {

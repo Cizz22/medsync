@@ -129,26 +129,26 @@ export const CONNECT_FORM_SCHEMA = SOURCE_FORM_SCHEMA.concat(
       );
     }
 
-    if (
-      destinationIds.some(
-        (destId) => !isValidConnectionPair(value.sourceId, destId, connections)
-      )
-    ) {
-      destinationIds.forEach((destId, idx) => {
-        if (!isValidConnectionPair(value.sourceId, destId, connections)) {
-          errors.push(
-            ctx.createError({
-              path: `destinations.${idx}.connectionId`,
-              message: `Destination connection type must be one of: ${getErrorConnectionTypes(
-                false,
-                value.sourceId,
-                connections
-              )}`,
-            })
-          );
-        }
-      });
-    }
+    // if (
+    //   destinationIds.some(
+    //     (destId) => !isValidConnectionPair(value.sourceId, destId, connections)
+    //   )
+    // ) {
+    //   destinationIds.forEach((destId, idx) => {
+    //     if (!isValidConnectionPair(value.sourceId, destId, connections)) {
+    //       errors.push(
+    //         ctx.createError({
+    //           path: `destinations.${idx}.connectionId`,
+    //           message: `Destination connection type must be one of: ${getErrorConnectionTypes(
+    //             false,
+    //             value.sourceId,
+    //             connections
+    //           )}`,
+    //         })
+    //       );
+    //     }
+    //   });
+    // }
 
     if (destinationIds.length !== new Set(destinationIds).size) {
       const valueIdxMap = new Map<string, number[]>();
@@ -197,14 +197,14 @@ function isValidConnectionPair(
     return true;
   }
   if (
-    conn1.connectionConfig?.config.case === 'awsS3Config' ||
-    conn2.connectionConfig?.config.case === 'awsS3Config'
+    Object.keys(conn1.connectionConfig)[0] === 'awsS3Config' ||
+    Object.keys(conn2.connectionConfig)[0] === 'awsS3Config'
   ) {
     return true;
   }
 
   if (
-    conn1.connectionConfig?.config.case === conn2.connectionConfig?.config.case
+    Object.keys(conn1.connectionConfig)[0] === Object.keys(conn2.connectionConfig)[0]
   ) {
     return true;
   }
@@ -221,14 +221,14 @@ function getErrorConnectionTypes(
   if (!conn) {
     return isSource ? '[Postgres, Mysql]' : '[Postgres, Mysql, AWS S3]';
   }
-  if (conn.connectionConfig?.config.case === 'awsS3Config') {
+  if (Object.keys(conn.connectionConfig)[0] === 'awsS3Config') {
     return '[Mysql, Postgres]';
   }
-  if (conn.connectionConfig?.config.case === 'mysqlConfig') {
+  if (Object.keys(conn.connectionConfig)[0] === 'mysqlConfig') {
     return isSource ? '[Postgres]' : '[Mysql, AWS S3]';
   }
 
-  if (conn.connectionConfig?.config.case === 'pgConfig') {
+  if (Object.keys(conn.connectionConfig)[0] === 'pgConfig') {
     return isSource ? '[Mysql]' : '[Postgres, AWS S3]';
   }
   return '';
@@ -251,6 +251,7 @@ export const SINGLE_TABLE_SCHEMA_FORM_SCHEMA = Yup.object({
   numRows: Yup.number().required().min(1),
   mappings: Yup.array().of(JOB_MAPPING_SCHEMA).required(),
 });
+
 export type SingleTableSchemaFormValues = Yup.InferType<
   typeof SINGLE_TABLE_SCHEMA_FORM_SCHEMA
 >;

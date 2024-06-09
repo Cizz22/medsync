@@ -16,47 +16,51 @@
 // } from '@neosync/sdk';
 import * as Yup from 'yup';
 
-// import { SubsetFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
-// import { TransformerConfigSchema } from '@/app/(mgmt)/[account]/new/transformer/schema';
+import { SubsetFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
+import { TransformerConfig } from '@/lib/hooks/useGetUserDefinedTransformers';
+import { TransformerConfigSchema } from '@/app/(main)/dashboard/[accountId]/new/transformer/schema';
 
-// // Yup schema form JobMappingTransformers
-// const JobMappingTransformerForm = Yup.object({
-//   source: Yup.number().required('A valid transformer source must be specified'),
-//   config: TransformerConfigSchema,
-// });
+// // // Yup schema form JobMappingTransformers
+const JobMappingTransformerForm = Yup.object({
+  source: Yup.number().required('A valid transformer source must be specified'),
+  config: TransformerConfigSchema,
+});
 
-// Simplified version of a job mapping transformer for use with react-hook-form only
-// export type JobMappingTransformerForm = Yup.InferType<
-//   typeof JobMappingTransformerForm
-// >;
+// //Simplified version of a job mapping transformer for use with react-hook-form only
+export type JobMappingTransformerForm = Yup.InferType<
+  typeof JobMappingTransformerForm
+>;
 
-// export function convertJobMappingTransformerToForm(
-//   jmt: JobMappingTransformer
-// ): JobMappingTransformerForm {
-//   return {
-//     source: jmt.source,
-//     config: convertTransformerConfigToForm(jmt.config),
-//   };
-// }
-// export function convertJobMappingTransformerFormToJobMappingTransformer(
-//   form: JobMappingTransformerForm
-// ): JobMappingTransformer {
-//   return new JobMappingTransformer({
-//     source: form.source,
-//     config: convertTransformerConfigSchemaToTransformerConfig(form.config),
-//   });
-// }
+export function convertJobMappingTransformerToForm(
+  jmt: JobMappingTransformer
+): JobMappingTransformerForm {
+  return {
+    source: jmt.source,
+    config:{
+          case: jmt.config.case,
+          value: jmt.config.value,
+        } 
+  };
+}
+export function convertJobMappingTransformerFormToJobMappingTransformer(
+  form: JobMappingTransformerForm
+): JobMappingTransformer {
+  return new JobMappingTransformer({
+    source: form.source,
+    config: convertTransformerConfigSchemaToTransformerConfig(form.config),
+  });
+}
 
 // export function convertTransformerConfigToForm(
 //   tc?: TransformerConfig
-// ): TransformerConfigSchema {
+// ){
 //   const config = tc?.config ?? { case: '', value: {} };
 //   if (!config.case) {
 //     return { case: '', value: {} };
 //   }
 //   return {
 //     case: config.case,
-//     value: config.value.toJson(),
+//     value: config.value,
 //   };
 // }
 

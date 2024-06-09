@@ -17,11 +17,11 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 
 import { CardDescription, CardTitle } from '@/components/ui/card';
 import {
-  StickyHeaderTable,
   TableBody,
   TableHead,
   TableHeader,
   TableRow,
+  Table
 } from '@/components/ui/table';
 import { JobMappingFormValues } from '@/yup-validations/jobs';
 import { GoWorkflow } from 'react-icons/go';
@@ -106,7 +106,7 @@ export default function SchemaPageTable<TData, TValue>({
         className="rounded-md border max-h-[500px] relative overflow-x-auto"
         ref={tableContainerRef}
       >
-        <StickyHeaderTable>
+        <Table>
           <TableHeader className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10 flex w-full px-2">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -178,7 +178,7 @@ export default function SchemaPageTable<TData, TValue>({
               );
             })}
           </TableBody>
-        </StickyHeaderTable>
+        </Table>
       </div>
       <div className="text-xs text-gray-600 dark:text-300 pt-4">
         Total rows: ({new Intl.NumberFormat('en-US').format(data.length)}) Rows

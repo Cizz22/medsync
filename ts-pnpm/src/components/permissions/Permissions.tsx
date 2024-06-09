@@ -1,4 +1,4 @@
-import { ConnectionRolePrivilege } from '@neosync/sdk';
+// import { ConnectionRolePrivilege } from '@neosync/sdk';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { ReactElement } from 'react';
 import { IoWarning } from 'react-icons/io5';
@@ -17,6 +17,7 @@ import PermissionsDataTable from './PermissionsDataTable';
 import LearnMoreTag from '../labels/LearnMoreTag';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { ConnectionRolePrivilege } from '@/lib/hooks/useGetConnection';
 
 interface Props {
   data: ConnectionRolePrivilege[];
@@ -108,7 +109,7 @@ interface SuccessAlertProps {
 function SuccessAlert(props: SuccessAlertProps): ReactElement {
   const { description } = props;
   return (
-    <Alert variant="success">
+    <Alert variant="default">
       <div className="flex flex-row items-center gap-2">
         <CheckCircledIcon className="h-4 w-4 text-green-900 dark:text-green-400" />
         <div className="font-normal text-green-900 dark:text-green-400">

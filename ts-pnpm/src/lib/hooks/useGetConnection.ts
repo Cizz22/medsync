@@ -23,11 +23,11 @@ export interface ConnectionResponse {
 export interface CheckConnectionConfigResponse {
   isConnected: boolean,
   connectionError?: string
-  privilage?: ConnectionRolePrivilege[]
+  privileges?: ConnectionRolePrivilege[]
 }
 
 export interface ConnectionRolePrivilege {
-  grantees: string,
+  grantee: string,
   schema: string,
   table: string,
   privilegeType: string[]

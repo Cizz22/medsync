@@ -41,6 +41,7 @@
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "cmdk": "^1.0.0",
     "cron-validate": "^1.4.5",
     "date-fns": "^3.6.0",
     "fns": "^1.0.0",

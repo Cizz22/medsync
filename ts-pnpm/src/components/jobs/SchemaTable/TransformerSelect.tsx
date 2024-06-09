@@ -11,19 +11,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/libs/utils';
+import { Transformer, TransformerSource } from '@/lib/hooks/useGetSystemTransformers';
+import { CreateUserDefinedTransformerResponse } from '@/lib/hooks/useGetUserDefinedTransformers';
+import { cn } from '@/lib/utils';
 import {
   JobMappingTransformerForm,
   convertJobMappingTransformerToForm,
 } from '@/yup-validations/jobs';
-import {
-  JobMappingTransformer,
-  SystemTransformer,
-  TransformerConfig,
-  TransformerSource,
-  UserDefinedTransformer,
-  UserDefinedTransformerConfig,
-} from '@neosync/sdk';
+// import {
+//   JobMappingTransformer,
+//   SystemTransformer,
+//   TransformerConfig,
+//   TransformerSource,
+//   UserDefinedTransformer,
+//   UserDefinedTransformerConfig,
+// } from '@neosync/sdk';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { ReactElement, useState } from 'react';
 
@@ -33,8 +35,8 @@ var SIDE_OPTIONS: readonly ['top', 'right', 'bottom', 'left'];
 
 interface Props {
   getTransformers(): {
-    system: SystemTransformer[];
-    userDefined: UserDefinedTransformer[];
+    system: Transformer[];
+    userDefined: CreateUserDefinedTransformerResponse[];
   };
   value: JobMappingTransformerForm;
   buttonText: string;
@@ -94,19 +96,15 @@ export default function TransformerSelect(props: Props): ReactElement {
                       key={t.id}
                       onSelect={() => {
                         onSelect(
-                          convertJobMappingTransformerToForm(
-                            new JobMappingTransformer({
-                              source: TransformerSource.USER_DEFINED,
-                              config: new TransformerConfig({
-                                config: {
-                                  case: 'userDefinedTransformerConfig',
-                                  value: new UserDefinedTransformerConfig({
-                                    id: t.id,
-                                  }),
-                                },
-                              }),
-                            })
-                          )
+                          {
+                            source: TransformerSource.TRANSFORMER_SOURCE_USER_DEFINED,
+                            config: {
+                              case: 'userDefinedTransformerConfig',
+                              value: {
+                                id: t.id,
+                              },
+                            },
+                          }
                         );
                         setOpen(false);
                       }}
@@ -120,7 +118,7 @@ export default function TransformerSelect(props: Props): ReactElement {
                               value?.config?.case ===
                                 'userDefinedTransformerConfig' &&
                                 value?.source ===
-                                  TransformerSource.USER_DEFINED &&
+                                  TransformerSource.TRANSFORMER_SOURCE_USER_DEFINED &&
                                 value.config.value.id === t.id
                                 ? 'opacity-100'
                                 : 'opacity-0'
@@ -141,12 +139,10 @@ export default function TransformerSelect(props: Props): ReactElement {
                     key={t.source}
                     onSelect={() => {
                       onSelect(
-                        convertJobMappingTransformerToForm(
-                          new JobMappingTransformer({
-                            source: t.source,
-                            config: t.config,
-                          })
-                        )
+                        {
+                          source: t.source,
+                          config: t.config,
+                        }
                       );
                       setOpen(false);
                     }}

@@ -1,7 +1,7 @@
 'use client';
 
-import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
-import EditTransformerOptions from '@/app/(mgmt)/[account]/transformers/EditTransformerOptions';
+// import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
+// import EditTransformerOptions from '@/app/(mgmt)/[account]/transformers/EditTransformerOptions';
 import { Badge } from '@/components/ui/badge';
 import { FormControl, FormField, FormItem } from '@/components/ui/form';
 import {
@@ -12,10 +12,10 @@ import {
 } from '@/components/ui/tooltip';
 import { Transformer } from '@/shared/transformers';
 import {
-  JobMappingTransformerForm,
+  // JobMappingTransformerForm,
   SchemaFormValues,
 } from '@/yup-validations/jobs';
-import { SystemTransformer, TransformerSource } from '@neosync/sdk';
+// import { SystemTransformer, TransformerSource } from '@neosync/sdk';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { HTMLProps, ReactElement, useEffect, useRef } from 'react';
@@ -29,6 +29,7 @@ import {
   TransformerHandler,
   toSupportedJobtype,
 } from './transformer-handler';
+import { TransformerSource } from '@/lib/hooks/useGetSystemTransformers';
 
 interface ColumnKey {
   schema: string;
@@ -310,98 +311,98 @@ export function getSchemaColumns(props: Props): ColumnDef<RowData>[] {
       },
     },
 
-    {
-      accessorKey: 'transformer',
-      id: 'transformer',
-      header: ({ column }) => (
-        <SchemaColumnHeader column={column} title="Transformer" />
-      ),
-      cell: (info) => {
-        const fctx = useFormContext<
-          SchemaFormValues | SingleTableSchemaFormValues
-        >();
-        return (
-          <div>
-            <FormField<SchemaFormValues | SingleTableSchemaFormValues>
-              name={`mappings.${info.row.index}.transformer`}
-              control={fctx.control}
-              render={({ field, fieldState, formState }) => {
-                const fv = field.value as JobMappingTransformerForm;
-                const colkey = fromRowDataToColKey(info.row);
+    // {
+    //   accessorKey: 'transformer',
+    //   id: 'transformer',
+    //   header: ({ column }) => (
+    //     <SchemaColumnHeader column={column} title="Transformer" />
+    //   ),
+    //   cell: (info) => {
+    //     const fctx = useFormContext<
+    //       SchemaFormValues | SingleTableSchemaFormValues
+    //     >();
+    //     return (
+    //       <div>
+    //         <FormField<SchemaFormValues | SingleTableSchemaFormValues>
+    //           name={`mappings.${info.row.index}.transformer`}
+    //           control={fctx.control}
+    //           render={({ field, fieldState, formState }) => {
+    //             const fv = field.value as JobMappingTransformerForm;
+    //             const colkey = fromRowDataToColKey(info.row);
 
-                const filtered = transformerHandler.getFilteredTransformers(
-                  getTransformerFilter(constraintHandler, colkey, jobType)
-                );
+    //             const filtered = transformerHandler.getFilteredTransformers(
+    //               getTransformerFilter(constraintHandler, colkey, jobType)
+    //             );
 
-                const filteredTransformerHandler = new TransformerHandler(
-                  filtered.system,
-                  filtered.userDefined
-                );
+    //             const filteredTransformerHandler = new TransformerHandler(
+    //               filtered.system,
+    //               filtered.userDefined
+    //             );
 
-                let transformer: Transformer | undefined;
-                if (
-                  fv.source === TransformerSource.USER_DEFINED &&
-                  fv.config.case === 'userDefinedTransformerConfig'
-                ) {
-                  transformer =
-                    filteredTransformerHandler.getUserDefinedTransformerById(
-                      fv.config.value.id
-                    );
-                } else {
-                  transformer =
-                    filteredTransformerHandler.getSystemTransformerBySource(
-                      fv.source
-                    );
-                }
-                const buttonText = transformer
-                  ? transformer.name
-                  : 'Select Transformer';
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex flex-row space-x-2">
-                        {formState.errors.mappings && (
-                          <div className="place-self-center">
-                            {fieldState.error ? (
-                              <div>
-                                <div>{fieldState.error.message}</div>
-                                <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />
-                              </div>
-                            ) : (
-                              <div className="w-4"></div>
-                            )}
-                          </div>
-                        )}
-                        <div>
-                          <TransformerSelect
-                            getTransformers={() => filtered}
-                            buttonText={buttonText}
-                            value={fv}
-                            onSelect={field.onChange}
-                            side={'left'}
-                            disabled={false}
-                            buttonClassName="w-[175px]"
-                          />
-                        </div>
-                        <EditTransformerOptions
-                          transformer={transformer ?? new SystemTransformer()}
-                          value={fv}
-                          onSubmit={(newvalue) => {
-                            field.onChange(newvalue);
-                          }}
-                          disabled={!transformer}
-                        />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
-          </div>
-        );
-      },
-      size: 250,
-    },
+    //             let transformer: Transformer | undefined;
+    //             if (
+    //               fv.source === TransformerSource.TRANSFORMER_SOURCE_USER_DEFINED &&
+    //               fv.config.case === 'userDefinedTransformerConfig'
+    //             ) {
+    //               transformer =
+    //                 filteredTransformerHandler.getUserDefinedTransformerById(
+    //                   fv.config.value.id
+    //                 );
+    //             } else {
+    //               transformer =
+    //                 filteredTransformerHandler.getSystemTransformerBySource(
+    //                   fv.source
+    //                 );
+    //             }
+    //             const buttonText = transformer
+    //               ? transformer.name
+    //               : 'Select Transformer';
+    //             return (
+    //               <FormItem>
+    //                 <FormControl>
+    //                   <div className="flex flex-row space-x-2">
+    //                     {formState.errors.mappings && (
+    //                       <div className="place-self-center">
+    //                         {fieldState.error ? (
+    //                           <div>
+    //                             <div>{fieldState.error.message}</div>
+    //                             <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />
+    //                           </div>
+    //                         ) : (
+    //                           <div className="w-4"></div>
+    //                         )}
+    //                       </div>
+    //                     )}
+    //                     <div>
+    //                       <TransformerSelect
+    //                         getTransformers={() => filtered}
+    //                         buttonText={buttonText}
+    //                         value={fv}
+    //                         onSelect={field.onChange}
+    //                         side={'left'}
+    //                         disabled={false}
+    //                         buttonClassName="w-[175px]"
+    //                       />
+    //                     </div>
+    //                     {/* <EditTransformerOptions
+    //                       transformer={transformer ?? new SystemTransformer()}
+    //                       value={fv}
+    //                       onSubmit={(newvalue) => {
+    //                         field.onChange(newvalue);
+    //                       }}
+    //                       disabled={!transformer}
+    //                     /> */}
+    //                   </div>
+    //                 </FormControl>
+    //               </FormItem>
+    //             );
+    //           }}
+    //         />
+    //       </div>
+    //     );
+    //   },
+    //   size: 250,
+    // },
   ];
 }
 
@@ -451,7 +452,7 @@ export function getTransformerFilter(
   constraintHandler: SchemaConstraintHandler,
   colkey: ColumnKey,
   jobType: JobType
-): TransformerFilters {
+) {
   const [isForeignKey] = constraintHandler.getIsForeignKey(colkey);
   const isNullable = constraintHandler.getIsNullable(colkey);
   const convertedDataType = constraintHandler.getConvertedDataType(colkey);

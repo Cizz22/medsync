@@ -1,5 +1,5 @@
 'use client';
-import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
+import { SingleTableSchemaFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
 import DualListBox, {
   Action,
   Option,
@@ -16,14 +16,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ConnectionSchemaMap } from '@/libs/hooks/useGetConnectionSchemaMap';
-import { useGetTransformersHandler } from '@/libs/hooks/useGetTransformersHandler';
+import { ConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
+import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
 import {
   JobMappingFormValues,
   SchemaFormValues,
   convertJobMappingTransformerToForm,
 } from '@/yup-validations/jobs';
-import { JobMappingTransformer } from '@neosync/sdk';
+// import { JobMappingTransformer } from '@neosync/sdk';
 import {
   CheckCircledIcon,
   CheckIcon,
@@ -49,7 +49,8 @@ export function SchemaTable(props: Props): ReactElement {
 
   const { account } = useAccount();
   const { handler, isLoading, isValidating } = useGetTransformersHandler(
-    account?.id ?? ''
+    account?.neosync_account_id ?? '',
+    account?.access_token ?? ''
   );
   const [selectedItems, setSelectedItems] = useState<Set<string>>(
     new Set(data.map((d) => `${d.schema}.${d.table}`))
@@ -99,9 +100,9 @@ export function SchemaTable(props: Props): ReactElement {
           table: dbcol.table,
           column: dbcol.column,
           dataType: dbcol.dataType,
-          transformer: convertJobMappingTransformerToForm(
-            new JobMappingTransformer({})
-          ),
+          // transformer: convertJobMappingTransformerToForm(
+          //   new JobMappingTransformer({})
+          // ),
         });
       });
     });

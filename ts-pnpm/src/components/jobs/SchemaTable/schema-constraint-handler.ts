@@ -1,13 +1,28 @@
-import { ConnectionSchemaMap } from '@/libs/hooks/useGetConnectionSchemaMap';
-import { PlainMessage } from '@bufbuild/protobuf';
-import {
-  DatabaseColumn,
-  ForeignConstraintTables,
-  ForeignKey,
-  PrimaryConstraint,
-  TransformerDataType,
-  UniqueConstraint,
-} from '@neosync/sdk';
+import { ForeignConstrainsTable, ForeignKey, GetConnectionForeignConstraintsResponse } from '@/lib/hooks/useGetConnectionForeignConstraints';
+import { GetConnectionPrimaryConstraintsResponse, PrimaryConstrains } from '@/lib/hooks/useGetConnectionPrimaryConstraints';
+import { ConnectionSchemaMap, DatabaseColumn } from '@/lib/hooks/useGetConnectionSchemaMap';
+import { GetConnectionUniqueConstraintsResponse, UniqueConstraints } from '@/lib/hooks/useGetConnectionUniqueConstraints';
+// import { PlainMessage } from '@bufbuild/protobuf';
+// import {
+//   DatabaseColumn,
+//   ForeignConstraintTables,  
+//   ForeignKey,
+//   PrimaryConstraint,
+//   TransformerDataType,
+//   UniqueConstraint,
+// } from '@neosync/sdk';
+
+export enum TransformerDataType {
+  UNSPECIFIED = 0,
+  STRING = 1,
+  INT64 = 2,
+  BOOLEAN = 3,
+  FLOAT64 = 4,
+  NULL = 5,
+  ANY = 6,
+  TIME = 7,
+  UUID=8
+}
 
 export type JobType = 'sync' | 'generate';
 
@@ -38,9 +53,9 @@ interface ColDetails {
 
 export function getSchemaConstraintHandler(
   schema: ConnectionSchemaMap,
-  primaryConstraints: Record<string, PrimaryConstraint>,
-  foreignConstraints: Record<string, ForeignConstraintTables>,
-  uniqueConstraints: Record<string, UniqueConstraint>
+  primaryConstraints: GetConnectionPrimaryConstraintsResponse,
+  foreignConstraints: GetConnectionForeignConstraintsResponse,
+  uniqueConstraints: GetConnectionUniqueConstraintsResponse
 ): SchemaConstraintHandler {
   const colmap = buildColDetailsMap(
     schema,
@@ -181,25 +196,21 @@ function mysqlTypeToTransformerDataType(
 
 function buildColDetailsMap(
   schema: ConnectionSchemaMap,
-  primaryConstraints: Record<string, PrimaryConstraint>,
-  foreignConstraints: Record<string, ForeignConstraintTables>,
-  uniqueConstraints: Record<string, UniqueConstraint>
+  primaryConstraints: GetConnectionPrimaryConstraintsResponse,
+  foreignConstraints: GetConnectionForeignConstraintsResponse,
+  uniqueConstraints: GetConnectionUniqueConstraintsResponse
 ): Record<string, ColDetails> {
   const colmap: Record<string, ColDetails> = {};
-  //<schema.table: dbCols>
   Object.entries(schema).forEach(([key, dbcols]) => {
-    const tablePkeys = primaryConstraints[key] ?? new PrimaryConstraint();
+    const tablePkeys = primaryConstraints[key] ?? {};
     const primaryCols = new Set(tablePkeys.columns);
-    const foreignFkeys =
-      foreignConstraints[key] ?? new ForeignConstraintTables();
-    const tableUniqueConstraints =
-      uniqueConstraints[key] ?? new UniqueConstraint({});
+    const foreignFkeys = foreignConstraints[key] ?? {};
+    const tableUniqueConstraints = uniqueConstraints[key] ?? {};
     const uniqueConstraintCols = new Set(tableUniqueConstraints.columns);
     const fkConstraints = foreignFkeys.constraints;
     const fkconstraintsMap: Record<string, ForeignKey> = {};
     fkConstraints.forEach((constraint) => {
-      fkconstraintsMap[constraint.column] =
-        constraint.foreignKey ?? new ForeignKey();
+      fkconstraintsMap[constraint.column] = constraint.foreignKey;
     });
 
     dbcols.forEach((dbcol) => {
@@ -221,6 +232,6 @@ function buildColDetailsMap(
 function fromColKey(key: ColumnKey): string {
   return `${key.schema}.${key.table}.${key.column}`;
 }
-function fromDbCol(dbcol: PlainMessage<DatabaseColumn>): string {
+function fromDbCol(dbcol: DatabaseColumn): string {
   return `${dbcol.schema}.${dbcol.table}.${dbcol.column}`;
 }

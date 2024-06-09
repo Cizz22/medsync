@@ -25,9 +25,9 @@ export default function SourceOptionsForm(
   if (!connection) {
     return <></>;
   }
-  switch (connection?.connectionConfig?.config?.case) {
+  switch (Object.keys(connection?.connectionConfig)[0]) {
     case 'pgConfig':
-      const value = connection.connectionConfig.config.value;
+      const value =  Object.keys(connection.connectionConfig)[0];
       return (
         <div className={`grid grid-cols-1 md:grid-cols-1 ${grid} gap-4`}>
           <div>
@@ -51,9 +51,7 @@ export default function SourceOptionsForm(
         </div>
       );
     case 'mysqlConfig':
-      const mysqlValue = connection.connectionConfig.config.value;
-      switch (mysqlValue.connectionConfig.case) {
-        case 'connection':
+      const mysqlValue = Object.keys(connection.connectionConfig)[0];
           return (
             <div className={`grid grid-cols-1 md:grid-cols-1 ${grid} gap-4`}>
               <div>
@@ -76,7 +74,7 @@ export default function SourceOptionsForm(
               </div>
             </div>
           );
-      }
+      
       return <></>;
     case 'awsS3Config':
       return <></>;
