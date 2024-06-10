@@ -100,7 +100,7 @@ export async function createJob(accountId: string, req: any) {
       return new JobDestination({
         connectionId: destination.connectionId,
         options: toJobDestinationOption(
-          destination.options,
+          destination.destinationOptions,
           connections.find((connection) => connection.id === destination.connectionId) as Connection
         )
       });
