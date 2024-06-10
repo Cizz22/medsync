@@ -149,7 +149,7 @@ export function toJobDestinationOption(options: any, destination: Connection) {
 }
 
 export function toPostgresSourceSchemaOptions(subsets: any): PostgresSourceSchemaOption[] {
-  const schemaMap = subsets.reduce((map, subset) => {
+  const schemaMap = subsets.reduce((map: any, subset: any) => {
     if (!map[subset.schema]) {
       map[subset.schema] = new PostgresSourceSchemaOption({
         schema: subset.schema,
