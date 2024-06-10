@@ -14,7 +14,10 @@ import {
   PostgresOnConflictConfig,
   MysqlOnConflictConfig,
   MysqlTruncateTableConfig,
-  MysqlDestinationConnectionOptions
+  MysqlDestinationConnectionOptions,
+  PostgresSourceSchemaOption,
+  MysqlSourceSchemaOption,
+  PostgresSourceTableOption
 } from '@neosync/sdk';
 
 //Function to create connectionconfig class based on conneciton type
@@ -72,17 +75,17 @@ export default async function generateConConfig(connection_type: string, connect
   }
 }
 
-export function toJobSourceOption(options: any, source: Connection) {
+export function toJobSourceOption(connect: any, subset: any, source: Connection) {
   switch (source.connectionConfig?.config.case) {
     case 'pgConfig':
       return new JobSourceOptions({
         config: {
           case: 'postgres',
           value: new PostgresSourceConnectionOptions({
-            connectionId: source.id,
-            haltOnNewColumnAddition: options.haltOnNewColumnAddition,
-            subsetByForeignKeyConstraints: options?.subsetByForeignKeyConstraints,
-            schemas: options?.schemas
+            connectionId: connect.sourceId,
+            haltOnNewColumnAddition: connect.sourceOptions.haltOnNewColumnAddition,
+            subsetByForeignKeyConstraints: subset?.subsetOptions.subsetByForeignKeyConstraints,
+            schemas: subset?.subsets && toPostgresSourceSchemaOptions(subset.subsets)
           })
         }
       });
@@ -92,10 +95,10 @@ export function toJobSourceOption(options: any, source: Connection) {
         config: {
           case: 'mysql',
           value: new MysqlSourceConnectionOptions({
-            connectionId: source.id,
-            haltOnNewColumnAddition: options.haltOnNewColumnAddition,
-            subsetByForeignKeyConstraints: options?.subsetByForeignKeyConstraints,
-            schemas: options?.schemas
+            connectionId: connect.sourceId,
+            haltOnNewColumnAddition: connect.sourceOptions.haltOnNewColumnAddition,
+            subsetByForeignKeyConstraints: subset?.subsetOptions.subsetByForeignKeyConstraints,
+            schemas: subset?.subsets && toMysqlSourceSchemaOptions(subset?.subsets)
           })
         }
       });
@@ -143,4 +146,42 @@ export function toJobDestinationOption(options: any, destination: Connection) {
     default:
       return new JobDestinationOptions();
   }
+}
+
+export function toPostgresSourceSchemaOptions(subsets: any): PostgresSourceSchemaOption[] {
+  const schemaMap = subsets.reduce((map, subset) => {
+    if (!map[subset.schema]) {
+      map[subset.schema] = new PostgresSourceSchemaOption({
+        schema: subset.schema,
+        tables: []
+      });
+    }
+    map[subset.schema].tables.push(
+      new PostgresSourceTableOption({
+        table: subset.table,
+        whereClause: subset.whereClause
+      })
+    );
+    return map;
+  }, {} as Record<string, PostgresSourceSchemaOption>);
+  return Object.values(schemaMap);
+}
+
+export function toMysqlSourceSchemaOptions(subsets: any): MysqlSourceSchemaOption[] {
+  const schemaMap = subsets.reduce((map, subset) => {
+    if (!map[subset.schema]) {
+      map[subset.schema] = new MysqlSourceSchemaOption({
+        schema: subset.schema,
+        tables: []
+      });
+    }
+    map[subset.schema].tables.push(
+      new PostgresSourceTableOption({
+        table: subset.table,
+        whereClause: subset.whereClause
+      })
+    );
+    return map;
+  }, {} as Record<string, MysqlSourceSchemaOption>);
+  return Object.values(schemaMap);
 }

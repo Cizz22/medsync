@@ -1,15 +1,17 @@
+import { flexRender,Table } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { ReactElement, useRef } from 'react';
+
+import { cn } from '@/lib/utils';
+
 import {
-  StickyHeaderTable,
+  Table as TableComp,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { cn } from '@/libs/utils';
-import { Table, flexRender } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { ReactElement, useRef } from 'react';
+  TableRow} from '@/components/ui/table';
+
 import { Skeleton } from '../ui/skeleton';
 
 interface Props<TData> {
@@ -44,7 +46,7 @@ export default function ListBox<TData>(props: Props<TData>): ReactElement {
       )}
       ref={tableContainerRef}
     >
-      <StickyHeaderTable>
+      <TableComp>
         <TableHeader className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10 grid">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="flex flex-row px-2">
@@ -115,7 +117,7 @@ export default function ListBox<TData>(props: Props<TData>): ReactElement {
             );
           })}
         </TableBody>
-      </StickyHeaderTable>
+      </TableComp>
     </div>
   );
 }

@@ -1,6 +1,4 @@
 'use client';
-import React, { ReactElement } from 'react';
-
 import {
   ColumnDef,
   flexRender,
@@ -12,21 +10,22 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-
 import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { ReactElement } from 'react';
+import { GoWorkflow } from 'react-icons/go';
 
 import { CardDescription, CardTitle } from '@/components/ui/card';
 import {
+  Table,
   TableBody,
   TableHead,
   TableHeader,
-  TableRow,
-  Table
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
+
 import { JobMappingFormValues } from '@/yup-validations/jobs';
-import { GoWorkflow } from 'react-icons/go';
-import { SchemaTableToolbar } from './SchemaTableToolBar';
+
 import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
+// import { SchemaTableToolbar } from './SchemaTableToolBar';
 import { TransformerHandler } from './transformer-handler';
 
 export type Row = JobMappingFormValues;
@@ -90,17 +89,17 @@ export default function SchemaPageTable<TData, TValue>({
           <GoWorkflow className="h-4 w-4" />
         </div>
         <CardTitle>Transformer Mapping</CardTitle>
-      </div>
+      </div>  
       <CardDescription className="pt-2">
         Map Transformers to every column below.
       </CardDescription>
       <div className="z-50 pt-4">
-        <SchemaTableToolbar
+        {/* <SchemaTableToolbar
           table={table}
           transformerHandler={transformerHandler}
           constraintHandler={constraintHandler}
           jobType={jobType}
-        />
+        /> */}
       </div>
       <div
         className="rounded-md border max-h-[500px] relative overflow-x-auto"

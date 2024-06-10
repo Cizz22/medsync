@@ -31,25 +31,25 @@ export type JobMappingTransformerForm = Yup.InferType<
   typeof JobMappingTransformerForm
 >;
 
-export function convertJobMappingTransformerToForm(
-  jmt: JobMappingTransformer
-): JobMappingTransformerForm {
-  return {
-    source: jmt.source,
-    config:{
-          case: jmt.config.case,
-          value: jmt.config.value,
-        } 
-  };
-}
-export function convertJobMappingTransformerFormToJobMappingTransformer(
-  form: JobMappingTransformerForm
-): JobMappingTransformer {
-  return new JobMappingTransformer({
-    source: form.source,
-    config: convertTransformerConfigSchemaToTransformerConfig(form.config),
-  });
-}
+// export function convertJobMappingTransformerToForm(
+//   jmt: JobMappingTransformer
+// ): JobMappingTransformerForm {
+//   return {
+//     source: jmt.source,
+//     config:{
+//           case: jmt.config.case,
+//           value: jmt.config.value,
+//         } 
+//   };
+// }
+// export function convertJobMappingTransformerFormToJobMappingTransformer(
+//   form: JobMappingTransformerForm
+// ): JobMappingTransformer {
+//   return new JobMappingTransformer({
+//     source: form.source,
+//     config: convertTransformerConfigSchemaToTransformerConfig(form.config),
+//   });
+// }
 
 // export function convertTransformerConfigToForm(
 //   tc?: TransformerConfig
@@ -227,4 +227,4 @@ type DestinationFormValues = Yup.InferType<typeof DESTINATION_FORM_SCHEMA>;
 //     {} as Record<string, MysqlSourceSchemaOption>
 //   );
 //   return Object.values(schemaMap);
-//}
+// }

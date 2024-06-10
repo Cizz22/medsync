@@ -201,18 +201,23 @@ function buildColDetailsMap(
   uniqueConstraints: GetConnectionUniqueConstraintsResponse
 ): Record<string, ColDetails> {
   const colmap: Record<string, ColDetails> = {};
+
+  // eslint-disable-next-line no-console
   Object.entries(schema).forEach(([key, dbcols]) => {
     const tablePkeys = primaryConstraints[key] ?? {};
     const primaryCols = new Set(tablePkeys.columns);
     const foreignFkeys = foreignConstraints[key] ?? {};
     const tableUniqueConstraints = uniqueConstraints[key] ?? {};
     const uniqueConstraintCols = new Set(tableUniqueConstraints.columns);
-    const fkConstraints = foreignFkeys.constraints;
+    const fkConstraints = foreignFkeys?.constraints;
     const fkconstraintsMap: Record<string, ForeignKey> = {};
-    fkConstraints.forEach((constraint) => {
-      fkconstraintsMap[constraint.column] = constraint.foreignKey;
-    });
 
+    if(fkConstraints){
+      fkConstraints.forEach((constraint) => {
+        fkconstraintsMap[constraint.column] = constraint.foreignKey;
+      });
+    }
+    
     dbcols.forEach((dbcol) => {
       const fk: ForeignKey | undefined = fkconstraintsMap[dbcol.column];
       colmap[fromDbCol(dbcol)] = {

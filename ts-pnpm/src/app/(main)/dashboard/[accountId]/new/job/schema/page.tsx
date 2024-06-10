@@ -110,6 +110,10 @@ export default function Page({ searchParams }: PageProps): ReactElement {
     router.push(`/dashboard/${account?.neosync_account_id}/new/job/subset?sessionId=${sessionPrefix}`);
   }
 
+  // eslint-disable-next-line no-console
+  console.log(foreignConstraints, primaryConstraints, uniqueConstraints, connectionSchemaDataMap);
+  
+
   const schemaConstraintHandler = useMemo(
     () =>
       getSchemaConstraintHandler(
@@ -120,6 +124,9 @@ export default function Page({ searchParams }: PageProps): ReactElement {
       ),
     [isSchemaMapValidating, isPkValidating, isFkValidating, isUCValidating]
   );
+
+  // eslint-disable-next-line no-console
+  
 
   return (
     <div className="flex flex-col gap-5">

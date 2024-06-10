@@ -1,31 +1,36 @@
 'use client';
 
-import { Row, Table } from '@tanstack/react-table';
-
-import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
-import EditTransformerOptions from '@/app/(mgmt)/[account]/transformers/EditTransformerOptions';
-import { Button } from '@/components/ui/button';
-import { Transformer } from '@/shared/transformers';
-import {
-  JobMappingTransformerForm,
-  SchemaFormValues,
-  convertJobMappingTransformerToForm,
-} from '@/yup-validations/jobs';
-import {
-  JobMappingTransformer,
-  SystemTransformer,
-  TransformerSource,
-  UserDefinedTransformer,
-} from '@neosync/sdk';
+// import {
+//   JobMappingTransformer,
+//   SystemTransformer,
+//   TransformerSource,
+//   UserDefinedTransformer,
+// } from '@neosync/sdk';
 import { CheckIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { Row, Table } from '@tanstack/react-table';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+import { TransformerSource } from '@/lib/hooks/useGetSystemTransformers';
+
+import { Button } from '@/components/ui/button';
+
+// import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
+import { SingleTableSchemaFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
+// import EditTransformerOptions from '@/app/(mgmt)/[account]/transformers/EditTransformerOptions';
+import { Transformer } from '@/shared/transformers';
+import {
+  convertJobMappingTransformerToForm,
+  JobMappingTransformerForm,
+  SchemaFormValues,
+} from '@/yup-validations/jobs';
+
+import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
 import { fromRowDataToColKey, getTransformerFilter } from './SchemaColumns';
 import { Row as RowData } from './SchemaPageTable';
 import { SchemaTableViewOptions } from './SchemaTableViewOptions';
-import TransformerSelect from './TransformerSelect';
-import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
 import { TransformerHandler } from './transformer-handler';
+import TransformerSelect from './TransformerSelect';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -54,7 +59,7 @@ export function SchemaTableToolbar<TData>({
 
   let transformer: Transformer | undefined;
   if (
-    bulkTransformer.source === TransformerSource.USER_DEFINED &&
+    bulkTransformer.source === TransformerSource.TRANSFORMER_SOURCE_USER_DEFINED &&
     bulkTransformer.config.case === 'userDefinedTransformerConfig'
   ) {
     transformer = transformerHandler.getUserDefinedTransformerById(

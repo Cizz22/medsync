@@ -1,4 +1,20 @@
 'use client';
+import Editor from '@monaco-editor/react';
+// import {
+//   ValidateUserJavascriptCodeRequest,
+//   ValidateUserJavascriptCodeResponse,
+// } from '@neosync/sdk';
+import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
+import { useTheme } from 'next-themes';
+import { ReactElement, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+
+import ButtonText from '@/components/ButtonText';
+import LearnMoreTag from '@/components/labels/LearnMoreTag';
+import { useAccount } from '@/components/providers/account-provider';
+import Spinner from '@/components/Spinner';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
@@ -6,21 +22,6 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 
-import ButtonText from '@/components/ButtonText';
-import Spinner from '@/components/Spinner';
-import LearnMoreTag from '@/components/labels/LearnMoreTag';
-import { useAccount } from '@/components/providers/account-provider';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import Editor from '@monaco-editor/react';
-import {
-  ValidateUserJavascriptCodeRequest,
-  ValidateUserJavascriptCodeResponse,
-} from '@neosync/sdk';
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
-import { useTheme } from 'next-themes';
-import { ReactElement, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import {
   CreateUserDefinedTransformerSchema,
   UpdateUserDefinedTransformer,
@@ -65,16 +66,17 @@ export default function UserDefinedTransformJavascriptForm(
     try {
       const res = await IsUserJavascriptCodeValid(
         userCode,
-        account.account?.id ?? ''
+        account.account?.neosync_account_id ?? '',
+        account.account?.access_token ?? ''
       );
       setIsValidatingCode(false);
-      if (res.valid === true) {
+      if (res) {
         setIsCodeValid('valid');
       } else {
         setIsCodeValid('invalid');
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       setIsValidatingCode(false);
       setIsCodeValid('invalid');
     }
@@ -108,7 +110,7 @@ export default function UserDefinedTransformJavascriptForm(
                 {isCodeValid !== 'null' && (
                   <Badge
                     variant={
-                      isCodeValid === 'valid' ? 'success' : 'destructive'
+                      isCodeValid === 'valid' ? 'default' : 'destructive'
                     }
                     className="h-9 px-4 py-2"
                   >
@@ -158,18 +160,19 @@ export default function UserDefinedTransformJavascriptForm(
 
 export async function IsUserJavascriptCodeValid(
   code: string,
-  accountId: string
-): Promise<ValidateUserJavascriptCodeResponse> {
-  const body = new ValidateUserJavascriptCodeRequest({
+  accountId: string,
+  token:string
+): Promise<boolean> {
+  const body = {
     code: code,
-    accountId: accountId,
-  });
+  };
   const res = await fetch(
     `/api/accounts/${accountId}/transformers/user-defined/validate-code`,
     {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'token':token
       },
       body: JSON.stringify(body),
     }
@@ -178,5 +181,5 @@ export async function IsUserJavascriptCodeValid(
     const body = await res.json();
     throw new Error(body.message);
   }
-  return ValidateUserJavascriptCodeResponse.fromJson(await res.json());
+  return await res.json();
 }

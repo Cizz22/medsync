@@ -46,30 +46,21 @@ export async function getJobs(
 
 export async function createJob(accountId: string, req: any) {
   //const sourceConnection = await connectionService.getConnection(accountId, source.connectionId);
-  const {
-    job_name,
-    mappings,
-    source,
-    destinations,
-    cron_schedule,
-    initiate_job_run,
-    workflow_options,
-    sync_options
-  } = req;
+  const { define, connect, schema, subset } = req;
 
   const connections = await connectionService.getConnections(accountId);
 
-  const sourceConnection = connections.find((connection) => connection.id === source.connectionId);
+  const sourceConnection = connections.find((connection) => connection.id === connect.sourceId);
 
   let workflowOptions: WorkflowOptions | undefined = undefined;
-  if (workflow_options.runTimeout) {
+  if (define.workflowSettings?.runTimeout) {
     workflowOptions = new WorkflowOptions({
-      runTimeout: convertMinutesToNanoseconds(workflow_options.runTimeout)
+      runTimeout: convertMinutesToNanoseconds(define.workflowSettings.runTimeout)
     });
   }
   let syncOptions: ActivityOptions | undefined = undefined;
-  if (sync_options) {
-    const formSyncOpts = sync_options;
+  if (define.syncActivityOptions) {
+    const formSyncOpts = define.syncActivityOptions;
     syncOptions = new ActivityOptions({
       scheduleToCloseTimeout:
         formSyncOpts.scheduleToCloseTimeout !== undefined
@@ -87,10 +78,10 @@ export async function createJob(accountId: string, req: any) {
 
   const data = new CreateJobRequest({
     accountId,
-    jobName: job_name,
-    cronSchedule: cron_schedule,
-    initiateJobRun: initiate_job_run,
-    mappings: mappings.map((mapping: any) => {
+    jobName: define.jobName,
+    cronSchedule: define.cronSchedule,
+    initiateJobRun: define.initiateJobRun,
+    mappings: schema.mappings.map((mapping: any) => {
       return new JobMapping({
         schema: mapping.schema,
         table: mapping.table,
@@ -99,9 +90,9 @@ export async function createJob(accountId: string, req: any) {
       });
     }),
     source: new JobSource({
-      options: sourceConnection ? toJobSourceOption(source.options, sourceConnection) : undefined
+      options: sourceConnection ? toJobSourceOption(connect, subset, sourceConnection) : undefined
     }),
-    destinations: destinations.map((destination: any) => {
+    destinations: connect.destinations.map((destination: any) => {
       return new JobDestination({
         connectionId: destination.connectionId,
         options: toJobDestinationOption(

@@ -1,28 +1,4 @@
 'use client';
-import { SingleTableSchemaFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
-import DualListBox, {
-  Action,
-  Option,
-} from '@/components/DualListBox/DualListBox';
-import Spinner from '@/components/Spinner';
-import { useAccount } from '@/components/providers/account-provider';
-import SkeletonTable from '@/components/skeleton/SkeletonTable';
-import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { ConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
-import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
-import {
-  JobMappingFormValues,
-  SchemaFormValues,
-  convertJobMappingTransformerToForm,
-} from '@/yup-validations/jobs';
 // import { JobMappingTransformer } from '@neosync/sdk';
 import {
   CheckCircledIcon,
@@ -32,9 +8,37 @@ import {
 } from '@radix-ui/react-icons';
 import { ReactElement, useMemo, useState } from 'react';
 import { FieldErrors, useFieldArray, useFormContext } from 'react-hook-form';
+
+import { ConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
+import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
+
+import DualListBox, {
+  Action,
+  Option,
+} from '@/components/DualListBox/DualListBox';
+import { useAccount } from '@/components/providers/account-provider';
+import SkeletonTable from '@/components/skeleton/SkeletonTable';
+import Spinner from '@/components/Spinner';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+import { SingleTableSchemaFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
+import {
+  // convertJobMappingTransformerToForm,
+  JobMappingFormValues,
+  SchemaFormValues,
+} from '@/yup-validations/jobs';
+
+import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
 import { getSchemaColumns } from './SchemaColumns';
 import SchemaPageTable from './SchemaPageTable';
-import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
 
 interface Props {
   data: JobMappingFormValues[];
