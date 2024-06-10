@@ -16,8 +16,9 @@ export async function POST(
     req: NextRequest
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
+        const body = await req.json()
         const response = await ctx.axios.post(
-            '/jobs', req.body
+            '/jobs', body
         )
 
         return response.data
