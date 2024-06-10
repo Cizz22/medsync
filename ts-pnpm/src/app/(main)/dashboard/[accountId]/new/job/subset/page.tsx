@@ -134,7 +134,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
   );
 
   const dbType =
-    connectionType?.connectionConfig?.config.case == 'mysqlConfig'
+  Object.keys(connectionType?.connectionConfig)[0] == 'mysqlConfig'
       ? 'mysql'
       : 'postgres';
 

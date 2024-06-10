@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/libs/utils';
+import { cn } from '@/lib/utils';
 import {
   ArrowDownIcon,
   ArrowUpIcon,

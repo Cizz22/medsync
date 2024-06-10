@@ -76,7 +76,7 @@ export default async function generateConConfig(connection_type: string, connect
 }
 
 export function toJobSourceOption(connect: any, subset: any, source: Connection) {
-  switch (source.connectionConfig?.config.case) {
+  switch (Object.keys(source.connectionConfig)[0]) {
     case 'pgConfig':
       return new JobSourceOptions({
         config: {
@@ -111,7 +111,7 @@ export function toJobSourceOption(connect: any, subset: any, source: Connection)
 export function toJobDestinationOption(options: any, destination: Connection) {
   if (!destination) return new JobDestinationOptions();
 
-  switch (destination.connectionConfig?.config.case) {
+  switch (Object.keys(destination.connectionConfig)[0]) {
     case 'pgConfig':
       return new JobDestinationOptions({
         config: {

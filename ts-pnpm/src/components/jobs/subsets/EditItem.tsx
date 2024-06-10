@@ -9,8 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { getErrorMessage } from '@/util/util';
-import { CheckSqlQueryResponse } from '@neosync/sdk';
+import { getErrorMessage } from '@/lib/utils';
+// import { CheckSqlQueryResponse } from '@neosync/sdk';
 import { ReactElement, useState } from 'react';
 import ValidateQueryBadge from './ValidateQueryBadge';
 import ValidateQueryErrorAlert from './ValidateQueryErrorAlert';
@@ -24,6 +24,13 @@ interface Props {
   connectionId: string;
   dbType: string;
 }
+
+export interface CheckSqlQueryResponse{
+  isValid:boolean,
+  erorrMessage:string
+}
+
+
 export default function EditItem(props: Props): ReactElement {
   const { item, onItem, onSave, onCancel, connectionId, dbType } = props;
   const [validateResp, setValidateResp] = useState<
@@ -44,17 +51,17 @@ export default function EditItem(props: Props): ReactElement {
 
     try {
       const resp = await validateSql(
-        account?.id ?? '',
+        account?.neosync_account_id ?? '',
+        account?.access_token ?? '',
         connectionId,
         dbType == 'mysql' ? mysqlString : pgSting
       );
       setValidateResp(resp);
     } catch (err) {
-      setValidateResp(
-        new CheckSqlQueryResponse({
+      setValidateResp({
           isValid: false,
           erorrMessage: getErrorMessage(err),
-        })
+        }
       );
     }
   }
@@ -171,6 +178,7 @@ export default function EditItem(props: Props): ReactElement {
 
 async function validateSql(
   accountId: string,
+  token:string,
   connectionId: string,
   query: string
 ): Promise<CheckSqlQueryResponse> {
@@ -180,14 +188,17 @@ async function validateSql(
   const res = await fetch(
     `/api/accounts/${accountId}/connections/${connectionId}/check-query?${queryParams.toString()}`,
     {
-      method: 'GET',
+      headers:{
+        'token':token
+      }
     }
+   
   );
   if (!res.ok) {
     const body = await res.json();
     throw new Error(body.message);
   }
-  return CheckSqlQueryResponse.fromJson(await res.json());
+  return await res.json();
 }
 
 function buildSelectQuery(whereClause?: string): string {

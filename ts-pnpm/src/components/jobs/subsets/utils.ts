@@ -1,4 +1,4 @@
-import { SubsetFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
+import { SubsetFormValues } from "@/app/(main)/dashboard/[accountId]/new/job/schema";
 import { TableRow } from './subset-table/column';
 
 interface DbCol {

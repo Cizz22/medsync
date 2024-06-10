@@ -1,6 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckSqlQueryResponse } from '@neosync/sdk';
+// import { CheckSqlQueryResponse } from '@neosync/sdk';
 import { ReactElement } from 'react';
+import { CheckSqlQueryResponse } from './EditItem';
 
 interface Props {
   resp?: CheckSqlQueryResponse;
