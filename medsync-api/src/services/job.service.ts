@@ -54,6 +54,8 @@ export async function createJob(accountId: string, req: any) {
 
   const sourceConnection = connections.find((connection) => connection.id === connect.sourceId);
 
+  console.log(sourceConnection);
+
   let workflowOptions: WorkflowOptions | undefined = undefined;
   if (define.workflowSettings?.runTimeout) {
     workflowOptions = new WorkflowOptions({
@@ -98,7 +100,7 @@ export async function createJob(accountId: string, req: any) {
       return new JobDestination({
         connectionId: destination.connectionId,
         options: toJobDestinationOption(
-          destination.options,
+          destination.destinationOptions,
           connections.find((connection) => connection.id === destination.connectionId) as Connection
         )
       });
