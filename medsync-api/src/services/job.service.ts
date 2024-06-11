@@ -48,13 +48,9 @@ export async function createJob(accountId: string, req: any) {
   //const sourceConnection = await connectionService.getConnection(accountId, source.connectionId);
   const { define, connect, schema, subset } = req;
 
-  console.log(define, connect, schema, subset);
-
   const connections = await connectionService.getConnections(accountId);
 
   const sourceConnection = connections.find((connection) => connection.id === connect.sourceId);
-
-  console.log(sourceConnection);
 
   let workflowOptions: WorkflowOptions | undefined = undefined;
   if (define.workflowSettings?.runTimeout) {
@@ -90,7 +86,7 @@ export async function createJob(accountId: string, req: any) {
         schema: mapping.schema,
         table: mapping.table,
         column: mapping.columns,
-        transformer: mapping.transformer
+        transformer: undefined
       });
     }),
     source: new JobSource({
