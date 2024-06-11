@@ -11,9 +11,11 @@ import {
   IsJobNameAvailableRequest,
   JobDestination,
   JobMapping,
+  JobMappingTransformer,
   JobSource,
   PauseJobRequest,
   RetryPolicy,
+  TransformerConfig,
   WorkflowOptions
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
@@ -86,7 +88,7 @@ export async function createJob(accountId: string, req: any) {
         schema: mapping.schema,
         table: mapping.table,
         column: mapping.column,
-        transformer: undefined
+        transformer: convertJobMappingTransformerFormToJobMappingTransformer(mapping.transformer)
       });
     }),
     source: new JobSource({
@@ -105,11 +107,28 @@ export async function createJob(accountId: string, req: any) {
     syncOptions: syncOptions
   });
 
-  console.log(data);
+  console.log(data.toJson());
 
   const job = await client.jobs.createJob(data);
 
   return job.job;
+}
+
+export function convertJobMappingTransformerFormToJobMappingTransformer(
+  form: any
+): JobMappingTransformer {
+  return new JobMappingTransformer({
+    source: form.source,
+    config: convertTransformerConfigSchemaToTransformerConfig(form.config)
+  });
+}
+
+export function convertTransformerConfigSchemaToTransformerConfig(tcs: any): TransformerConfig {
+  return tcs instanceof TransformerConfig
+    ? tcs
+    : TransformerConfig.fromJson({
+        [tcs.case ?? '']: tcs.value
+      });
 }
 
 export async function getJobStatuses(accountId: string) {
