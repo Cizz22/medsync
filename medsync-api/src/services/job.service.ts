@@ -16,6 +16,8 @@ import {
   PauseJobRequest,
   RetryPolicy,
   TransformerConfig,
+  TransformerDataType,
+  TransformerSource,
   WorkflowOptions
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
@@ -88,7 +90,9 @@ export async function createJob(accountId: string, req: any) {
         schema: mapping.schema,
         table: mapping.table,
         column: mapping.column,
-        transformer: new JobMappingTransformer({})
+        transformer: new JobMappingTransformer({
+          source: TransformerSource.UNSPECIFIED
+        })
       });
     }),
     source: new JobSource({
@@ -106,8 +110,6 @@ export async function createJob(accountId: string, req: any) {
     workflowOptions: workflowOptions,
     syncOptions: syncOptions
   });
-
-  console.log(data.toJson());
 
   const job = await client.jobs.createJob(data);
 
