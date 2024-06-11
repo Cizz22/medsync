@@ -1,13 +1,12 @@
+import { RESOURCE_NAME_REGEX } from '@/yup-validations/connections';
+
 // import {
 //   IsTransformerNameAvailableResponse,
 //   TransformerConfig,
 // } from '@neosync/sdk';
+
 import * as Yup from 'yup';
-
-import { tryBigInt } from '@/lib/utils';
-
-import { RESOURCE_NAME_REGEX } from '@/yup-validations/connections';
-
+import { tryBigInt } from '../../transformers/Sheetforms/util';
 import { IsUserJavascriptCodeValid } from './UserDefinedTransformerForms/UserDefinedTransformJavascriptForm';
 
 const bigIntValidator = Yup.mixed<bigint>().test(

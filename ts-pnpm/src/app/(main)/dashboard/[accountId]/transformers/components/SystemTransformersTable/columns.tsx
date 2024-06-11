@@ -1,15 +1,19 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import {
-  getTransformerDataTypesString,
-  getTransformerJobTypesString,
-  getTransformerSourceString,
-} from '@/util/util';
-import { PlainMessage } from '@bufbuild/protobuf';
-import { SystemTransformer } from '@neosync/sdk';
+// import { PlainMessage } from '@bufbuild/protobuf';
+// import { SystemTransformer } from '@neosync/sdk';
 import { ColumnDef } from '@tanstack/react-table';
 import NextLink from 'next/link';
+
+import { Transformer } from '@/lib/hooks/useGetSystemTransformers';
+
+import { Badge } from '@/components/ui/badge';
+
+// import {
+//   getTransformerDataTypesString,
+//   getTransformerJobTypesString,
+//   getTransformerSourceString,
+// } from '@/util/util';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
 
@@ -19,7 +23,7 @@ interface GetSystemTransformercolumnsProps {
 
 export function getSystemTransformerColumns(
   props: GetSystemTransformercolumnsProps
-): ColumnDef<PlainMessage<SystemTransformer>>[] {
+): ColumnDef<Transformer>[] {
   const { accountName } = props;
   return [
     {
@@ -48,7 +52,7 @@ export function getSystemTransformerColumns(
     {
       id: 'types',
       accessorKey: 'types',
-      accessorFn: (row) => getTransformerDataTypesString(row.dataTypes),
+      accessorFn: (row) => row.dataTypes,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Data Types" />
       ),
@@ -63,7 +67,7 @@ export function getSystemTransformerColumns(
     {
       id: 'jobTypes',
       accessorKey: 'jobTypes',
-      accessorFn: (row) => getTransformerJobTypesString(row.supportedJobTypes),
+      accessorFn: (row) => row.supportedJobTypes,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Job Types" />
       ),
@@ -81,7 +85,7 @@ export function getSystemTransformerColumns(
     },
     {
       accessorKey: 'source',
-      accessorFn: (row) => getTransformerSourceString(row.source),
+      accessorFn: (row) => row.source,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Source" />
       ),

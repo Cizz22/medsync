@@ -16,11 +16,11 @@ import { getMobileMainNav } from '@/app/config/mobile-nav-config';
 
 import { MainLogo } from './MainLogo';
 import { getPathNameHighlight } from './util';
-// import { useAccount } from '../providers/account-provider';
+import { useAccount } from '../providers/account-provider';
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);
-  // const { account } = useAccount();
+  const { account } = useAccount();
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
 
@@ -45,7 +45,7 @@ export function MobileNav() {
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6 pt-6 w-40">
           <div className="flex flex-col space-y-3">
-            {getMobileMainNav('').map(
+            {getMobileMainNav(account?.neosync_account_id ?? '').map(
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (item:any) =>
                 item.href && (

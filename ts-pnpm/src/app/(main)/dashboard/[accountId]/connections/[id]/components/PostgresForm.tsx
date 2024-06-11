@@ -507,6 +507,7 @@ export default function PostgresForm(props: Props) {
                   res = await checkPostgresConnection(
                   account?.neosync_account_id ?? '',
                   account?.access_token ?? '',
+                  form.getValues().db,
                   form.getValues().tunnel,
                   undefined
                   );
@@ -688,6 +689,7 @@ async function checkPostgresConnection(
   db?: PostgresFormValues['db'],
   tunnel?: PostgresFormValues['tunnel'],
   url?: string
+  
 ): Promise<CheckConnectionConfigResponse> {
   let requestBody;
   if (url) {
@@ -695,8 +697,9 @@ async function checkPostgresConnection(
   } else {
     requestBody = { db, tunnel, connection_type: 'postgresql' };
   }
+
   const res = await fetch(
-    `/api/accounts/${accountId}/connections/postgres/check`,
+    `/api/accounts/${accountId}/connections/check`,
     {
       method: 'POST',
       headers: {

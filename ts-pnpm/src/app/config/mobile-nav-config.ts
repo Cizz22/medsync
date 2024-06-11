@@ -8,23 +8,23 @@ export function getMobileMainNav(
     // },
     {
       title: 'Jobs',
-      href: `/${accountName}/jobs`,
+      href: `/dashboard/${accountName}/jobs`,
     },
     {
       title: 'Runs',
-      href: `/${accountName}/runs`,
+      href: `/dashboard/${accountName}/runs`,
     },
     {
       title: 'Transformers',
-      href: `/${accountName}/transformers`,
+      href: `/dashboard/${accountName}/transformers`,
     },
     {
       title: 'Connections',
-      href: `/${accountName}/connections`,
+      href: `/dashboard/${accountName}/connections`,
     },
     {
       title: 'Settings',
-      href: `/${accountName}/settings`,
+      href: `/dashboard/${accountName}/settings`,
     },
   ];
 }
