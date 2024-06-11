@@ -468,6 +468,9 @@ async function createNewJob(
   //   }
   // }
 
+  // eslint-disable-next-line no-console
+  console.log(formData.schema)
+
   const res = await fetch(`/api/accounts/${accountId}/jobs`, {
     method: 'POST',
     headers: {

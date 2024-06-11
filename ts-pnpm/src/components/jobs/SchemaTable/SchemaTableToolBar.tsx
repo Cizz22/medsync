@@ -12,12 +12,13 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { TransformerSource } from '@/lib/hooks/useGetSystemTransformers';
+import { CreateUserDefinedTransformerResponse } from '@/lib/hooks/useGetUserDefinedTransformers';
 
 import { Button } from '@/components/ui/button';
 
 // import { SingleTableSchemaFormValues } from '@/app/(mgmt)/[account]/new/job/schema';
 import { SingleTableSchemaFormValues } from '@/app/(main)/dashboard/[accountId]/new/job/schema';
-// import EditTransformerOptions from '@/app/(mgmt)/[account]/transformers/EditTransformerOptions';
+import Edit
 import { Transformer } from '@/shared/transformers';
 import {
   convertJobMappingTransformerToForm,
@@ -78,8 +79,8 @@ export function SchemaTableToolbar<TData>({
         <div className="flex flex-col md:flex-row gap-3 w-[250px]">
           <TransformerSelect
             getTransformers={() => {
-              const systemArrays: SystemTransformer[][] = [];
-              const userDefinedArrays: UserDefinedTransformer[][] = [];
+              const systemArrays: Transformer[][] = [];
+              const userDefinedArrays: CreateUserDefinedTransformerResponse[][] = [];
               table.getSelectedRowModel().rows.forEach((row) => {
                 const { system, userDefined } =
                   transformerHandler.getFilteredTransformers(

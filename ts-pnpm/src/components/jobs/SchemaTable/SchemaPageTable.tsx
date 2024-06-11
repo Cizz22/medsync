@@ -25,7 +25,7 @@ import {
 import { JobMappingFormValues } from '@/yup-validations/jobs';
 
 import { JobType, SchemaConstraintHandler } from './schema-constraint-handler';
-// import { SchemaTableToolbar } from './SchemaTableToolBar';
+import { SchemaTableToolbar } from './SchemaTableToolBar';
 import { TransformerHandler } from './transformer-handler';
 
 export type Row = JobMappingFormValues;

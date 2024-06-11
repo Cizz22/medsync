@@ -88,7 +88,7 @@ export async function createJob(accountId: string, req: any) {
         schema: mapping.schema,
         table: mapping.table,
         column: mapping.column,
-        transformer: convertJobMappingTransformerFormToJobMappingTransformer(mapping.transformer)
+        transformer: new JobMappingTransformer({})
       });
     }),
     source: new JobSource({
@@ -114,14 +114,21 @@ export async function createJob(accountId: string, req: any) {
   return job.job;
 }
 
-export function convertJobMappingTransformerFormToJobMappingTransformer(
-  form: any
-): JobMappingTransformer {
-  return new JobMappingTransformer({
-    source: form.source,
-    config: convertTransformerConfigSchemaToTransformerConfig(form.config)
-  });
+export function convertJobMappingTransformerFormToJobMappingTransformer(): JobMappingTransformer {
+  return new JobMappingTransformer({});
 }
+
+// export function convertJobMappingTransformerToForm(
+//   jmt: JobMappingTransformer
+// ): JobMappingTransformerForm {
+//   return {
+//     source: jmt.source,
+//     config: {
+//       case: jmt.config.case,
+//       value: jmt.config.value,
+//     }
+//   };
+// }
 
 export function convertTransformerConfigSchemaToTransformerConfig(tcs: any): TransformerConfig {
   return tcs instanceof TransformerConfig
