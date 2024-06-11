@@ -85,7 +85,7 @@ export async function createJob(accountId: string, req: any) {
       return new JobMapping({
         schema: mapping.schema,
         table: mapping.table,
-        column: mapping.columns,
+        column: mapping.column,
         transformer: undefined
       });
     }),
