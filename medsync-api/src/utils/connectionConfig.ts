@@ -75,8 +75,8 @@ export default async function generateConConfig(connection_type: string, connect
   }
 }
 
-export function toJobSourceOption(connect: any, subset: any, source: Connection) {
-  if (!source) return new JobSourceOptions();
+export function toJobSourceOption(connect: any, subset: any, source: Connection | undefined) {
+  if (!source) return new JobSourceOptions({});
   switch (source.connectionConfig?.config.case) {
     case 'pgConfig':
       return new JobSourceOptions({
@@ -109,8 +109,8 @@ export function toJobSourceOption(connect: any, subset: any, source: Connection)
   }
 }
 
-export function toJobDestinationOption(options: any, destination: Connection) {
-  if (!destination) return new JobDestinationOptions();
+export function toJobDestinationOption(options: any, destination: Connection | undefined) {
+  if (!destination) return new JobDestinationOptions({});
 
   switch (destination.connectionConfig?.config.case) {
     case 'pgConfig':

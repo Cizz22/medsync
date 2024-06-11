@@ -90,20 +90,22 @@ export async function createJob(accountId: string, req: any) {
       });
     }),
     source: new JobSource({
-      options: sourceConnection ? toJobSourceOption(connect, subset, sourceConnection) : undefined
+      options: toJobSourceOption(connect, subset, sourceConnection)
     }),
     destinations: connect.destinations.map((destination: any) => {
       return new JobDestination({
         connectionId: destination.connectionId,
         options: toJobDestinationOption(
           destination.destinationOptions,
-          connections.find((connection) => connection.id === destination.connectionId) as Connection
+          connections.find((connection) => connection.id === destination.connectionId)
         )
       });
     }),
-    workflowOptions,
-    syncOptions
+    workflowOptions: workflowOptions,
+    syncOptions: syncOptions
   });
+
+  console.log(data);
 
   const job = await client.jobs.createJob(data);
 
