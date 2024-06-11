@@ -143,6 +143,13 @@ export default function Page({ searchParams }: PageProps): ReactElement {
       return;
     }
 
+    console.log({
+      define: defineFormValues,
+      connect: connectFormValues,
+      schema: schemaFormValues,
+      subset: values,
+    },)
+
     try {
       const job = await createNewJob(
         {
