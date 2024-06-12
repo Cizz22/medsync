@@ -1,18 +1,27 @@
-
+import { HookReply } from './types';
+import { useAuthenticatedFetch } from './useAuthenticatedFetch';
 
 
 export interface GetJobResponse {
     id:string,
-    created_by_user_id:string,
-    created_at:string,
-    updated_by_user_id:string,
-    updated_at:string,
+    createdByUserId:string,
+    createdAt:string,
+    updatedByUserId:string,
+    updatedAt:string,
     name:string,
     source: any,
     destinations:Array<any>,
     mapping:any
-    cron_schedule:string
-    account_id:string
-    sync_options:any
-    workflow_options:any
+    cronSchedule:string
+    accountId:string
+    syncOptions:any
+    workflowOptions:any
+}
+
+export function useGetJob(accountId: string | undefined, token: string | undefined, jobId:string): HookReply<GetJobResponse> {
+    return useAuthenticatedFetch(
+        `/api/accounts/${accountId}/jobs/${jobId}`,
+        !!accountId && !!token,
+        token
+    )
 }

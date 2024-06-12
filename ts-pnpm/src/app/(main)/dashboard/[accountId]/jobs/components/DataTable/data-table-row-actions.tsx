@@ -60,7 +60,7 @@ export function DataTableRowActions<TData>({
       <DropdownMenuContent>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => router.push(`/dashboard/${account?.name}/jobs/${job.id}`)}
+          onClick={() => router.push(`/dashboard/${account?.neosync_account_id}/jobs/${job.id}`)}
         >
           View
         </DropdownMenuItem>
