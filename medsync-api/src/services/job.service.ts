@@ -13,6 +13,7 @@ import {
   JobMapping,
   JobMappingTransformer,
   JobSource,
+  Passthrough,
   PauseJobRequest,
   RetryPolicy,
   TransformerConfig,
@@ -91,7 +92,13 @@ export async function createJob(accountId: string, req: any) {
         table: mapping.table,
         column: mapping.column,
         transformer: new JobMappingTransformer({
-          source: TransformerSource.UNSPECIFIED
+          source: TransformerSource.PASSTHROUGH,
+          config: new TransformerConfig({
+            config:{
+              case:"passthroughConfig",
+              value: new Passthrough({})
+            }
+          })
         })
       });
     }),
