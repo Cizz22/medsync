@@ -54,7 +54,7 @@ const deleteJob = catchAsync(async (req, res) => {
 });
 
 const createJobRun = catchAsync(async (req, res) => {
-  const jobId = req.params.jobId;
+  const jobId = req.body.jobId
 
   await jobService.createJobRun(jobId);
 

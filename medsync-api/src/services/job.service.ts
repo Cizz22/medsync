@@ -194,11 +194,9 @@ export async function deleteJob(accountId: string, jobId: string) {
   return job;
 }
 
-export async function createJobRun(JobId: string) {
+export async function createJobRun(jobId: string) {
   const jobRun = await client.jobs.createJobRun(
-    new CreateJobRunRequest({
-      jobId: JobId
-    })
+    new CreateJobRunRequest({jobId})
   );
 
   return jobRun;
