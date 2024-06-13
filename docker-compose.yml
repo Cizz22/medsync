@@ -64,7 +64,7 @@ services:
       - DB_SSL_DISABLE=true
       - DB_MIGRATIONS_TABLE=neosync_api_schema_migrations
       - DB_MIGRATIONS_TABLE_QUOTED=false
-      - AUTH_ENABLED=true
+      - AUTH_ENABLED=false
       - AUTH_AUDIENCE=neosync
       - AUTH_BASEURL=http://keycloak:8080/realms/neosync
       - AUTH_EXPECTED_ISS=http://116.193.191.197:8083/realms/neosync
