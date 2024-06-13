@@ -13,7 +13,7 @@ import httpStatus from 'http-status';
 export function getNeosyncContext(): NeosyncClient {
   try {
     const neoSyncClient: NeosyncClient = getNeosyncClient({
-      getAccessToken: getAccessToken(),
+      getAccessToken: getAccessToken(config.isAuthEnabled),
       getTransport(interceptors) {
         return createConnectTransport({
           baseUrl: config.neosync.apiUrl,
@@ -33,7 +33,11 @@ export function getNeosyncContext(): NeosyncClient {
   }
 }
 
-function getAccessToken(): GetAccessTokenFn {
+function getAccessToken(isAuthEnabled:boolean): GetAccessTokenFn | undefined {
+  if(!isAuthEnabled){
+    return undefined
+  }
+  
   const test = async () => {
     try {
       const body = new URLSearchParams({
