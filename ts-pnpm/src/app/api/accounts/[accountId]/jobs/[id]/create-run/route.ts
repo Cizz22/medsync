@@ -9,7 +9,8 @@ export async function POST(
     { params }: RequestContext
 ): Promise<NextResponse> {
     return withAxiosContext(async (ctx) => {
-        const res = await ctx.axios.post(`/jobs/${params.id}/create-run`)
+        const data = await req.json()
+        const res = await ctx.axios.post(`/jobs/${params.id}/create-run`, data)
         return res.data
     }, req.headers.get("token"))(req)
 }

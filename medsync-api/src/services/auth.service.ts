@@ -7,7 +7,12 @@ import prisma from '../client';
 import { encryptPassword, isPasswordMatch } from '../utils/encryption';
 import { AuthTokensResponse } from '../types/response';
 import exclude from '../utils/exclude';
+import config from '../config/config';
+import { getNeosyncContext } from '../config/neosync';
+import { SetPersonalAccountRequest } from '@neosync/sdk';
 
+
+const client = getNeosyncContext();
 /**
  * Login with username and password
  * @param {string} email
@@ -32,6 +37,15 @@ const loginUserWithEmailAndPassword = async (
   if (!user || !(await isPasswordMatch(password, user.password as string))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
+
+  if(!config.isAuthEnabled){
+    const account = await client.users.setPersonalAccount(
+      new SetPersonalAccountRequest({})
+    )
+
+    user.neosync_account_id = account.accountId
+  }
+  
   return exclude(user, ['password']);
 };
 

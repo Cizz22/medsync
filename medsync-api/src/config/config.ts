@@ -58,7 +58,7 @@ export default {
     },
     from: envVars.EMAIL_FROM
   },
-  isAuthEnabled: true,
+  isAuthEnabled: envVars.IS_AUTH_ENABLED,
   neosync: {
     apiUrl: envVars.NEOSYNC_API_URL
   }

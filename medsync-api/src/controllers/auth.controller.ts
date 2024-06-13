@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import { authService, userService, tokenService, emailService } from '../services';
 import exclude from '../utils/exclude';
 import { User } from '@prisma/client';
+import config from '../config/config';
 
 const register = catchAsync(async (req, res) => {
   const { name, email, password } = req.body;
@@ -15,6 +16,13 @@ const register = catchAsync(async (req, res) => {
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
+
+  if(!config.isAuthEnabled){
+    const userWithoutAccount = exclude(user, ['neosync_account_id'])
+  }
+  
+  
+  
   const tokens = await tokenService.generateAuthTokens(user);
   res.send({ user, tokens });
 });

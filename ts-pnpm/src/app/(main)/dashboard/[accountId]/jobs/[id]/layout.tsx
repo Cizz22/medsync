@@ -221,9 +221,10 @@ async function triggerJobRun(accountId: string,token:string, jobId: string): Pro
     `/api/accounts/${accountId}/jobs/${jobId}/create-run`,
     {
       method: 'POST',
-      body: JSON.stringify({}),
+      body: JSON.stringify({jobId}),
       headers:{
-        'token':token
+        'token':token,
+        'content-type': 'application/json',
       }
     }
   );

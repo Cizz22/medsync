@@ -56,11 +56,9 @@ const deleteJob = catchAsync(async (req, res) => {
 const createJobRun = catchAsync(async (req, res) => {
   const jobId = req.body.jobId
 
-  await jobService.createJobRun(jobId);
+  const jobRun = await jobService.createJobRun(jobId);
 
-  res.send({
-    message: 'Job run created'
-  });
+  res.send(jobRun);
 });
 
 const getNextJobRun = catchAsync(async (req, res) => {
