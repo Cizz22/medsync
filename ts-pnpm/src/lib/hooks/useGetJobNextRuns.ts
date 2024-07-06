@@ -1,6 +1,6 @@
 import { HookReply } from "./types";
 import { useAuthenticatedFetch } from "./useAuthenticatedFetch";
-import { JobRunResponse } from "./useGetJobRun";
+import { JobRunResponse } from "./useGetJobRuns";
 
 export interface JobNextRuns{
     nextRunTimes:string[]

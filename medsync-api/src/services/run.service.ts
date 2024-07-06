@@ -6,7 +6,8 @@ import {
   GetJobRunRequest,
   GetJobRunsRequest,
   LogWindow,
-  TerminateJobRunRequest
+  TerminateJobRunRequest,
+  LogLevel
 } from '@neosync/sdk';
 import { getNeosyncContext } from '../config/neosync';
 
@@ -71,7 +72,7 @@ export async function getJobRunLogs(accountId: string, runId: string, logLevel: 
       window: getWindow('1d'),
       shouldTail: false,
       maxLogLines: BigInt('5000'),
-      logLevels: [logLevel ? parseInt(logLevel, 10) : logLevel.UNSPECIFIED]
+      logLevels: [LogLevel.UNSPECIFIED]
     })
   );
 

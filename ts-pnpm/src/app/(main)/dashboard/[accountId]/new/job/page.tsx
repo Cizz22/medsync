@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export type NewJobType = 'data-sync' | 'generate-table';
 
@@ -25,119 +26,124 @@ export default function NewJob({ params }: PageProps): ReactElement {
   const [sessionToken, setSessionToken] = useState<string>('');
   const searchParams = useSearchParams();
   const session = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     // Generate the session token only on the client side
     setSessionToken(params?.sessionToken ?? nanoid());
-  }, []);
+  }, [params]);
 
-  const dataSyncParams = new URLSearchParams(searchParams);
-  dataSyncParams.set('jobType', 'data-sync');
-  if (!dataSyncParams.has('sessionId')) {
-    dataSyncParams.set('sessionId', sessionToken);
-  }
+  useEffect(() => {
+    const dataSyncParams = new URLSearchParams(searchParams);
+    dataSyncParams.set('jobType', 'data-sync');
+    if (!dataSyncParams.has('sessionId')) {
+      dataSyncParams.set('sessionId', sessionToken);
+    }
 
-  const dataGenParams = new URLSearchParams(searchParams);
-  dataGenParams.set('jobType', 'generate-table');
-  if (!dataGenParams.has('sessionId')) {
-    dataGenParams.set('sessionId', sessionToken);
-  }
+    router.push(`/dashboard/${session?.data?.user?.neosync_account_id}/new/job/define?${dataSyncParams.toString()}`);
+  }, [searchParams, sessionToken, session, router]);
 
-  const jobData = [
-    {
-      name: 'Data Synchronization',
-      description:
-        'Synchronize and anonymize data between a source and destination. ',
-      href: `/dashboard/${session?.data?.user?.neosync_account_id}/new/job/define?${dataSyncParams.toString()}`,
-      icon: <SymbolIcon />,
-      type: 'data-sync',
-    },
-    // {
-    //   name: 'Data Generation',
-    //   description:
-    //     'Generate synthetic data from scratch for a chosen destination.',
-    //   href: `/${account?.name}/new/job/define?${dataGenParams.toString()}`,
-    //   icon: <AiOutlineExperiment />,
-    //   type: 'generate-table',
-    // },
-  ] as const;
+  return <Skeleton className="w-full h-full py-2" />;
 
-  const [selectedJobType, setSelectedJobType] =
-    useState<NewJobType>('data-sync');
 
-  const [href, setHref] = useState<string>();
+  // const jobData = [
+  //   {
+  //     name: 'Data Synchronization',
+  //     description:
+  //       'Synchronize and anonymize data between a source and destination. ',
+  //     href: `/dashboard/${session?.data?.user?.neosync_account_id}/new/job/define?${dataSyncParams.toString()}`,
+  //     icon: <SymbolIcon />,
+  //     type: 'data-sync',
+  //   },
+  //   // {
+  //   //   name: 'Data Generation',
+  //   //   description:
+  //   //     'Generate synthetic data from scratch for a chosen destination.',
+  //   //   href: `/${account?.name}/new/job/define?${dataGenParams.toString()}`,
+  //   //   icon: <AiOutlineExperiment />,
+  //   //   type: 'generate-table',
+  //   // },
+  // ] as const;
 
-  const handleJobSelection = (jobType: NewJobType, href: string) => {
-    setSelectedJobType(jobType);
-    setHref(href);
-  };
+  // const [selectedJobType, setSelectedJobType] =
+  //   useState<NewJobType>('data-sync');
 
-  const router = useRouter();
+  // const [href, setHref] = useState<string>();
 
-  return (
-    <div
-      id="newjobdefine"
-      className="px-12 md:px-48 lg:px-96 flex flex-col pt-4 gap-16"
-    >
-      <OverviewContainer Header={<PageHeader header="Select a Job type" />}>
-        <div className="flex flex-col justify-center gap-6 pt-8">
-          <RadioGroup
-            value={selectedJobType}
-            onChange={() => setSelectedJobType}
-          >
-            {jobData.map((jd) => (
-              <div key={jd.name}>
-                <Card
-                  className={`cursor-pointer p-2 w-full min-w-[400px] ${selectedJobType === jd.type ? 'border border-black shadow-sm dark:border-gray-500' : 'hover:border hover:border-gray-500 dark:border-gray-700 dark:hover:border-gray-600'}`}
-                  onClick={() => handleJobSelection(jd.type, jd.href)}
-                >
-                  <CardHeader>
-                    <div className="flex flex-row justify-between items-center h-full">
-                      <div>
-                        <CardTitle>
-                          <div className="flex flex-row items-center gap-2 ">
-                            <div>{jd.icon}</div>
-                            <p>{jd.name}</p>
-                          </div>
-                        </CardTitle>
-                        <CardDescription className="pl-6 pt-2">
-                          {jd.description}
-                        </CardDescription>
-                      </div>
-                      <RadioGroupItem
-                        value={jd.type}
-                        id={jd.type}
-                        className={`${selectedJobType === jd.type ? 'bg-black text-white' : 'bg-white dark:bg-transparent  text-black'}`}
-                      />
-                    </div>
-                  </CardHeader>
-                </Card>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
-      </OverviewContainer>
-      <div className="flex flex-row justify-between">
-        <Button
-          variant="outline"
-          type="reset"
-          onClick={() => router.push(`/dashboard/${session?.data?.user?.neosync_account_id}/jobs`)}
-        >
-          Back
-        </Button>
-        <Button
-          type="submit"
-          disabled={!selectedJobType}
-          onClick={() =>
-            router.push(
-              href ??
-                `/dashboard/${session?.data?.user?.neosync_account_id}/new/job/define?${dataSyncParams.toString()}`
-            )
-          }
-        >
-          Next
-        </Button>
-      </div>
-    </div>
-  );
+  // const handleJobSelection = (jobType: NewJobType, href: string) => {
+  //   setSelectedJobType(jobType);
+  //   setHref(href);
+  // };
+
+  
+
+  
+
+  // return (
+    
+  //   <div
+  //     id="newjobdefine"
+  //     className="px-12 md:px-48 lg:px-96 flex flex-col pt-4 gap-16"
+  //   >
+  //     <OverviewContainer Header={<PageHeader header="Select a Job type" />}>
+  //       <div className="flex flex-col justify-center gap-6 pt-8">
+  //         <RadioGroup
+  //           value={selectedJobType}
+  //           onChange={() => setSelectedJobType}
+  //         >
+  //           {jobData.map((jd) => (
+  //             <div key={jd.name}>
+  //               <Card
+  //                 className={`cursor-pointer p-2 w-full min-w-[400px] ${selectedJobType === jd.type ? 'border border-black shadow-sm dark:border-gray-500' : 'hover:border hover:border-gray-500 dark:border-gray-700 dark:hover:border-gray-600'}`}
+  //                 onClick={() => handleJobSelection(jd.type, jd.href)}
+  //               >
+  //                 <CardHeader>
+  //                   <div className="flex flex-row justify-between items-center h-full">
+  //                     <div>
+  //                       <CardTitle>
+  //                         <div className="flex flex-row items-center gap-2 ">
+  //                           <div>{jd.icon}</div>
+  //                           <p>{jd.name}</p>
+  //                         </div>
+  //                       </CardTitle>
+  //                       <CardDescription className="pl-6 pt-2">
+  //                         {jd.description}
+  //                       </CardDescription>
+  //                     </div>
+  //                     <RadioGroupItem
+  //                       value={jd.type}
+  //                       id={jd.type}
+  //                       className={`${selectedJobType === jd.type ? 'bg-black text-white' : 'bg-white dark:bg-transparent  text-black'}`}
+  //                     />
+  //                   </div>
+  //                 </CardHeader>
+  //               </Card>
+  //             </div>
+  //           ))}
+  //         </RadioGroup>
+  //       </div>
+  //     </OverviewContainer>
+  //     <div className="flex flex-row justify-between">
+  //       <Button
+  //         variant="outline"
+  //         type="reset"
+  //         onClick={() => router.push(`/dashboard/${session?.data?.user?.neosync_account_id}/jobs`)}
+  //       >
+  //         Back
+  //       </Button>
+  //       <Button
+  //         type="submit"
+  //         disabled={!selectedJobType}
+  //         onClick={() =>
+  //           router.push(
+  //             href ??
+  //               `/dashboard/${session?.data?.user?.neosync_account_id}/new/job/define?${dataSyncParams.toString()}`
+  //           )
+  //         }
+  //       >
+  //         Next
+  //       </Button>
+  //     </div>
+  //   </div>
+  // );
 }
