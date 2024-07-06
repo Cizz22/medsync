@@ -228,9 +228,9 @@ export default function Page({ params }: PageProps): ReactElement {
             })}
           </div>
 
-              <div>
+              {/* <div>
                 <JobRunLogs accountId={accountId} runId={id} token={account?.access_token ?? ''} />
-              </div>
+              </div> */}
 
           <div className="space-y-4">
             <div className="flex flex-row items-center space-x-2">

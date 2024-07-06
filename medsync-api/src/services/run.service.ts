@@ -61,7 +61,7 @@ export async function getJobRunEvents(accountId: string, runId: string) {
     })
   );
 
-  return jobEvents.events;
+  return jobEvents;
 }
 
 export async function getJobRunLogs(accountId: string, runId: string, logLevel: any) {

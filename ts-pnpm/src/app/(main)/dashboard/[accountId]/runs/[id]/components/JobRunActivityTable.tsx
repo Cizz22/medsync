@@ -15,6 +15,8 @@ export default function JobRunActivityTable(
 ): ReactElement {
   const { jobRunEvents } = props;
 
+  console.log(jobRunEvents)
+
   const columns = useMemo(() => getColumns({}), []);
 
   if (!jobRunEvents) {
