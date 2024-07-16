@@ -15,6 +15,7 @@ import PageHeader from '@/components/headers/PageHeader';
 
 // import MysqlForm from './MysqlForm';
 import PostgresForm from './PostgresForm';
+import MysqlForm from './MysqlForm';
 
 interface ConnectionComponent {
   name: string;
@@ -39,7 +40,7 @@ export function getConnectionComponentDetails(
 
   switch (Object.keys(connection?.connectionConfig)[0]) {
     case 'pgConfig':
-      const value = connection?.connectionConfig.pgConfig;
+      const pgValue = connection?.connectionConfig.pgConfig;
       let pgConfig;
 
       let dbConfig = {
@@ -54,9 +55,9 @@ export function getConnectionComponentDetails(
       // define header type for postgres, either generic postgres or neon
       let headerType = 'generic';
 
-      switch (Object.keys(value)[0]) {
+      switch (Object.keys(pgValue)[0]) {
         case 'connection':
-          pgConfig = value.connection;
+          pgConfig = pgValue.connection;
           dbConfig = {
             host: pgConfig.host ?? '',
             name: pgConfig.name ?? '',
@@ -72,7 +73,7 @@ export function getConnectionComponentDetails(
           }
           break;
         case 'url':
-          pgConfig = value.url;
+          pgConfig = pgValue.url;
           if (pgConfig.includes('neon')) {
             headerType = 'neon';
           } else {
@@ -80,7 +81,7 @@ export function getConnectionComponentDetails(
           }
           break;
         default:
-          pgConfig = value.connectionConfig.value;
+          pgConfig = pgValue.connectionConfig.value;
           // dbConfig = dbConfig;
       }
 
@@ -113,23 +114,23 @@ export function getConnectionComponentDetails(
               db: dbConfig,
               url: typeof pgConfig === 'string' ? pgConfig : '',
               options: {
-                maxConnectionLimit: value.connectionOptions?.maxConnectionLimit,
+                maxConnectionLimit: pgValue.connectionOptions?.maxConnectionLimit,
               },
               tunnel: {
-                host: value.tunnel?.host ?? '',
-                port: value.tunnel?.port ?? 22,
-                knownHostPublicKey: value.tunnel?.knownHostPublicKey ?? '',
-                user: value.tunnel?.user ?? '',
+                host: pgValue.tunnel?.host ?? '',
+                port: pgValue.tunnel?.port ?? 22,
+                knownHostPublicKey: pgValue.tunnel?.knownHostPublicKey ?? '',
+                user: pgValue.tunnel?.user ?? '',
                 passphrase:
-                  value.tunnel && value.tunnel.authentication
+                pgValue.tunnel && pgValue.tunnel.authentication
                     ? getPassphraseFromSshAuthentication(
-                        value.tunnel.authentication
+                      pgValue.tunnel.authentication
                       ) ?? ''
                     : '',
                 privateKey:
-                  value.tunnel && value.tunnel.authentication
+                pgValue.tunnel && pgValue.tunnel.authentication
                     ? getPrivateKeyFromSshAuthentication(
-                        value.tunnel.authentication
+                      pgValue.tunnel.authentication
                       ) ?? ''
                     : '',
               },
@@ -140,83 +141,84 @@ export function getConnectionComponentDetails(
         ),
       };
 
-    // case 'mysqlConfig':
-    //   const mysqlValue = connection.connectionConfig.config.value;
-    //   switch (mysqlValue.connectionConfig.case) {
-    //     case 'connection':
-    //       return {
-    //         name: connection.name,
-    //         summary: (
-    //           <div>
-    //             <p>No summary found.</p>
-    //           </div>
-    //         ),
-    //         header: (
-    //           <PageHeader
-    //             header="Mysql"
-    //             leftIcon={<ConnectionIcon name="mysql" />}
-    //             extraHeading={extraPageHeading}
-    //             subHeadings={subHeading}
-    //           />
-    //         ),
-    //         body: (
-    //           <MysqlForm
-    //             connectionId={connection.id}
-    //             defaultValues={{
-    //               connectionName: connection.name,
-    //               db: {
-    //                 host: mysqlValue.connectionConfig.value.host,
-    //                 port: mysqlValue.connectionConfig.value.port,
-    //                 name: mysqlValue.connectionConfig.value.name,
-    //                 user: mysqlValue.connectionConfig.value.user,
-    //                 pass: mysqlValue.connectionConfig.value.pass,
-    //                 protocol: mysqlValue.connectionConfig.value.protocol,
-    //               },
-    //               options: {
-    //                 maxConnectionLimit:
-    //                   mysqlValue.connectionOptions?.maxConnectionLimit,
-    //               },
-    //               tunnel: {
-    //                 host: mysqlValue.tunnel?.host ?? '',
-    //                 port: mysqlValue.tunnel?.port ?? 22,
-    //                 knownHostPublicKey:
-    //                   mysqlValue.tunnel?.knownHostPublicKey ?? '',
-    //                 user: mysqlValue.tunnel?.user ?? '',
-    //                 passphrase:
-    //                   mysqlValue.tunnel && mysqlValue.tunnel.authentication
-    //                     ? getPassphraseFromSshAuthentication(
-    //                         mysqlValue.tunnel.authentication
-    //                       ) ?? ''
-    //                     : '',
-    //                 privateKey:
-    //                   mysqlValue.tunnel && mysqlValue.tunnel.authentication
-    //                     ? getPrivateKeyFromSshAuthentication(
-    //                         mysqlValue.tunnel.authentication
-    //                       ) ?? ''
-    //                     : '',
-    //               },
-    //             }}
-    //             onSaved={(resp) => onSaved(resp)}
-    //             onSaveFailed={onSaveFailed}
-    //           />
-    //         ),
-    //       };
-    //   }
-    //   return {
-    //     name: connection.name,
-    //     summary: (
-    //       <div>
-    //         <p>No summary found.</p>
-    //       </div>
-    //     ),
-    //     header: <PageHeader header="Unknown Connection" />,
-    //     body: (
-    //       <div>
-    //         No connection component found for: (
-    //         {connection?.name ?? 'unknown name'})
-    //       </div>
-    //     ),
-    //   };
+    case 'mysqlConfig':
+      const myValue = connection?.connectionConfig.mysqlConfig;
+      switch (Object.keys(myValue)[0]) {
+        case 'connection':
+          return {
+            name: connection?.name ?? '',
+            summary: (
+              <div>
+                <p>No summary found.</p>
+              </div>
+            ),
+            header: (
+              <PageHeader
+                header="Mysql"
+                leftIcon={<ConnectionIcon name="mysql" />}
+                extraHeading={extraPageHeading}
+                subHeadings={subHeading}
+              />
+            ),
+            body: (
+              <MysqlForm
+                connectionId={connection?.id ?? ''}
+                defaultValues={{
+                  connectionName: connection?.name ?? '',
+                  db: {
+                    host: myValue.connection.host,
+                    port: myValue.connection.port,
+                    name: myValue.connection.name,
+                    user: myValue.connection.user,
+                    pass: myValue.connection.pass,
+                    protocol: myValue.connection.protocol,
+                  },
+                  options: {
+                    maxConnectionLimit:
+                      myValue.connectionOptions?.maxConnectionLimit,
+                  },
+                  tunnel: {
+                    host: myValue.tunnel?.host ?? '',
+                    port: myValue.tunnel?.port ?? 22,
+                    knownHostPublicKey:
+                      myValue.tunnel?.knownHostPublicKey ?? '',
+                    user: myValue.tunnel?.user ?? '',
+                    passphrase:
+                      myValue.tunnel && myValue.tunnel.authentication
+                        ? getPassphraseFromSshAuthentication(
+                          myValue.tunnel.authentication
+                          ) ?? ''
+                        : '',
+                    privateKey:
+                    myValue.connection.tunnel && myValue.connection.tunnel.authentication
+                        ? getPrivateKeyFromSshAuthentication(
+                          myValue.tunnel.authentication
+                          ) ?? ''
+                        : '',
+                  },
+                }}
+                onSaved={(resp) => onSaved(resp)}
+                onSaveFailed={onSaveFailed}
+              />
+            ),
+          };
+      }
+      return {
+        name: connection?.name ?? '',
+        summary: (
+          <div>
+            <p>No summary found.</p>
+          </div>
+        ),
+        header: <PageHeader header="Unknown Connection" />,
+        body: (
+          <div>
+            No connection component found for: (
+            {connection?.name ?? 'unknown name'})
+          </div>
+        ),
+      };
+
     default:
       return {
         name: 'Invalid Connection',

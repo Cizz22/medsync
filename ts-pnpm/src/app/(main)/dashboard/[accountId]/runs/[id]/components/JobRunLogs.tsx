@@ -33,6 +33,7 @@ export default function JobRunLogs({
   } = useGetJobRunLogs(runId, accountId, token ?? '', selectedLogLevel, {
     refreshIntervalFn: refreshLogsWhenRunNotComplete,
   });
+  
   const logResponses = logsData ?? [];
 
   function onRefreshClick(): void {

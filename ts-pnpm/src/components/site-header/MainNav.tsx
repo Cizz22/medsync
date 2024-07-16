@@ -76,7 +76,7 @@ export function MainNav({
           Connections
         </Link>
 
-        <Link
+        {/* <Link
           href={`/dashboard/${accountName}/settings`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
@@ -84,7 +84,7 @@ export function MainNav({
           )}
         >
           Settings
-        </Link>
+        </Link> */}
       </nav>
     </div>
   );

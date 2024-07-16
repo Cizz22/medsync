@@ -50,7 +50,7 @@ export function getColumns(
           <div className="font-medium">
             <NextLink
               className="hover:underline"
-              href={`/${accountName}/runs/${row.getValue('id')}`}
+              href={`/dashboard/${accountName}/runs/${row.getValue('id')}`}
             >
               <span>{row.getValue('id')}</span>
             </NextLink>

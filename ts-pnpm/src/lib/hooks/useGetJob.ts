@@ -11,7 +11,7 @@ export interface GetJobResponse {
     name:string,
     source: any,
     destinations:Array<any>,
-    mapping:any
+    mappings:any
     cronSchedule:string
     accountId:string
     syncOptions:any

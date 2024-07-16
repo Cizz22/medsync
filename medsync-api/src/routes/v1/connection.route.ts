@@ -26,6 +26,9 @@ router
     auth(),
     validate(connectionValidation.deleteConnection),
     connectionController.deleteConnection
+  ).put(
+    auth(),
+    connectionController.updateConnection
   );
 
 router.route('/:connectionId/schema').get(auth(), connectionController.checkConnectionSchema);

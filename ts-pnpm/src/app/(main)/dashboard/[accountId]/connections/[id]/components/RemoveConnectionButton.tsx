@@ -25,7 +25,7 @@ export default function RemoveConnectionButton(props: Props): ReactElement {
         title: 'Successfully removed connection!',
         variant: 'default',
       });
-      router.push(`/${account.account?.name}/connections`);
+      router.push(`/${account.account?.neosync_account_id}/connections`);
     } catch (err) {
       console.error(err);
       toast({
@@ -68,8 +68,4 @@ async function removeConnection(
       }
     }
   );
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.message);
-  }
 }

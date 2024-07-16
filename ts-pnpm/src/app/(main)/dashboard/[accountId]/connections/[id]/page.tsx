@@ -79,10 +79,10 @@ export default function ConnectionPage({ params }: PageProps) {
       title: 'Configuration',
       href: `${basePath}`,
     },
-    {
-      title: 'Permissions',
-      href: `${basePath}/permissions`,
-    },
+    // {
+    //   title: 'Permissions',
+    //   href: `${basePath}/permissions`,
+    // },
   ];
 
   const isPostgres = Object.keys(data?.connectionConfig)[0] == 'pgConfig';

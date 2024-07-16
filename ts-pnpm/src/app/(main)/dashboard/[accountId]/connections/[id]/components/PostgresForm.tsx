@@ -663,14 +663,16 @@ async function updatePostgresConnection(
       },
       body: JSON.stringify(
         {
-          id: connectionId,
+          onnection_type: 'postgresql',
           name: connectionName,
-          connectionConfig: {
-            config: {
-              case: 'pgConfig',
-              value: pgconfig,
-            },
-          },
+          connection_config: {
+            host: db?.host,
+            name: db?.name,
+            user: db?.user,
+            pass: db?.pass,
+            port: db?.port,
+            sslMode: db?.sslMode
+          }
         }
       ),
     }

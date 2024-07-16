@@ -11,7 +11,7 @@ export const DATA_SYNC_STEPS: JobProgressStep[] = [
   'define',
   'connect',
   'schema',
-  'subset',
+  'confirm',
 ];
 export const DATA_GEN_STEPS: JobProgressStep[] = [
   'define',
@@ -19,7 +19,7 @@ export const DATA_GEN_STEPS: JobProgressStep[] = [
   'schema',
 ];
 
-type JobProgressStep = 'define' | 'connect' | 'schema' | 'subset';
+type JobProgressStep = 'define' | 'connect' | 'schema' | 'confirm';
 
 export default function JobsProgressSteps(props: Props): ReactElement {
   const { steps, stepName } = props;
