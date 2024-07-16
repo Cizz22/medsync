@@ -81,8 +81,9 @@ export default function PostgresForm(props: Props) {
     values: defaultValues,
     context: {
       originalConnectionName: defaultValues.connectionName,
-      accountId: account?.id ?? '',
-      activeTab: activeTab,
+      accountId: account?.neosync_account_id ?? '',
+      token:account?.access_token ?? '',
+      activeTab: 'host',
     }, // used when validating a new connection name
   });
   const [validationResponse, setValidationResponse] = useState<
@@ -663,7 +664,7 @@ async function updatePostgresConnection(
       },
       body: JSON.stringify(
         {
-          onnection_type: 'postgresql',
+          connection_type: 'postgresql',
           name: connectionName,
           connection_config: {
             host: db?.host,

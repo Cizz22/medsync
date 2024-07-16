@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { jobService } from '../services';
 import catchAsync from '../utils/catchAsync';
+import httpStatus from 'http-status';
 
 const getJobs = catchAsync(async (req, res) => {
   const user = req.user as User;
@@ -48,9 +49,7 @@ const deleteJob = catchAsync(async (req, res) => {
 
   await jobService.deleteJob(user.neosync_account_id, jobId);
 
-  res.send({
-    message: 'Job deleted'
-  });
+  res.status(httpStatus.OK).send();
 });
 
 const createJobRun = catchAsync(async (req, res) => {
