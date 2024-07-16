@@ -10,10 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PlusIcon } from '@radix-ui/react-icons';
 import NextLink from 'next/link';
 import { ReactElement } from 'react';
-import {
-  getConnectionIdFromSource,
-  getFkIdFromGenerateSource,
-} from '../source/components/util';
+// import {
+//   getConnectionIdFromSource,
+//   getFkIdFromGenerateSource,
+// } from '../source/components/util';
 // import { isAiDataGenJob, isDataGenJob } from '../../../app/(main)/dashboard/[accountId]/jobs/[id]/util';
 import DestinationConnectionCard from './components/DestinationConnectionCard';
 import { useGetJob } from '@/lib/hooks/useGetJob';
@@ -32,9 +32,10 @@ export default function Page({ params }: PageProps): ReactElement {
     data?.destinations.map((d) => d.connectionId)
   );
 
-  const sourceConnectionId = getConnectionIdFromSource(data?.source);
-  const fkConnectionId = getFkIdFromGenerateSource(data?.source);
-  const fkConnection = connections.find((c) => c.id === fkConnectionId);
+  // const sourceConnectionId = getConnectionIdFromSource(data?.source);
+  // const fkConnectionId = getFkIdFromGenerateSource(data?.source);
+  // const fkConnection = connections.find((c) => c.id === fkConnectionId);
+  
   return (
     <div className="job-details-container">
       <SubPageHeader
@@ -50,37 +51,37 @@ export default function Page({ params }: PageProps): ReactElement {
         <Skeleton className="w-full h-96 rounded-lg" />
       ) : (
         <div className="space-y-10">
-          {data?.destinations.map((destination) => {
+          {/* {data?.destinations.map((destination) => {
             return (
-              <DestinationConnectionCard
-                key={destination.id}
-                jobSourceId={
-                  fkConnectionId
-                    ? fkConnectionId
-                    : sourceConnectionId
-                      ? sourceConnectionId
-                      : ''
-                }
-                jobId={id}
-                destination={destination}
-                mutate={mutate}
-                connections={connections}
-                availableConnections={connections.filter((c) => {
-                  // if (isDataGenJob(data?.job) || isAiDataGenJob(data?.job)) {
-                  //   return (
-                  //     c.connectionConfig?.config.case ===
-                  //     fkConnection?.connectionConfig?.config.case
-                  //   );
-                  // }
-                  return (
-                    c.id === destination.connectionId ||
-                    (c.id != sourceConnectionId && !destinationIds?.has(c.id))
-                  );
-                })}
-                isDeleteDisabled={data?.destinations.length === 1}
-              />
+              // <DestinationConnectionCard
+              //   key={destination.id}
+              //   jobSourceId={
+              //     fkConnectionId
+              //       ? fkConnectionId
+              //       : sourceConnectionId
+              //         ? sourceConnectionId
+              //         : ''
+              //   }
+              //   jobId={id}
+              //   destination={destination}
+              //   mutate={mutate}
+              //   connections={connections}
+              //   availableConnections={connections.filter((c) => {
+              //     // if (isDataGenJob(data?.job) || isAiDataGenJob(data?.job)) {
+              //     //   return (
+              //     //     c.connectionConfig?.config.case ===
+              //     //     fkConnection?.connectionConfig?.config.case
+              //     //   );
+              //     // }
+              //     return (
+              //       c.id === destination.connectionId ||
+              //       (c.id != sourceConnectionId && !destinationIds?.has(c.id))
+              //     );
+              //   })}
+              //   isDeleteDisabled={data?.destinations.length === 1}
+              // />
             );
-          })}
+          })} */}
         </div>
       )}
     </div>

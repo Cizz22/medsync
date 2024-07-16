@@ -240,7 +240,7 @@ export async function getJobStatus(jobId: string) {
     })
   );
 
-  return jobRun.status;
+  return jobRun;
 }
 
 export default {

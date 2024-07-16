@@ -31,6 +31,7 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
     account?.access_token,
     id
   );
+
   const { mutate: mutateJobRunsByJob } = useGetJobRunsbyJob(
     account?.neosync_account_id ?? '',
     account?.access_token ?? '',
@@ -70,7 +71,7 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
         title: 'Job removed successfully!',
         variant: 'default',
       });
-      router.push(`/${account?.name}/jobs`);
+      router.push(`/dashboard/${account?.neosync_account_id}/jobs`);
     } catch (err) {
       console.error(err);
       toast({
@@ -183,14 +184,14 @@ function getSidebarNavItems(accountName: string, job?: GetJobResponse): SidebarN
       title: 'Overview',
       href: `${basePath}`,
     },
-    {
-      title: 'Source',
-      href: `${basePath}/source`,
-    },
-    {
-      title: 'Destinations',
-      href: `${basePath}/destinations`,
-    },
+    // {
+    //   title: 'Source',
+    //   href: `${basePath}/source`,
+    // },
+    // {
+    //   title: 'Destinations',
+    //   href: `${basePath}/destinations`,
+    // },
     // {
     //   title: 'Subsets',
     //   href: `${basePath}/subsets`,

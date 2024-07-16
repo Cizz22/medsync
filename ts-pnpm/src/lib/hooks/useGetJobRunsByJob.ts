@@ -10,7 +10,7 @@ interface GetJobRunOptions {
 export function useGetJobRunsbyJob(accountId: string | undefined, token: string | undefined, jobId:string,  opts: GetJobRunOptions = {},): HookReply<JobRunResponse> {
     const { refreshIntervalFn } = opts;
     return useAuthenticatedFetch(
-        `/api/accounts/${accountId}/runs/${jobId}`,
+        `/api/accounts/${accountId}/runs?jobId=${jobId}`,
         !!accountId && !!token,
         token,
         {
