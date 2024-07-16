@@ -57,7 +57,7 @@ export function MainNav({
         >
           Runs
         </Link>
-        <Link
+        {/* <Link
           href={`/dashboard/${accountName}/transformers`}
           className={cn(
             'text-sm font-medium text-muted-foreground transition-colors hover:text-black dark:hover:text-white',
@@ -65,7 +65,7 @@ export function MainNav({
           )}
         >
           Transformers
-        </Link>
+        </Link> */}
         <Link
           href={`/dashboard/${accountName}/connections`}
           className={cn(

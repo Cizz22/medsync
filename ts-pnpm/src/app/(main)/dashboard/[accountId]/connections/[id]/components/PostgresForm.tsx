@@ -60,7 +60,7 @@ import {
 } from '@/yup-validations/connections';
 import { CheckConnectionConfigResponse, ConnectionResponse, ConnectionRolePrivilege } from '@/lib/hooks/useGetConnection';
 import { PostgresConnectionConfig } from '../../../new/connection/postgres/PostgresForm';
-
+import { useRouter } from 'next/navigation';
 interface Props {
   connectionId: string;
   defaultValues: PostgresFormValues;
@@ -71,6 +71,7 @@ interface Props {
 export default function PostgresForm(props: Props) {
   const { connectionId, defaultValues, onSaved, onSaveFailed } = props;
   const { account } = useAccount();
+  const router = useRouter();
   // used to know which tab - host or url that the user is on when we submit the form
   const [activeTab, setActiveTab] = useState<string>(
     defaultValues.url ? 'url' : 'host'
@@ -117,6 +118,7 @@ export default function PostgresForm(props: Props) {
         );
       
       onSaved(connection);
+      router.push(`/dashboard/${account?.neosync_account_id}/connections`);
     } catch (err) {
       console.error(err);
       onSaveFailed(err);

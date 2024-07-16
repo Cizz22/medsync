@@ -31,6 +31,7 @@ import { ReactElement } from 'react';
 import JobRunStatus from '../components/JobRunStatus';
 import JobRunActivityTable from './components/JobRunActivityTable';
 import JobRunLogs from './components/JobRunLogs';
+import { useGetJobRun } from '@/lib/hooks/useGetJobRun';
 
 export default function Page({ params }: PageProps): ReactElement {
   const { account } = useAccount();
@@ -40,7 +41,7 @@ export default function Page({ params }: PageProps): ReactElement {
   const { toast } = useToast();
  
 
-  const { data, isLoading, mutate } = useGetJobRunsbyJob(accountId, account?.access_token, id, {
+  const { data, isLoading, mutate } = useGetJobRun(accountId, account?.access_token, id, {
     refreshIntervalFn: refreshWhenJobRunning,
   });
 
@@ -312,7 +313,7 @@ function ButtonLink(props: ButtonProps): ReactElement {
   return (
     <Button
       variant="outline"
-      onClick={() => router.push(`/${account?.name}/jobs/${props.jobId}`)}
+      onClick={() => router.push(`/dashboard/${account?.neosync_account_id}/jobs/${props.jobId}`)}
     >
       <ButtonText
         text="View Job"

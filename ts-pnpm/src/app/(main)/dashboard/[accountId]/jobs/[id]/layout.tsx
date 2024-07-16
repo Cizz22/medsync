@@ -204,17 +204,16 @@ function getSidebarNavItems(accountName: string, job?: GetJobResponse): SidebarN
 }
 
 async function removeJob(accountId: string, token: string, jobId: string): Promise<void> {
-  const res = await fetch(`/api/accounts/${accountId}/jobs/${jobId}`, {
+  await fetch(`/api/accounts/${accountId}/jobs/${jobId}`, {
     method: 'DELETE',
     headers: {
       'token': token
     }
   });
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.message);
-  }
-  await res.json();
+  // if (!res.ok) {
+  //   const body = await res.json();
+  //   throw new Error(body.message);
+  // }
 }
 
 async function triggerJobRun(accountId: string, token: string, jobId: string): Promise<void> {
