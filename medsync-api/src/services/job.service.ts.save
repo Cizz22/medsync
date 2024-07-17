@@ -8,7 +8,6 @@ import {
   GetJobRequest,
   GetJobStatusRequest,
   GetJobsRequest,
-  GetJobStatusesRequest,
   IsJobNameAvailableRequest,
   JobDestination,
   JobMapping,
@@ -150,12 +149,12 @@ export function convertTransformerConfigSchemaToTransformerConfig(tcs: any): Tra
 
 export async function getJobStatuses(accountId: string) {
   const result = await client.jobs.getJobStatuses(
-    new GetJobStatusesRequest({
+    new GetJobStatusesRequest1~GetJobStatusesRequest({
       accountId
     })
   );
 
-  return result;
+  return result.statuses;
 }
 
 export async function isJobNameAvailable(accountId: string, name: string) {

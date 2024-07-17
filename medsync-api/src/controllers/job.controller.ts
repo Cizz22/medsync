@@ -69,10 +69,12 @@ const getNextJobRun = catchAsync(async (req, res) => {
 });
 
 const pauseJob = catchAsync(async (req, res) => {
-  const is_pause = req.query.is_pause;
+  const is_pause = req.query.is_pause as String;
   const jobId = req.params.jobId;
+  
+  const pause = is_pause === 'true'  
 
-  await jobService.pauseJobRun(jobId, Boolean(is_pause));
+  await jobService.pauseJobRun(jobId, pause);
 
   res.send({
     message: 'Job paused'
