@@ -12,7 +12,6 @@ COPY . .
 
 RUN bunx prisma generate
 
-RUN bun run build
 
 
 

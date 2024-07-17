@@ -50,10 +50,10 @@ services:
 
   engine:
     container_name: medsync-engine
-    image: ghcr.io/nucleuscloud/neosync/api
+    image: ghcr.io/nucleuscloud/neosync/api:latest
     # network_mode: host
     ports:
-      - 8081:8080
+      - 8082:8080
     command: serve connect
     environment:
       - HOST=0.0.0.0
@@ -103,7 +103,7 @@ services:
 
   worker:
     container_name: medsync-worker
-    image: ghcr.io/nucleuscloud/neosync/worker
+    image: ghcr.io/nucleuscloud/neosync/worker:latest
     # network_mode: host
     environment:
       - NUCLEUS_ENV=dev
