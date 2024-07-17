@@ -3,10 +3,10 @@ import { useAuthenticatedFetch } from './useAuthenticatedFetch';
 
 
 export enum JobStatus {
-    UNSPECIFIED = 0,
-    ENABLED = 1,
-    PAUSED = 2,
-    DISABLED = 3
+    UNSPECIFIED = "JOB_STATUS_UNSPECIFIED",
+    ENABLED = "JOB_STATUS_ENABLED",
+    PAUSED = "JOB_STATUS_PAUSED",
+    DISABLED = "JOB_STATUS_DISABLED"
 }
 
 export interface JobStatusResponse {

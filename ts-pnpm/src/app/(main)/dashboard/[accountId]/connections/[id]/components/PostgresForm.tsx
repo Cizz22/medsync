@@ -117,7 +117,6 @@ export default function PostgresForm(props: Props) {
           values.options
         );
       
-      onSaved(connection);
       router.push(`/dashboard/${account?.neosync_account_id}/connections`);
     } catch (err) {
       console.error(err);

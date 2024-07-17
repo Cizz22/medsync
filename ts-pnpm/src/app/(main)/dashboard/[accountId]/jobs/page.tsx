@@ -40,7 +40,7 @@ function JobTable(props: JobTableProps): ReactElement {
     const { } = props;
     const session = useSession()
     const { isLoading, data, mutate } = useGetJobs(session.data?.user.neosync_account_id, session.data?.user.accessToken);
-    const { data: statusData } = useGetJobStatuses(session.data?.user.neosync_account_id, session.data?.user.accessToken);
+    const { isLoading:statusLoading, data: statusData } = useGetJobStatuses(session.data?.user.neosync_account_id, session.data?.user.accessToken);
     const columns = useMemo(
         () =>
             getColumns({
@@ -52,23 +52,20 @@ function JobTable(props: JobTableProps): ReactElement {
         [mutate, session.data?.user.neosync_account_id]
     );
 
-    if (isLoading) {
+    if (isLoading || statusLoading) {
         return <SkeletonTable />;
     }
 
+
     const jobs = data ?? [];
-    const statusJobMap =
-        statusData?.reduce(
-            (prev, curr) => {
-                return { ...prev, [curr.jobId]: curr.status };
-            },
-            {} as Record<string, JobStatus>
-        ) || {};
+    const statuses = statusData?.statuses ?? [] 
+
 
     const jobData = jobs.map((j) => {
+        const jobStatus = statuses.find(status => status.jobId === j.id);
         return {
             ...j,
-            status: statusJobMap[j.id] || JobStatus.UNSPECIFIED,
+            status: jobStatus?.status || JobStatus.UNSPECIFIED,
             type: 'Sync',
         };
     });

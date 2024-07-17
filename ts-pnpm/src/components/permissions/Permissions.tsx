@@ -48,10 +48,9 @@ export default function Permissions(props: Props) {
     <Dialog open={openPermissionDialog} onOpenChange={setOpenPermissionDialog}>
       <DialogContent className="max-w-5xl flex flex-col gap-4">
         <DialogHeader>
-          <DialogTitle>Connection Permissions</DialogTitle>
+          <DialogTitle>Connection Schema</DialogTitle>
           <div className="text-muted-foreground text-sm">
-            Review the permissions that Neoynsc has to your connection.{' '}
-            <LearnMoreTag href="https://docs.neosync.dev/connections/postgres#testing-your-connection" />
+            Review connection schema
           </div>
         </DialogHeader>
         <TestConnectionResult
