@@ -716,6 +716,7 @@ export default function MysqlForm(props: Props) {
         values.connectionName,
         account.neosync_account_id,
         account.access_token ?? '',
+        connectionId,
         values.tunnel,
         values.options
       );
@@ -1211,7 +1212,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
                   account?.access_token ?? ''
                 );
 
-                console.log(res)
+      
                 
                 setIsValidating(false);
                 setValidationResponse(res);
@@ -1299,6 +1300,7 @@ async function updateMysqlConnection(
   name: string,
   accountId: string,
   token:string,
+  connectionId:string,
   tunnel: MysqlFormValues['tunnel'],
   options: MysqlFormValues['options']
 ) {
@@ -1376,8 +1378,8 @@ async function updateMysqlConnection(
       };
     }
   }
-  const res = await fetch(`/api/accounts/${accountId}/connections`, {
-    method: 'POST',
+  const res = await fetch(`/api/accounts/${accountId}/connections/${connectionId}`, {
+    method: 'PUT',
     headers: {
       'content-type': 'application/json',
       'token':token

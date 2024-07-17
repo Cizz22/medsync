@@ -140,9 +140,6 @@ function getCategory(cc: any): string {
     return '-';
   }
   const caseConfig: string = Object.keys(cc)[0];
-
-  // eslint-disable-next-line no-console
-  console.log(caseConfig)
   
   switch (caseConfig) {
     case 'pgConfig':

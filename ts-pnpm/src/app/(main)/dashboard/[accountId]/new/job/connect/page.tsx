@@ -62,9 +62,6 @@ export default function Page({ searchParams }: PageProps): ReactElement {
 
   const { data: connectionsData, isLoading: isConnectionsLoading } = useGetConnections(account?.neosync_account_id, account?.access_token);
 
-  // eslint-disable-next-line no-console
-  console.log(connectionsData);
-
   const connections = connectionsData ?? [];
 
   const form = useForm<ConnectFormValues>({

@@ -49,7 +49,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
   const session = useSession();
   useEffect(() => {
     if (!searchParams?.sessionId) {
-      router.push(`/${session.data?.user?.neosync_account_id}/new/job`);
+      router.push(`/dashboard/${session.data?.user?.neosync_account_id}/new/job`);
     }
   }, [searchParams?.sessionId]);
 
@@ -177,7 +177,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
               </FormItem>
             )}
           />
-          <div>
+          {/* <div>
             <FormField
               name="initiateJobRun"
               render={({ field }) => (
@@ -204,7 +204,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
                 </FormItem>
               )}
             />
-          </div>
+          </div> */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="settings">
               <AccordionTrigger className="-ml-2">
