@@ -481,7 +481,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
             </FormItem>
           )}
         />
-        <Accordion type="single" collapsible className="w-full">
+        {/* <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="bastion">
             <AccordionTrigger> Bastion Host Configuration</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 p-2">
@@ -606,7 +606,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               />
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
         <Permissions
           data={permissionData ?? []}
           openPermissionDialog={openPermissionDialog}

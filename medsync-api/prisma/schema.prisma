@@ -34,6 +34,23 @@ model Token {
   userId      Int
 }
 
+model Connection {
+  id               Int      @id @default(autoincrement())
+  name             String
+  engine_id        String
+  connectionConfig Json?    @db.Json
+  createdAt        DateTime @default(now())
+}
+
+model Job {
+  id         Int      @id @default(autoincrement())
+  name       String
+  engine_id  String
+  createdAt  DateTime @default(now())
+}
+
+
+
 enum Role {
   USER
   ADMIN

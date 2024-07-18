@@ -130,9 +130,9 @@ export default function JobScheduleCard({ job, mutate }: Props): ReactElement {
           <CardFooter className="bg-muted flex py-2 justify-center">
             <div className="flex flex-row items-center justify-between w-full">
               <p className="text-muted-foreground text-sm">{msg}</p>
-              <Button type="submit" disabled={!form.formState.isDirty}>
+              {/* <Button type="submit" disabled={!form.formState.isDirty}>
                 Save
-              </Button>
+              </Button> */}
             </div>
           </CardFooter>
         </form>
