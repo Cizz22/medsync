@@ -28,11 +28,6 @@ import { createConnectionConfig } from '../utils/utils';
 const client = getNeosyncContext();
 
 export async function getConnections(accountId: string) {
-  // const page = options.page || 1;
-  // const limit = options.limit || 10;
-  // const sortBy = options.sortBy || 'createdAt';
-  // const sortType = options.sortType || 'desc';
-
   const result = await client.connections.getConnections(
     new GetConnectionsRequest({
       accountId
