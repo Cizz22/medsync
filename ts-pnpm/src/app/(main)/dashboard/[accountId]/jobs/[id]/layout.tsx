@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { GetJobResponse, useGetJob } from '@/lib/hooks/useGetJob';
 import { useGetJobRunsbyJob } from '@/lib/hooks/useGetJobRunsByJob';
-import { useGetJobStatus } from '@/lib/hooks/useGetJobStatus';
+import { JobStatus, useGetJobStatus } from '@/lib/hooks/useGetJobStatus';
 // import { useGetSystemAppConfig } from '@/libs/hooks/useGetSystemAppConfig';
 import { getErrorMessage } from '@/lib/utils';
 // import { GetJobStatusResponse, Job, JobStatus } from '@neosync/sdk';
@@ -25,12 +25,13 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
   const id = params?.id ?? '';
   const router = useRouter();
   const { account } = useAccount();
-  const { data, isLoading } = useGetJob(account?.neosync_account_id ?? '',account?.access_token ,id);
-  // const { data: jobStatus, mutate: mutateJobStatus } = useGetJobStatus(
-  //   account?.neosync_account_id ?? '',
-  //   account?.access_token,
-  //   id
-  // );
+  const { data, isLoading } = useGetJob(account?.neosync_account_id ?? '', account?.access_token, id);
+  const { data: jobStatus, mutate: mutateJobStatus } = useGetJobStatus(
+    account?.neosync_account_id ?? '',
+    account?.access_token,
+    id
+  );
+
   const { mutate: mutateJobRunsByJob } = useGetJobRunsbyJob(
     account?.neosync_account_id ?? '',
     account?.access_token ?? '',
@@ -42,7 +43,7 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
 
   async function onTriggerJobRun(): Promise<void> {
     try {
-      await triggerJobRun(account?.neosync_account_id?? '',account?.access_token ?? '' ,id);
+      await triggerJobRun(account?.neosync_account_id ?? '', account?.access_token ?? '', id);
       toast({
         title: 'Job run triggered successfully!',
         variant: 'default',
@@ -65,12 +66,12 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
       return;
     }
     try {
-      await removeJob(account?.neosync_account_id ?? '',account?.access_token ?? '', id);
+      await removeJob(account?.neosync_account_id ?? '', account?.access_token ?? '', id);
       toast({
         title: 'Job removed successfully!',
         variant: 'default',
       });
-      router.push(`/${account?.name}/jobs`);
+      router.push(`/dashboard/${account?.neosync_account_id}/jobs`);
     } catch (err) {
       console.error(err);
       toast({
@@ -81,9 +82,9 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
     }
   }
 
-  // function onNewStatus(newStatus:any): void {
-  //   mutateJobStatus(newStatus);
-  // }
+  function onNewStatus(newStatus:any): void {
+    mutateJobStatus(newStatus);
+  }
 
   if (isLoading) {
     return (
@@ -142,11 +143,11 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
                     description="Deleting this job will also delete all job runs."
                     onConfirm={async () => onDelete()}
                   />
-                  {/* <JobPauseButton
+                  <JobPauseButton
                     jobId={id}
-                    status={jobStatus}
+                    status={jobStatus?.status ?? JobStatus.PAUSED}
                     onNewStatus={onNewStatus}
-                  /> */}
+                  />
                   <Button onClick={() => onTriggerJobRun()}>
                     <ButtonText
                       leftIcon={<LightningBoltIcon />}
@@ -183,47 +184,47 @@ function getSidebarNavItems(accountName: string, job?: GetJobResponse): SidebarN
       title: 'Overview',
       href: `${basePath}`,
     },
-    {
-      title: 'Source',
-      href: `${basePath}/source`,
-    },
-    {
-      title: 'Destinations',
-      href: `${basePath}/destinations`,
-    },
-    {
-      title: 'Subsets',
-      href: `${basePath}/subsets`,
-    },
-    {
-      title: 'Usage',
-      href: `${basePath}/usage`,
-    },
+    // {
+    //   title: 'Source',
+    //   href: `${basePath}/source`,
+    // },
+    // {
+    //   title: 'Destinations',
+    //   href: `${basePath}/destinations`,
+    // },
+    // {
+    //   title: 'Subsets',
+    //   href: `${basePath}/subsets`,
+    // },
+    // {
+    //   title: 'Usage',
+    //   href: `${basePath}/usage`,
+    // },
   ];
 }
 
-async function removeJob(accountId: string,token:string ,jobId: string): Promise<void> {
-  const res = await fetch(`/api/accounts/${accountId}/jobs/${jobId}`, {
+async function removeJob(accountId: string, token: string, jobId: string): Promise<void> {
+  await fetch(`/api/accounts/${accountId}/jobs/${jobId}`, {
     method: 'DELETE',
-    headers:{
-      'token':token
+    headers: {
+      'token': token
     }
   });
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.message);
-  }
-  await res.json();
+  // if (!res.ok) {
+  //   const body = await res.json();
+  //   throw new Error(body.message);
+  // }
 }
 
-async function triggerJobRun(accountId: string,token:string, jobId: string): Promise<void> {
+async function triggerJobRun(accountId: string, token: string, jobId: string): Promise<void> {
   const res = await fetch(
     `/api/accounts/${accountId}/jobs/${jobId}/create-run`,
     {
       method: 'POST',
-      body: JSON.stringify({}),
-      headers:{
-        'token':token
+      body: JSON.stringify({ jobId }),
+      headers: {
+        'token': token,
+        'content-type': 'application/json',
       }
     }
   );

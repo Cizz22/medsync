@@ -143,13 +143,6 @@ export default function Page({ searchParams }: PageProps): ReactElement {
       return;
     }
 
-    console.log({
-      define: defineFormValues,
-      connect: connectFormValues,
-      schema: schemaFormValues,
-      subset: values,
-    },)
-
     try {
       const job = await createNewJob(
         {
@@ -254,7 +247,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
           <PageHeader
             header="Subset"
             progressSteps={
-              <JobsProgressSteps steps={DATA_SYNC_STEPS} stepName={'subset'} />
+              <JobsProgressSteps steps={DATA_SYNC_STEPS} stepName={'confirm'} />
             }
           />
         }
@@ -268,70 +261,20 @@ export default function Page({ searchParams }: PageProps): ReactElement {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-8"
           >
-            <div>
-              <SubsetOptionsForm maxColNum={2} />
-            </div>
+          
             <div className="flex flex-col gap-2">
-              <div>
-                <SubsetTable
-                  data={Object.values(tableRowData)}
-                  onEdit={(schema, table) => {
-                    const key = buildRowKey(schema, table);
-                    if (tableRowData[key]) {
-                      // make copy so as to not edit in place
-                      setItemToEdit({
-                        ...tableRowData[key],
-                      });
-                    }
-                  }}
-                  hasLocalChange={hasLocalChange}
-                  onReset={onLocalRowReset}
-                />
+
+              <div className="mb-4">
+                <h2 className="text-xl font-bold mb-2">Define</h2>
+                <pre className="bg-gray-100 p-4 rounded-md">{JSON.stringify(defineFormValues, null, 2)}</pre>
               </div>
               <div className="my-4">
                 <Separator />
               </div>
-              <div>
-                <EditItem
-                  connectionId={connectFormValues.sourceId}
-                  item={itemToEdit}
-                  onItem={setItemToEdit}
-                  onCancel={() => setItemToEdit(undefined)}
-                  onSave={() => {
-                    if (!itemToEdit) {
-                      return;
-                    }
-                    const key = buildRowKey(
-                      itemToEdit.schema,
-                      itemToEdit.table
-                    );
-                    const idx = form
-                      .getValues()
-                      .subsets.findIndex(
-                        (item) => buildRowKey(item.schema, item.table) === key
-                      );
-                    if (idx >= 0) {
-                      form.setValue(`subsets.${idx}`, {
-                        schema: itemToEdit.schema,
-                        table: itemToEdit.table,
-                        whereClause: itemToEdit.where,
-                      });
-                    } else {
-                      form.setValue(
-                        `subsets`,
-                        form.getValues().subsets.concat({
-                          schema: itemToEdit.schema,
-                          table: itemToEdit.table,
-                          whereClause: itemToEdit.where,
-                        })
-                      );
-                    }
-                    setItemToEdit(undefined);
-                  }}
-                  dbType={dbType}
-                />
+              <div className="mb-4">
+                <h2 className="text-xl font-bold mb-2">connect</h2>
+                <pre className="bg-gray-100 p-4 rounded-md">{JSON.stringify(connectFormValues, null, 2)}</pre>
               </div>
-
               <div className="my-6">
                 <Separator />
               </div>
@@ -469,7 +412,6 @@ async function createNewJob(
   // }
 
   // eslint-disable-next-line no-console
-  console.log(formData.schema)
 
   const res = await fetch(`/api/accounts/${accountId}/jobs`, {
     method: 'POST',

@@ -13,6 +13,7 @@ import {
 } from '@neosync/sdk';
 import { formatName } from '../utils/utils';
 import { cli } from 'winston/lib/winston/config';
+import config from '../config/config';
 
 const client = getNeosyncContext();
 
@@ -35,12 +36,21 @@ const createUser = async (
 
   // Set user neosync account id
   const client = getNeosyncContext();
-  const account = await client.users.createTeamAccount(
-    new CreateTeamAccountRequest({
-      name: formattedName
-    })
-  );
-
+  let account;
+  
+  if(config.isAuthEnabled){
+    account = await client.users.createTeamAccount(
+      new CreateTeamAccountRequest({
+        name: formattedName
+      })
+    );
+  
+  }else{
+    account = await client.users.setPersonalAccount(
+      new SetPersonalAccountRequest({})
+    )
+  }
+  
   return prisma.user.create({
     data: {
       email,

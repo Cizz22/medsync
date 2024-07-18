@@ -68,7 +68,7 @@ export function DataTableRowActions<TData>({
         >
           View
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() =>
@@ -78,7 +78,7 @@ export function DataTableRowActions<TData>({
           }
         >
           Clone
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DeleteConfirmationDialog
           trigger={
@@ -107,7 +107,7 @@ async function removeConnection(
     throw new Error('Invalid parameters');
   }
 
-  const res = await fetch(
+   await fetch(
     `/api/accounts/${accountId}/connections/${connectionId}`,
     {
       method: 'DELETE',
@@ -116,10 +116,10 @@ async function removeConnection(
       }
     }
   );
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.message);
-  }
+  // if (!res.ok) {
+  //   const body = await res.json();
+  //   throw new Error(body.message);
+  // }
 }
 
 export function getConnectionType(connType: string): string {

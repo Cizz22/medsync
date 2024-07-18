@@ -28,7 +28,7 @@ export default function Page({ params }: PageProps): ReactElement {
   const id = params?.id ?? '';
   const { account } = useAccount();
   const { data, isLoading, mutate } = useGetJob(account?.neosync_account_id ?? '',account?.access_token ?? ''  ,id);
-  // const { data: jobStatus } = useGetJobStatus(account?.neosync_account_id ?? '', account?.access_token, id);
+  const { data: jobStatus } = useGetJobStatus(account?.neosync_account_id ?? '', account?.access_token, id);
   
   if (isLoading) {
     return (
@@ -59,11 +59,13 @@ export default function Page({ params }: PageProps): ReactElement {
             />
           </div>
           <div className="flex-grow basis-1/4 overflow-y-auto rounded-xl border border-card-border">
-            {/* <JobNextRuns jobId={id} status={jobStatus} /> */}
+            <JobNextRuns jobId={id} status={jobStatus} />
           </div>
         </div>
+        
         {/* <JobRecentRuns jobId={id} /> */}
-        <Accordion type="single" collapsible>
+       
+        {/* <Accordion type="single" collapsible>
           <AccordionItem value="advanced-settings">
             <AccordionTrigger className="-ml-2">
               <div className="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg">
@@ -72,7 +74,7 @@ export default function Page({ params }: PageProps): ReactElement {
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-3">
-                {/* <div>
+                <div>
                   <WorkflowSettingsCard
                     job={data}
                     mutate={(newjob) =>
@@ -87,11 +89,11 @@ export default function Page({ params }: PageProps): ReactElement {
                       mutate(newjob)
                     }
                   />
-                </div> */}
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
       </div>
     </div>
   );

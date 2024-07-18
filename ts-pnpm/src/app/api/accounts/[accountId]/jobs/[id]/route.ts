@@ -13,11 +13,11 @@ export async function GET(
     }, req.headers.get("token"))(req)
 }
 
-// export async function DELETE(
-//     req:NextRequest,
-//     {params}: RequestContext
-// ): Promise<NextResponse> {
-//     return withAxiosContext(async (ctx) => {
-//         await ctx.axios.delete(`/connections/${params.id}`);
-//     }, req.headers.get("token"))(req)
-// }
+export async function DELETE(
+    req:NextRequest,
+    {params}: RequestContext
+): Promise<NextResponse> {
+    return withAxiosContext(async (ctx) => {
+        await ctx.axios.delete(`/jobs/${params.id}`);
+    }, req.headers.get("token"))(req)
+}

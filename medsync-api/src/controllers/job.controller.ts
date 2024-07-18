@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { jobService } from '../services';
 import catchAsync from '../utils/catchAsync';
+import httpStatus from 'http-status';
 
 const getJobs = catchAsync(async (req, res) => {
   const user = req.user as User;
@@ -48,19 +49,15 @@ const deleteJob = catchAsync(async (req, res) => {
 
   await jobService.deleteJob(user.neosync_account_id, jobId);
 
-  res.send({
-    message: 'Job deleted'
-  });
+  res.status(httpStatus.OK).send();
 });
 
 const createJobRun = catchAsync(async (req, res) => {
-  const jobId = req.params.jobId;
+  const jobId = req.body.jobId
 
-  await jobService.createJobRun(jobId);
+  const jobRun = await jobService.createJobRun(jobId);
 
-  res.send({
-    message: 'Job run created'
-  });
+  res.send(jobRun);
 });
 
 const getNextJobRun = catchAsync(async (req, res) => {
@@ -72,10 +69,12 @@ const getNextJobRun = catchAsync(async (req, res) => {
 });
 
 const pauseJob = catchAsync(async (req, res) => {
-  const is_pause = req.query.is_pause;
+  const is_pause = req.query.is_pause as String;
   const jobId = req.params.jobId;
+  
+  const pause = is_pause === 'true'  
 
-  await jobService.pauseJobRun(jobId, Boolean(is_pause));
+  await jobService.pauseJobRun(jobId, pause);
 
   res.send({
     message: 'Job paused'

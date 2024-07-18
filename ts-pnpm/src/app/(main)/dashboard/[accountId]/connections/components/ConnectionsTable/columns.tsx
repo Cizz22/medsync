@@ -35,7 +35,7 @@ export function getColumns(
         <div>
           <NextLink
             className="hover:underline"
-            href={`/${accountName}/connections/${row.getValue('id')}`}
+            href={`/dashboard/${accountName}/connections/${row.getValue('id')}`}
           >
             <span>{row.getValue('id')}</span>
           </NextLink>
@@ -140,9 +140,6 @@ function getCategory(cc: any): string {
     return '-';
   }
   const caseConfig: string = Object.keys(cc)[0];
-
-  // eslint-disable-next-line no-console
-  console.log(caseConfig)
   
   switch (caseConfig) {
     case 'pgConfig':

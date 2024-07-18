@@ -14,7 +14,7 @@ import {
   getConnectionIdFromSource,
   getFkIdFromGenerateSource,
 } from '../source/components/util';
-import { isAiDataGenJob, isDataGenJob } from '../util';
+import { isAiDataGenJob, isDataGenJob } from '../../../app/(main)/dashboard/[accountId]/jobs/[id]/util';
 import DestinationConnectionCard from './components/DestinationConnectionCard';
 
 export default function Page({ params }: PageProps): ReactElement {

@@ -12,5 +12,4 @@ export async function GET(
         return res.data
     },req.headers.get("token"))(req)
 
-    
 }

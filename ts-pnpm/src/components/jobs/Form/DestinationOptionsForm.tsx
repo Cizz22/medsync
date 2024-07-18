@@ -21,7 +21,7 @@ interface DestinationOptionsProps {
 }
 export default function DestinationOptionsForm(
   props: DestinationOptionsProps
-): ReactElement {
+) {
   const { connection, maxColNum, index } = props;
   const grid = maxColNum ? `lg:grid-cols-${maxColNum}` : 'lg:grid-cols-3';
   const formCtx = useFormContext();

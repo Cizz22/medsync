@@ -7,7 +7,9 @@ import {
   GetJobRecentRunsRequest,
   GetJobRequest,
   GetJobStatusRequest,
+  GetJobStatusesRequest,
   GetJobsRequest,
+  GetJobStatusesRequest,
   IsJobNameAvailableRequest,
   JobDestination,
   JobMapping,
@@ -149,12 +151,12 @@ export function convertTransformerConfigSchemaToTransformerConfig(tcs: any): Tra
 
 export async function getJobStatuses(accountId: string) {
   const result = await client.jobs.getJobStatuses(
-    new GetJobsRequest({
+    new GetJobStatusesRequest({
       accountId
     })
   );
 
-  return result.statuses;
+  return result;
 }
 
 export async function isJobNameAvailable(accountId: string, name: string) {
@@ -194,11 +196,9 @@ export async function deleteJob(accountId: string, jobId: string) {
   return job;
 }
 
-export async function createJobRun(JobId: string) {
+export async function createJobRun(jobId: string) {
   const jobRun = await client.jobs.createJobRun(
-    new CreateJobRunRequest({
-      jobId: JobId
-    })
+    new CreateJobRunRequest({jobId})
   );
 
   return jobRun;
@@ -218,7 +218,7 @@ export async function pauseJobRun(jobRunId: string, isPause: boolean) {
   const jobRun = await client.jobs.pauseJob(
     new PauseJobRequest({
       id: jobRunId,
-      pause: isPause
+      pause:isPause
     })
   );
 
@@ -242,7 +242,7 @@ export async function getJobStatus(jobId: string) {
     })
   );
 
-  return jobRun.status;
+  return jobRun;
 }
 
 export default {

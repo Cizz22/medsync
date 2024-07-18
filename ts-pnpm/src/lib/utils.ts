@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { format } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -70,4 +71,32 @@ function isErrorWithMessage(error: unknown): error is { message: string } {
     'message' in error &&
     typeof error.message === 'string'
   );
+}
+
+export function formatDateTimeMilliseconds(
+  dateStr?: string | Date | number,
+  is24Hour = false
+): string | undefined {
+  if (!dateStr) {
+    return undefined;
+  }
+  const hourFormat = is24Hour ? 'HH' : 'hh';
+  const amPm = is24Hour ? '' : 'a';
+
+  return format(
+    new Date(dateStr),
+    `MM/dd/yyyy ${hourFormat}:mm:ss:SSS ${amPm}`
+  );
+}
+
+export function formatDateTime(
+  dateStr?: string | Date | number,
+  is24Hour = false
+): string | undefined {
+  if (!dateStr) {
+    return undefined;
+  }
+  const hourFormat = is24Hour ? 'HH' : 'hh';
+  const amPm = is24Hour ? '' : 'a';
+  return format(new Date(dateStr), `MM/dd/yyyy ${hourFormat}:mm:ss ${amPm}`);
 }

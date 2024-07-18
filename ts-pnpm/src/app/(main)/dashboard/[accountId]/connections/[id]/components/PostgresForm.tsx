@@ -60,7 +60,7 @@ import {
 } from '@/yup-validations/connections';
 import { CheckConnectionConfigResponse, ConnectionResponse, ConnectionRolePrivilege } from '@/lib/hooks/useGetConnection';
 import { PostgresConnectionConfig } from '../../../new/connection/postgres/PostgresForm';
-
+import { useRouter } from 'next/navigation';
 interface Props {
   connectionId: string;
   defaultValues: PostgresFormValues;
@@ -71,6 +71,7 @@ interface Props {
 export default function PostgresForm(props: Props) {
   const { connectionId, defaultValues, onSaved, onSaveFailed } = props;
   const { account } = useAccount();
+  const router = useRouter();
   // used to know which tab - host or url that the user is on when we submit the form
   const [activeTab, setActiveTab] = useState<string>(
     defaultValues.url ? 'url' : 'host'
@@ -81,8 +82,9 @@ export default function PostgresForm(props: Props) {
     values: defaultValues,
     context: {
       originalConnectionName: defaultValues.connectionName,
-      accountId: account?.id ?? '',
-      activeTab: activeTab,
+      accountId: account?.neosync_account_id ?? '',
+      token:account?.access_token ?? '',
+      activeTab: 'host',
     }, // used when validating a new connection name
   });
   const [validationResponse, setValidationResponse] = useState<
@@ -115,7 +117,7 @@ export default function PostgresForm(props: Props) {
           values.options
         );
       
-      onSaved(connection);
+      router.push(`/dashboard/${account?.neosync_account_id}/connections`);
     } catch (err) {
       console.error(err);
       onSaveFailed(err);
@@ -663,14 +665,16 @@ async function updatePostgresConnection(
       },
       body: JSON.stringify(
         {
-          id: connectionId,
+          connection_type: 'postgresql',
           name: connectionName,
-          connectionConfig: {
-            config: {
-              case: 'pgConfig',
-              value: pgconfig,
-            },
-          },
+          connection_config: {
+            host: db?.host,
+            name: db?.name,
+            user: db?.user,
+            pass: db?.pass,
+            port: db?.port,
+            sslMode: db?.sslMode
+          }
         }
       ),
     }

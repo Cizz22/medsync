@@ -97,8 +97,22 @@ export async function createConnection(
   return connection.connection;
 }
 
-export async function updateConnection(req: UpdateConnectionRequest) {
-  return await client.connections.updateConnection(req);
+export async function updateConnection(
+  connection_type:string,
+  id:string,
+  name:string,
+  connection_config:any
+) {
+
+  const connectionConfig = createConnectionConfig(connection_type, connection_config)
+
+  return await client.connections.updateConnection(
+    new UpdateConnectionRequest({
+      id,
+      name,
+      connectionConfig
+    })
+  );
 }
 
 export async function deleteConnection(connectionId: string) {

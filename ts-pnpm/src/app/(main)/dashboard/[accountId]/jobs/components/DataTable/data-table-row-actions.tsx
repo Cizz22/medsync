@@ -93,9 +93,9 @@ async function removeJob(accountId: string | undefined, jobId: string, access_to
       'token': access_token
     }
   });
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.message);
-  }
+  // if (!res.ok) {
+  //   const body = await res.json();
+  //   throw new Error(body.message);
+  // }
   await res.json();
 }

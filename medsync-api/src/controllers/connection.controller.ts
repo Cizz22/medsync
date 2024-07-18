@@ -26,6 +26,22 @@ const createConnection = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(connection);
 });
 
+const updateConnection = catchAsync(async (req, res) => {
+  const {connection_type, name, connection_config} = req.body;
+  const connectionId = req.params.connectionId;
+  const user = req.user as User;
+
+  const newConnection = await connectionService.updateConnection(
+    connection_type,
+    connectionId,
+    name,
+    connection_config
+  )
+
+  res.status(httpStatus.OK).send(newConnection)
+
+})
+
 const getConnection = catchAsync(async (req, res) => {
   const connectionId = req.params.connectionId;
   const user = req.user as User;
@@ -36,7 +52,7 @@ const getConnection = catchAsync(async (req, res) => {
 const deleteConnection = catchAsync(async (req, res) => {
   const connectionId = req.params.connectionId;
   await connectionService.deleteConnection(connectionId);
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(httpStatus.OK).send();
 });
 
 const checkConnectionConfig = catchAsync(async (req, res) => {
@@ -103,5 +119,6 @@ export default {
   getConnectionForeignConstraints,
   getConnectionPrimaryConstraints,
   getConnectionUniqueConstrains,
-  isConnectionNameAvailable
+  isConnectionNameAvailable,
+  updateConnection
 };
