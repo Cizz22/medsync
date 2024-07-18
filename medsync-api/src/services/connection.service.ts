@@ -121,7 +121,7 @@ export async function createConnection(
       }
     })
   } catch (error) {
-    console.log(error)
+    throw new ApiError(httpStatus.NOT_FOUND, "prsimna error");
   }
 
   
