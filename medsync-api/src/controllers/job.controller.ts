@@ -72,16 +72,8 @@ const pauseJob = catchAsync(async (req, res) => {
   const is_pause = req.query.is_pause as String;
   const jobId = req.params.jobId;
   
-  const pause = is_pause === 'true'  
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   const pause = is_pause === 'true' 
 
->>>>>>> fe278b6bfb40f7e747e088a9e06da53ed0eea886
-=======
->>>>>>> 926743aa4078e8bcd0bc52abcf60d8a9b50570e8
   await jobService.pauseJobRun(jobId, pause);
 
   res.send({
