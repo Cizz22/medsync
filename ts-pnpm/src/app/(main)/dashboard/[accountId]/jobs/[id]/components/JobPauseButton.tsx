@@ -12,7 +12,7 @@ import { ReactElement, useEffect, useState } from 'react';
 
 interface Props {
   jobId: string;
-  status?: JobStatus;
+  status: JobStatus,
   onNewStatus(status: JobStatus): void;
 }
 
@@ -46,7 +46,7 @@ export default function JobPauseButton({
     }
     try {
       setIsTrying(true);
-      await pauseJob(account?.id ?? '', jobId, isPaused);
+      await pauseJob(account?.neosync_account_id ?? '', jobId, isPaused, account?.access_token ?? '');
       toast({
         title: `Successfully ${isPaused ? 'paused' : 'unpaused'}  job!`,
         variant: 'default',
@@ -82,23 +82,19 @@ export default function JobPauseButton({
 async function pauseJob(
   accountId: string,
   jobId: string,
-  isPaused: boolean
-): Promise<PauseJobResponse> {
-  const res = await fetch(`/api/accounts/${accountId}/jobs/${jobId}/pause`, {
-    method: 'PUT',
+  isPaused: boolean,
+  token:string
+) {
+  const res = await fetch(`/api/accounts/${accountId}/jobs/${jobId}/pause?is_pause=${isPaused}`, {
+    method: 'GET',
     headers: {
       'content-type': 'application/json',
+      token:token
     },
-    body: JSON.stringify(
-      new PauseJobRequest({
-        id: jobId,
-        pause: isPaused,
-      })
-    ),
   });
   if (!res.ok) {
     const body = await res.json();
     throw new Error(body.message);
   }
-  return PauseJobResponse.fromJson(await res.json());
+  return await res.json();
 }

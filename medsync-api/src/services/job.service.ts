@@ -7,6 +7,7 @@ import {
   GetJobRecentRunsRequest,
   GetJobRequest,
   GetJobStatusRequest,
+  GetJobStatusesRequest,
   GetJobsRequest,
   GetJobStatusesRequest,
   IsJobNameAvailableRequest,
@@ -217,7 +218,7 @@ export async function pauseJobRun(jobRunId: string, isPause: boolean) {
   const jobRun = await client.jobs.pauseJob(
     new PauseJobRequest({
       id: jobRunId,
-      pause: isPause
+      pause:isPause
     })
   );
 

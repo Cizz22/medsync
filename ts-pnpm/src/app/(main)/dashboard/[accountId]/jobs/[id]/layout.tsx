@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { GetJobResponse, useGetJob } from '@/lib/hooks/useGetJob';
 import { useGetJobRunsbyJob } from '@/lib/hooks/useGetJobRunsByJob';
-import { useGetJobStatus } from '@/lib/hooks/useGetJobStatus';
+import { JobStatus, useGetJobStatus } from '@/lib/hooks/useGetJobStatus';
 // import { useGetSystemAppConfig } from '@/libs/hooks/useGetSystemAppConfig';
 import { getErrorMessage } from '@/lib/utils';
 // import { GetJobStatusResponse, Job, JobStatus } from '@neosync/sdk';
@@ -82,9 +82,9 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
     }
   }
 
-  // function onNewStatus(newStatus:any): void {
-  //   mutateJobStatus(newStatus);
-  // }
+  function onNewStatus(newStatus:any): void {
+    mutateJobStatus(newStatus);
+  }
 
   if (isLoading) {
     return (
@@ -143,11 +143,11 @@ export default function JobIdLayout({ children, params }: LayoutProps) {
                     description="Deleting this job will also delete all job runs."
                     onConfirm={async () => onDelete()}
                   />
-                  {/* <JobPauseButton
+                  <JobPauseButton
                     jobId={id}
-                    status={jobStatus}
+                    status={jobStatus?.status ?? JobStatus.PAUSED}
                     onNewStatus={onNewStatus}
-                  /> */}
+                  />
                   <Button onClick={() => onTriggerJobRun()}>
                     <ButtonText
                       leftIcon={<LightningBoltIcon />}

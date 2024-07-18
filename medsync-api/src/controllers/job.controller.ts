@@ -74,6 +74,11 @@ const pauseJob = catchAsync(async (req, res) => {
   
   const pause = is_pause === 'true'  
 
+<<<<<<< HEAD
+=======
+  const pause = is_pause === 'true' 
+
+>>>>>>> fe278b6bfb40f7e747e088a9e06da53ed0eea886
   await jobService.pauseJobRun(jobId, pause);
 
   res.send({
