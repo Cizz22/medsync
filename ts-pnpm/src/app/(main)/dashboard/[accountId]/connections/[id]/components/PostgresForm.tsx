@@ -361,7 +361,7 @@ export default function PostgresForm(props: Props) {
             </FormItem>
           )}
         />
-        <Accordion type="single" collapsible className="w-full">
+        {/* <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="bastion">
             <AccordionTrigger> Bastion Host Configuration</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 p-2">
@@ -487,7 +487,7 @@ export default function PostgresForm(props: Props) {
               />
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
         <Permissions
           data={permissionData ?? []}
           openPermissionDialog={openPermissionDialog}

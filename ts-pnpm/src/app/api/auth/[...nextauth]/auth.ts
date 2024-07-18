@@ -61,7 +61,6 @@ export const {
       },
       authorize: async (credentials) => {
         // eslint-disable-next-line no-console
-        console.log(credentials)
         try {
           const res = await fetch(`${apiUrl}/v1/auth/login`, {
             method: 'POST',

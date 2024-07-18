@@ -129,26 +129,22 @@ export const CONNECT_FORM_SCHEMA = SOURCE_FORM_SCHEMA.concat(
       );
     }
 
-    // if (
-    //   destinationIds.some(
-    //     (destId) => !isValidConnectionPair(value.sourceId, destId, connections)
-    //   )
-    // ) {
-    //   destinationIds.forEach((destId, idx) => {
-    //     if (!isValidConnectionPair(value.sourceId, destId, connections)) {
-    //       errors.push(
-    //         ctx.createError({
-    //           path: `destinations.${idx}.connectionId`,
-    //           message: `Destination connection type must be one of: ${getErrorConnectionTypes(
-    //             false,
-    //             value.sourceId,
-    //             connections
-    //           )}`,
-    //         })
-    //       );
-    //     }
-    //   });
-    // }
+    if (
+      destinationIds.some(
+        (destId) => !isValidConnectionPair(value.sourceId, destId, connections)
+      )
+    ) {
+      destinationIds.forEach((destId, idx) => {
+        if (!isValidConnectionPair(value.sourceId, destId, connections)) {
+          errors.push(
+            ctx.createError({
+              path: `destinations.${idx}.connectionId`,
+              message: `Unfortunately, the current Medsync system still can't fully handle migration between two different database types :(`,
+            })
+          );
+        }
+      });
+    }
 
     if (destinationIds.length !== new Set(destinationIds).size) {
       const valueIdxMap = new Map<string, number[]>();

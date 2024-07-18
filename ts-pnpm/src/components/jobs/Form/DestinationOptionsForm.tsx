@@ -45,7 +45,7 @@ export default function DestinationOptionsForm(
       return (
         <div className={`grid grid-cols-1 md:grid-cols-1 ${grid} gap-4`}>
           <div>
-            <FormField
+            {/* <FormField
               name={truncateBeforeInsertName}
               render={({ field }) => (
                 <FormItem>
@@ -65,10 +65,10 @@ export default function DestinationOptionsForm(
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <div>
-            <FormField
+            {/* <FormField
               name={truncateCascadeName}
               render={({ field }) => (
                 <FormItem>
@@ -88,7 +88,7 @@ export default function DestinationOptionsForm(
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <div>
             <FormField
@@ -144,7 +144,7 @@ export default function DestinationOptionsForm(
           : `destinationOptions.truncateBeforeInsert`;
           return (
             <div className={`grid grid-cols-1 md:grid-cols-1 ${grid} gap-4`}>
-              <div>
+              {/* <div>
                 <FormField
                   name={mysqltruncateBeforeInsertName}
                   render={({ field }) => (
@@ -163,7 +163,7 @@ export default function DestinationOptionsForm(
                     </FormItem>
                   )}
                 />
-              </div>
+              </div> */}
               <div>
                 <FormField
                   name={

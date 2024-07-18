@@ -4,6 +4,7 @@ import FormError from '@/components/FormError';
 import { PasswordInput } from '@/components/PasswordComponent';
 import Spinner from '@/components/Spinner';
 import RequiredLabel from '@/components/labels/RequiredLabel';
+import Permissions from '@/components/permissions/Permissions';
 // import { setOnboardingConfig } from '@/components/onboarding-checklist/OnboardingChecklist';
 import { useAccount } from '@/components/providers/account-provider';
 import SkeletonForm from '@/components/skeleton/SkeletonForm';
@@ -35,7 +36,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 // import { useGetAccountOnboardingConfig } from '@/libs/hooks/useGetAccountOnboardingConfig';
-import { CheckConnectionConfigResponse, useGetConnection } from '@/lib/hooks/useGetConnection';
+import { CheckConnectionConfigResponse, ConnectionRolePrivilege, useGetConnection } from '@/lib/hooks/useGetConnection';
 import { getErrorMessage } from '@/lib/utils';
 import {
   MYSQL_CONNECTION_PROTOCOLS,
@@ -110,6 +111,10 @@ export default function MysqlForm() {
 
   const [isValidating, setIsValidating] = useState<boolean>(false);
   // const posthog = usePostHog();
+
+  const [openPermissionDialog, setOpenPermissionDialog] =
+  useState<boolean>(false);
+const [permissionData, setPermissionData] = useState<ConnectionRolePrivilege[]>();
 
   async function onSubmit(values: MysqlFormValues) {
     if (!account) {
@@ -476,7 +481,7 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
             </FormItem>
           )}
         />
-        <Accordion type="single" collapsible className="w-full">
+        {/* <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="bastion">
             <AccordionTrigger> Bastion Host Configuration</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 p-2">
@@ -601,7 +606,15 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
               />
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
+        <Permissions
+          data={permissionData ?? []}
+          openPermissionDialog={openPermissionDialog}
+          setOpenPermissionDialog={setOpenPermissionDialog}
+          isValidating={isValidating}
+          validationResponse={validationResponse?.isConnected ?? false}
+          connectionName={form.getValues('connectionName')}
+        />
         <div className="flex flex-row gap-3 justify-between">
           <Button
             variant="outline"
@@ -616,10 +629,12 @@ the hook in the useEffect conditionally. This is used to retrieve the values for
                   account?.access_token ?? ''
                 );
 
-                console.log(res)
+        
                 
                 setIsValidating(false);
                 setValidationResponse(res);
+                setPermissionData(res.privileges);
+                setOpenPermissionDialog(res?.isConnected && true);
               } catch (err) {
                 setValidationResponse({
                     isConnected: false,
