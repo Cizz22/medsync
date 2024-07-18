@@ -106,19 +106,25 @@ export async function createConnection(
   const hashedUser = await encryptPassword(connection_config.user);
   const hashedPass = await encryptPassword(connection_config.pass);
 
-  prisma.connection.create({
-    data:{
-      engine_id: connection.connection?.id ?? '',
-      name: connection.connection?.name ?? '',
-      connectionConfig: {
-        host: connection_config.host,
-        name: connection_config.name,
-        user:hashedUser,
-        pass: hashedPass,
-        port: connection_config.port,
+  try {
+    const prismaConn = prisma.connection.create({
+      data:{
+        engine_id: connection.connection?.id ?? '',
+        name: connection.connection?.name ?? '',
+        connectionConfig: {
+          host: connection_config.host,
+          name: connection_config.name,
+          user:hashedUser,
+          pass: hashedPass,
+          port: connection_config.port,
+        }
       }
-    }
-  })
+    })
+  } catch (error) {
+    console.log(error)
+  }
+
+  
   
   return connection.connection;
 }
