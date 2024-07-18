@@ -9,7 +9,6 @@ import {
   GetJobStatusRequest,
   GetJobStatusesRequest,
   GetJobsRequest,
-  GetJobStatusesRequest,
   IsJobNameAvailableRequest,
   JobDestination,
   JobMapping,
