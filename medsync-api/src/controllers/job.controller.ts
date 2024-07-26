@@ -72,7 +72,7 @@ const pauseJob = catchAsync(async (req, res) => {
   const is_pause = req.query.is_pause as String;
   const jobId = req.params.jobId;
   
-  const pause = is_pause === 'true'  
+  const pause = is_pause === 'true' 
 
   await jobService.pauseJobRun(jobId, pause);
 

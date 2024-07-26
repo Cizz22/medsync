@@ -220,20 +220,12 @@ export default function Page({ searchParams }: PageProps): ReactElement {
                                       if (!value) {
                                         return;
                                       }
-                                      if (value === NEW_CONNECTION_VALUE) {
-                                        router.push(
-                                          `/${account?.name}/new/connection?returnTo=${encodeURIComponent(
-                                            `/${account?.name}/new/job/connect?sessionId=${sessionPrefix}&from=new-connection`
-                                          )}`
-                                        );
-                                        return;
-                                      }
                                       // set values
                                       field.onChange(value);
                                       form.setValue(
                                         `destinations.${index}.destinationOptions`,
                                         {
-                                          truncateBeforeInsert: false,
+                                          truncateBeforeInsert: true,
                                           truncateCascade: false,
                                           initTableSchema: false,
                                         }
@@ -411,7 +403,7 @@ function ConnectionSelectContent(
           ))}
         </SelectGroup>
       )}
-      <SelectItem
+      {/* <SelectItem
         className="cursor-pointer"
         key="new-dst-connection"
         value={NEW_CONNECTION_VALUE}
@@ -420,7 +412,7 @@ function ConnectionSelectContent(
           <PlusIcon />
           <p>New Connection</p>
         </div>
-      </SelectItem>
+      </SelectItem> */}
     </>
   );
 }

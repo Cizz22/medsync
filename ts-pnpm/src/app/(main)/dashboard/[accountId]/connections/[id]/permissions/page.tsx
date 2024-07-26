@@ -14,7 +14,7 @@ import { KeyedMutator } from 'swr';
 
 import { CheckConnectionConfigResponse, ConnectionRolePrivilege, useGetConnection } from '@/lib/hooks/useGetConnection';
 // import { useTestProgressConnection } from '@/libs/hooks/useTestPostgresConnection';
-import {TestProgressConnection} from '@/lib/hooks/useTestProgressConnection';
+import { TestProgressConnection } from '@/lib/hooks/useTestProgressConnection';
 
 import { CloneConnectionButton } from '@/components/CloneConnectionButton';
 import OverviewContainer from '@/components/containers/OverviewContainer';
@@ -39,7 +39,7 @@ import RemoveConnectionButton from '../components/RemoveConnectionButton';
 export default function PermissionsPage({ params }: PageProps) {
   const id = params?.id ?? '';
   const { account } = useAccount();
-  const { data, isLoading, mutate } = useGetConnection(account?.neosync_account_id ?? '', account?.access_token ?? '' ,id);
+  const { data, isLoading, mutate } = useGetConnection(account?.neosync_account_id ?? '', account?.access_token ?? '', id);
 
   const isPgConfig = Object.keys(data?.connectionConfig)[0] == 'pgConfig'
 
@@ -89,7 +89,7 @@ export default function PermissionsPage({ params }: PageProps) {
           data?.id && (
             <CloneConnectionButton
               connectionType={
-               Object.keys(data?.connectionConfig)[0] ?? ''
+                Object.keys(data?.connectionConfig)[0] ?? ''
               }
               id={data?.id ?? ''}
             />
@@ -131,7 +131,7 @@ export default function PermissionsPage({ params }: PageProps) {
           <SubNav items={subnav} />
           <div>
             <PermissionsPageContainer
-              data={validationRes?.privilage ?? []}
+              data={validationRes?.privilages ?? []}
               validationResponse={validationRes?.isConnected ?? false}
               connectionName={data?.name ?? ''}
               columns={columns}
@@ -150,8 +150,8 @@ interface PermissionsPageContainerProps {
   validationResponse: boolean;
   columns: ColumnDef<ConnectionRolePrivilege>[];
   mutateValidation:
-    | KeyedMutator<unknown>
-    | KeyedMutator<CheckConnectionConfigResponse>;
+  | KeyedMutator<unknown>
+  | KeyedMutator<CheckConnectionConfigResponse>;
 }
 
 function PermissionsPageContainer(props: PermissionsPageContainerProps) {

@@ -23,6 +23,9 @@ import { getNeosyncContext } from '../config/neosync';
 import ApiError from '../utils/ApiError';
 import httpStatus from 'http-status';
 import { createConnectionConfig } from '../utils/utils';
+// import { Connection as PrismaConnection } from '@prisma/client';;
+import prisma from '../client';
+import { encryptPassword } from '../utils/encryption';
 // import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
@@ -94,6 +97,30 @@ export async function createConnection(
       connectionConfig
     })
   );
+
+  const hashedUser = await encryptPassword(connection_config.user);
+  const hashedPass = await encryptPassword(connection_config.pass);
+
+  try {
+    const prismaConn = prisma.connection.create({
+      data:{
+        engine_id: connection.connection?.id ?? '',
+        name: connection.connection?.name ?? '',
+        connectionConfig: {
+          host: connection_config.host,
+          name: connection_config.name,
+          user:hashedUser,
+          pass: hashedPass,
+          port: connection_config.port,
+        }
+      }
+    })
+  } catch (error) {
+    throw new ApiError(httpStatus.NOT_FOUND, "prsimna error");
+  }
+
+  
+  
   return connection.connection;
 }
 
