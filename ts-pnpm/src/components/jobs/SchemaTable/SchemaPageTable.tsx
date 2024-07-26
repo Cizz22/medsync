@@ -20,7 +20,8 @@ import {
   TableBody,
   TableHead,
   TableHeader,
-  TableRow} from '@/components/ui/table';
+  TableRow
+} from '@/components/ui/table';
 
 import { JobMappingFormValues } from '@/yup-validations/jobs';
 
@@ -76,7 +77,7 @@ export default function SchemaPageTable<TData, TValue>({
     getScrollElement: () => tableContainerRef.current,
     measureElement:
       typeof window !== 'undefined' &&
-      navigator.userAgent.indexOf('Firefox') === -1
+        navigator.userAgent.indexOf('Firefox') === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
     overscan: 5,
@@ -88,10 +89,9 @@ export default function SchemaPageTable<TData, TValue>({
         <div className="flex">
           <GoWorkflow className="h-4 w-4" />
         </div>
-        <CardTitle>Transformer Mapping</CardTitle>
-      </div>  
+        <CardTitle>Mapping</CardTitle>
+      </div>
       <CardDescription className="pt-2">
-        Map Transformers to every column below.
       </CardDescription>
       <div className="z-50 pt-4">
         {/* <SchemaTableToolbar
@@ -124,9 +124,9 @@ export default function SchemaPageTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}

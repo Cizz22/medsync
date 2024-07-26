@@ -16,12 +16,77 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { getConnectionComponentDetails } from './components/connection-component';
 import RemoveConnectionButton from './components/RemoveConnectionButton';
+import { useGetConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
+import { useGetConnectionPrimaryConstraints } from '@/lib/hooks/useGetConnectionPrimaryConstraints';
+import { useGetConnectionForeignConstraints } from '@/lib/hooks/useGetConnectionForeignConstraints';
+import { useGetConnectionUniqueConstraints } from '@/lib/hooks/useGetConnectionUniqueConstraints';
+import { useMemo } from 'react';
+import { getSchemaConstraintHandler } from '@/components/jobs/SchemaTable/schema-constraint-handler';
+import { SchemaTable } from '@/components/jobs/SchemaTable/SchemaTable';
+import { getSchemaColumns } from '@/components/jobs/SchemaTable/SchemaColumns';
+import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
+import SchemaPageTable from '@/components/jobs/SchemaTable/SchemaPageTable';
 
 export default function ConnectionPage({ params }: PageProps) {
   const id = params?.id ?? '';
   const { account } = useAccount();
   const { data, isLoading, mutate } = useGetConnection(account?.neosync_account_id as string, account?.access_token as string, id);
   const { toast } = useToast();
+
+  const { data: connectionSchemaDataMap, isValidating: isSchemaMapValidating } =
+    useGetConnectionSchemaMap(account?.neosync_account_id ?? '', account?.access_token ?? '', id);
+
+  const { data: primaryConstraints, isValidating: isPkValidating } =
+    useGetConnectionPrimaryConstraints(
+      account?.neosync_account_id ?? '',
+      id,
+      account?.access_token ?? '',
+    );
+
+  const { data: foreignConstraints, isValidating: isFkValidating } =
+    useGetConnectionForeignConstraints(
+      account?.neosync_account_id ?? '',
+      id,
+      account?.access_token ?? '',
+    );
+
+  const { data: uniqueConstraints, isValidating: isUCValidating } =
+    useGetConnectionUniqueConstraints(
+      account?.neosync_account_id ?? '',
+      account?.access_token ?? '',
+      id,
+    );
+
+  const { handler, isValidating } = useGetTransformersHandler(
+    account?.neosync_account_id ?? '',
+    account?.access_token ?? ''
+  );
+
+
+  const schemaConstraintHandler = useMemo(
+    () =>
+      getSchemaConstraintHandler(
+        connectionSchemaDataMap ?? {},
+        primaryConstraints ?? {},
+        foreignConstraints ?? {},
+        uniqueConstraints ?? {}
+      ),
+    [isSchemaMapValidating, isPkValidating, isFkValidating, isUCValidating]
+  );
+
+  const columns = useMemo(() => {
+    return getSchemaColumns({
+      transformerHandler: handler,
+      constraintHandler: schemaConstraintHandler,
+      jobType: 'sync',
+    });
+  }, [handler, schemaConstraintHandler]);
+
+  const mapping = Object.values(connectionSchemaDataMap ?? {}).flatMap(array =>
+    array.map(({ dataType, isNullable, ...rest }) => rest)
+  );
+
+
   if (!id) {
     return <Error statusCode={404} />;
   }
@@ -94,6 +159,14 @@ export default function ConnectionPage({ params }: PageProps) {
     >
       <div className="connection-details-container">
         <div className="flex flex-col gap-8">
+          <SchemaPageTable
+            columns={columns}
+            data={mapping}
+            transformerHandler={handler}
+            constraintHandler={schemaConstraintHandler}
+            jobType={'sync'}
+          />
+          <hr />
           {isPostgres && <SubNav items={subnav} buttonClassName="" />}
           <div>{connectionComponent.body}</div>
         </div>

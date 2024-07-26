@@ -38,6 +38,7 @@ import JobsProgressSteps, {
 } from '../JobsProgressSteps';
 import { NewJobType } from '../page';
 import { DEFINE_FORM_SCHEMA, DefineFormValues } from '../schema';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { DEFAULT_CRON_STRING } from '../../../jobs/[id]/components/ScheduleCard';
 
 const isBrowser = () => typeof window !== 'undefined';
@@ -71,6 +72,27 @@ export default function Page({ searchParams }: PageProps): ReactElement {
   );
   const [isScheduleEnabled, setIsScheduleEnabled] = useState<boolean>(false);
 
+  const cronOptions = {
+    minutes: ['Every', ...Array.from({ length: 60 }, (_, i) => i)],
+    hours: ['Every', ...Array.from({ length: 24 }, (_, i) => i)],
+    days: ['Every', ...Array.from({ length: 31 }, (_, i) => i + 1)],
+    months: ['Every', ...Array.from({ length: 12 }, (_, i) => i + 1)],
+    weekdays: ['Every', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  };
+
+  const [cronComponents, setCronComponents] = useState({
+    minute: '0',
+    hour: '*',
+    day: '*',
+    month: '*',
+    weekday: '*',
+  });
+
+  const handleCronChange = (component: any, value: any) => {
+    setCronComponents((prev) => ({ ...prev, [component]: value }));
+  };
+
+
   const form = useForm<DefineFormValues>({
     mode: 'onChange',
     resolver: yupResolver<DefineFormValues>(DEFINE_FORM_SCHEMA),
@@ -87,11 +109,16 @@ export default function Page({ searchParams }: PageProps): ReactElement {
     storage: isBrowser() ? window.sessionStorage : undefined,
   });
 
+
   const newJobType = getNewJobType(getSingleOrUndefined(searchParams?.jobType));
 
   async function onSubmit(_values: DefineFormValues) {
     if (!isScheduleEnabled) {
       form.setValue('cronSchedule', '');
+    } else {
+      const { minute, hour, day, month, weekday } = cronComponents;
+      const cronString = `${minute} ${hour} ${day} ${month} ${weekday}`;
+      form.setValue('cronSchedule', cronString);
     }
     if (newJobType === 'generate-table') {
       router.push(
@@ -163,16 +190,80 @@ export default function Page({ searchParams }: PageProps): ReactElement {
                   />
                 </div>
                 <FormDescription>
-                  Define a cron schedule to run this job. If disabled, the job
-                  will be paused and a default cron will be set
+                  Define a cron schedule to run this job. If disabled, the job will be paused and a default cron will be set.
                 </FormDescription>
-                <FormControl>
-                  <Input
-                    placeholder={DEFAULT_CRON_STRING}
-                    {...field}
-                    disabled={!isScheduleEnabled}
-                  />
-                </FormControl>
+                {isScheduleEnabled && (
+                  <div className="flex flex-wrap gap-2">
+                    <FormControl>
+                      <Select onValueChange={(value) => handleCronChange('hour', value)}>
+                        <SelectTrigger >
+                          <SelectValue
+                            placeholder="Hour"
+                          />
+                          {cronComponents.hour === '*' ? 'Every hour' : cronComponents.hour}
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cronOptions.hours.map((hour, index) => (
+                            <SelectItem key={index} value={hour as string}>
+                              {hour === '*' ? 'Every hour' : hour}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <Select onValueChange={(value) => handleCronChange('day', value)}>
+                        <SelectTrigger >
+                          <SelectValue
+                            placeholder="Day"
+                          />
+                          {cronComponents.day === '*' ? 'Every day' : cronComponents.day}
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cronOptions.days.map((day, index) => (
+                            <SelectItem key={index} value={day as string}>
+                              {day === '*' ? 'Every day' : day}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <Select onValueChange={(value) => handleCronChange('month', value)}>
+                        <SelectTrigger >
+                          <SelectValue
+                            placeholder="Month"
+                          />
+                          {cronComponents.month === '*' ? 'Every month' : cronComponents.month}
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cronOptions.months.map((month, index) => (
+                            <SelectItem key={index} value={month as string}>
+                              {month === '*' ? 'Every month' : month}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormControl>
+                      <Select onValueChange={(value) => handleCronChange('weekday', value)}>
+                        <SelectTrigger >
+                          <SelectValue
+                            placeholder="Weekday"
+                          />
+                          {cronComponents.weekday === '*' ? 'Every day of the week' : cronOptions.weekdays[(cronComponents.weekday as unknown) as number]}
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cronOptions.weekdays.map((weekday, index) => (
+                            <SelectItem key={index} value={index === 0 ? '*' : (index - 1 as unknown) as string}>
+                              {weekday === '*' ? 'Every day of the week' : weekday}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}
