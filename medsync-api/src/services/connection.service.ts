@@ -100,38 +100,37 @@ export async function createConnection(
 
   const hashedUser = await encryptPassword(connection_config.user);
   const hashedPass = await encryptPassword(connection_config.pass);
+  const hashedHost = await encryptPassword(connection_config.host);
+  const handhedName = await encryptPassword(connection_config.name);
 
   try {
     const prismaConn = prisma.connection.create({
-      data:{
+      data: {
         engine_id: connection.connection?.id ?? '',
         name: connection.connection?.name ?? '',
         connectionConfig: {
-          host: connection_config.host,
-          name: connection_config.name,
-          user:hashedUser,
+          host: hashedHost,
+          name: handhedName,
+          user: hashedUser,
           pass: hashedPass,
-          port: connection_config.port,
+          port: connection_config.port
         }
       }
-    })
+    });
   } catch (error) {
-    throw new ApiError(httpStatus.NOT_FOUND, "prsimna error");
+    throw new ApiError(httpStatus.NOT_FOUND, 'prsimna error');
   }
 
-  
-  
   return connection.connection;
 }
 
 export async function updateConnection(
-  connection_type:string,
-  id:string,
-  name:string,
-  connection_config:any
+  connection_type: string,
+  id: string,
+  name: string,
+  connection_config: any
 ) {
-
-  const connectionConfig = createConnectionConfig(connection_type, connection_config)
+  const connectionConfig = createConnectionConfig(connection_type, connection_config);
 
   return await client.connections.updateConnection(
     new UpdateConnectionRequest({

@@ -20,6 +20,7 @@ import { useGetConnectionUniqueConstraints } from '@/lib/hooks/useGetConnectionU
 import OverviewContainer from '@/components/containers/OverviewContainer';
 import PageHeader from '@/components/headers/PageHeader';
 import { getSchemaConstraintHandler } from '@/components/jobs/SchemaTable/schema-constraint-handler';
+import { getSchemaColumns } from '@/components/jobs/SchemaTable/SchemaColumns';
 import { SchemaTable } from '@/components/jobs/SchemaTable/SchemaTable';
 import { useAccount } from '@/components/providers/account-provider';
 import { PageProps } from '@/components/types';
@@ -30,7 +31,6 @@ import { SCHEMA_FORM_SCHEMA, SchemaFormValues } from '@/yup-validations/jobs';
 
 import JobsProgressSteps, { DATA_SYNC_STEPS } from '../JobsProgressSteps';
 import { ConnectFormValues } from '../schema';
-import { getSchemaColumns } from '@/components/jobs/SchemaTable/SchemaColumns';
 
 const isBrowser = () => typeof window !== 'undefined';
 
@@ -92,10 +92,7 @@ export default function Page({ searchParams }: PageProps): ReactElement {
       account?.access_token ?? '',
       connectFormValues.sourceId,
     );
-  const { handler, isLoading, isValidating } = useGetTransformersHandler(
-    account?.neosync_account_id ?? '',
-    account?.access_token ?? ''
-  );
+
 
   const form = useForm<SchemaFormValues>({
     resolver: yupResolver<SchemaFormValues>(SCHEMA_FORM_SCHEMA),
@@ -127,14 +124,6 @@ export default function Page({ searchParams }: PageProps): ReactElement {
     [isSchemaMapValidating, isPkValidating, isFkValidating, isUCValidating]
   );
 
-  const columns = useMemo(() => {
-    return getSchemaColumns({
-      transformerHandler: handler,
-      constraintHandler: schemaConstraintHandler,
-      jobType: 'sync',
-    });
-  }, [handler, schemaConstraintHandler]);
-
   // eslint-disable-next-line no-console
 
 
@@ -156,12 +145,12 @@ export default function Page({ searchParams }: PageProps): ReactElement {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <SchemaPageTable
-            columns={columns}
-            data={data}
-            transformerHandler={handler}
-            constraintHandler={constraintHandler}
-            jobType={jobType}
+          <SchemaTable
+            data={form.watch('mappings')}
+            jobType="sync"
+            constraintHandler={schemaConstraintHandler}
+            schema={connectionSchemaDataMap ?? {}}
+            isSchemaDataReloading={isSchemaMapValidating}
           />
           <div className="flex flex-row gap-1 justify-between">
             <Button key="back" type="button" onClick={() => router.back()}>

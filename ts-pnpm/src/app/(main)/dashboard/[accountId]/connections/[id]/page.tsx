@@ -1,31 +1,32 @@
 'use client';
 // import { GetConnectionResponse } from '@neosync/sdk';
 import Error from 'next/error';
+import { useMemo } from 'react';
 
 import { useGetConnection } from '@/lib/hooks/useGetConnection';
+import { useGetConnectionForeignConstraints } from '@/lib/hooks/useGetConnectionForeignConstraints';
+import { useGetConnectionPrimaryConstraints } from '@/lib/hooks/useGetConnectionPrimaryConstraints';
+import { useGetConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
+import { useGetConnectionUniqueConstraints } from '@/lib/hooks/useGetConnectionUniqueConstraints';
+import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
 import { getErrorMessage } from '@/lib/utils';
 
 import { CloneConnectionButton } from '@/components/CloneConnectionButton';
 import OverviewContainer from '@/components/containers/OverviewContainer';
+import { getSchemaConstraintHandler } from '@/components/jobs/SchemaTable/schema-constraint-handler';
+import { getSchemaColumns } from '@/components/jobs/SchemaTable/SchemaColumns';
+import SchemaPageTable from '@/components/jobs/SchemaTable/SchemaPageTable';
+import { SchemaTable } from '@/components/jobs/SchemaTable/SchemaTable';
 import { useAccount } from '@/components/providers/account-provider';
 import ResourceId from '@/components/ResourceId';
 import SkeletonForm from '@/components/skeleton/SkeletonForm';
 import { SubNav } from '@/components/SubNav';
 import { PageProps } from '@/components/types';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 
 import { getConnectionComponentDetails } from './components/connection-component';
 import RemoveConnectionButton from './components/RemoveConnectionButton';
-import { useGetConnectionSchemaMap } from '@/lib/hooks/useGetConnectionSchemaMap';
-import { useGetConnectionPrimaryConstraints } from '@/lib/hooks/useGetConnectionPrimaryConstraints';
-import { useGetConnectionForeignConstraints } from '@/lib/hooks/useGetConnectionForeignConstraints';
-import { useGetConnectionUniqueConstraints } from '@/lib/hooks/useGetConnectionUniqueConstraints';
-import { useMemo } from 'react';
-import { getSchemaConstraintHandler } from '@/components/jobs/SchemaTable/schema-constraint-handler';
-import { SchemaTable } from '@/components/jobs/SchemaTable/SchemaTable';
-import { getSchemaColumns } from '@/components/jobs/SchemaTable/SchemaColumns';
-import { useGetTransformersHandler } from '@/lib/hooks/useGetTransformersHandler';
-import SchemaPageTable from '@/components/jobs/SchemaTable/SchemaPageTable';
 
 export default function ConnectionPage({ params }: PageProps) {
   const id = params?.id ?? '';
@@ -159,16 +160,35 @@ export default function ConnectionPage({ params }: PageProps) {
     >
       <div className="connection-details-container">
         <div className="flex flex-col gap-8">
-          <SchemaPageTable
-            columns={columns}
-            data={mapping}
-            transformerHandler={handler}
-            constraintHandler={schemaConstraintHandler}
-            jobType={'sync'}
-          />
-          <hr />
           {isPostgres && <SubNav items={subnav} buttonClassName="" />}
+
+          <div>
+            <Card className="bg-white rounded-lg p-2">
+              <CardHeader className="text-lg font-semibold">Connection Details</CardHeader>
+              <CardContent>
+                <div className="mb-4">
+                  <span className="font-medium">Database Encode:</span>
+                  <p>UTF-8</p>
+                </div>
+                <div>
+                  <span className="font-medium">Connection Name:</span>
+                  <p>{data?.name}</p>
+                </div>
+                <div>
+                  <SchemaPageTable
+                    columns={columns}
+                    data={mapping}
+                    transformerHandler={handler}
+                    constraintHandler={schemaConstraintHandler}
+                    jobType={'sync'}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <div>{connectionComponent.body}</div>
+
         </div>
       </div>
     </OverviewContainer>
