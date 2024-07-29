@@ -129,8 +129,8 @@ export async function createConnection(
   const handhedName = await encryptPassword(connection_config.name);
 
   try {
-    const prismaConn = prisma.connection.create({
-      data: {
+    const prismaConn = await prisma.connection.create({
+      data:{
         engine_id: connection.connection?.id ?? '',
         name: connection.connection?.name ?? '',
         connectionConfig: {
