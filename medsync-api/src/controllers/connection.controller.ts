@@ -27,7 +27,7 @@ const createConnection = catchAsync(async (req, res) => {
 });
 
 const updateConnection = catchAsync(async (req, res) => {
-  const {connection_type, name, connection_config} = req.body;
+  const { connection_type, name, connection_config } = req.body;
   const connectionId = req.params.connectionId;
   const user = req.user as User;
 
@@ -36,11 +36,10 @@ const updateConnection = catchAsync(async (req, res) => {
     connectionId,
     name,
     connection_config
-  )
+  );
 
-  res.status(httpStatus.OK).send(newConnection)
-
-})
+  res.status(httpStatus.OK).send(newConnection);
+});
 
 const getConnection = catchAsync(async (req, res) => {
   const connectionId = req.params.connectionId;
@@ -63,6 +62,19 @@ const checkConnectionConfig = catchAsync(async (req, res) => {
     user.neosync_account_id,
     db,
     tunnel,
+    connection_type
+  );
+
+  res.send(response);
+});
+
+const checkConnectionEncoding = catchAsync(async (req, res) => {
+  const { db, connection_type } = req.body;
+  const user = req.user as User;
+
+  const response = await connectionService.chekcConnectionEncoding(
+    user.neosync_account_id,
+    db,
     connection_type
   );
 
@@ -120,5 +132,6 @@ export default {
   getConnectionPrimaryConstraints,
   getConnectionUniqueConstrains,
   isConnectionNameAvailable,
-  updateConnection
+  updateConnection,
+  checkConnectionEncoding
 };

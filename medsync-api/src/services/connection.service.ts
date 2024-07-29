@@ -26,6 +26,7 @@ import { createConnectionConfig } from '../utils/utils';
 // import { Connection as PrismaConnection } from '@prisma/client';;
 import prisma from '../client';
 import { encryptPassword } from '../utils/encryption';
+import { getMysqlEncoding, getPostgresEncoding } from '../utils/getEncode';
 // import generateConConfig from '../utils/connectionConfig';
 
 const client = getNeosyncContext();
@@ -55,6 +56,30 @@ export async function checkConnectionConfig(
   );
 
   return check;
+}
+
+export async function chekcConnectionEncoding(accountId: string, db: any, connection_type: string) {
+  let encode;
+
+  if (connection_type == 'postgresql') {
+    encode = await getPostgresEncoding({
+      host: db.host,
+      port: db.port,
+      db: db.name,
+      pass: db.pass,
+      user: db.user
+    });
+  } else if (connection_type == 'mysql') {
+    encode = await getMysqlEncoding({
+      host: db.host,
+      port: db.port,
+      db: db.name,
+      pass: db.pass,
+      user: db.user
+    });
+  }
+
+  return encode;
 }
 
 export async function isConnectionNameAvailable(accountId: string, name: string) {
@@ -211,5 +236,6 @@ export default {
   getConnectionUniqueConstrains,
   getConnectionForeignConstraints,
   getConnectionPrimaryConstraints,
-  isConnectionNameAvailable
+  isConnectionNameAvailable,
+  chekcConnectionEncoding
 };

@@ -17,6 +17,8 @@ router
 
 router.route('/check').post(auth(), connectionController.checkConnectionConfig);
 
+router.route('/encoding').post(auth(), connectionController.checkConnectionEncoding);
+
 router.route('/name-available').get(auth(), connectionController.isConnectionNameAvailable);
 
 router
@@ -26,10 +28,8 @@ router
     auth(),
     validate(connectionValidation.deleteConnection),
     connectionController.deleteConnection
-  ).put(
-    auth(),
-    connectionController.updateConnection
-  );
+  )
+  .put(auth(), connectionController.updateConnection);
 
 router.route('/:connectionId/schema').get(auth(), connectionController.checkConnectionSchema);
 
